@@ -1,15 +1,15 @@
 <script setup>
 import { ref } from "vue";
 import Card from "./components/Card.vue";
-import VillagerCard from "./components/VillagerCard.vue";
 import CardStack from "./components/CardStack.vue";
 
 const generateId = () => Math.random().toString(16).substr(2, 8);
 
 class CardModel {
-  constructor() {
+  constructor(type = "default") {
     this._id = generateId();
     this._stackId;
+    this.type = type;
   }
 
   setStackId(id) {
@@ -42,8 +42,9 @@ const stack = ref([
   new CardStackModel()
     .addCard(new CardModel())
     .addCard(new CardModel())
-    .addCard(new CardModel()),
+    .addCard(new CardModel("villager")),
   new CardStackModel().addCard(new CardModel()),
+  new CardStackModel().addCard(new CardModel("wood")),
 ]);
 
 function handleStackChange(event) {

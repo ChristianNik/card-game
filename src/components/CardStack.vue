@@ -32,7 +32,7 @@ const onDrop = (event, dropId) => {
       v-for="(card, index) in cards"
       :key="card._id"
       :id="card._id"
-      :children="card.children"
+      :type="card.type"
       :collapsed="index !== cards.length - 1"
       @dragstart="startDrag($event, id)"
       @drop="onDrop($event, id)"
@@ -44,7 +44,6 @@ const onDrop = (event, dropId) => {
 
 <style >
 .card-stack .card:not(:first-child) header {
-  /* display: none; */
   border-top: 0;
   border-radius: 0;
 }

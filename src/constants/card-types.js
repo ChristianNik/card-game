@@ -1,3 +1,5 @@
+import { getCraftable } from "../logic/crafting";
+
 const cardCategory = {
 	foot: "foot",
 	person: "person",
@@ -33,45 +35,58 @@ const categorys = {
 	}
 };
 
-const registerEntity = ({ id, title, category = "default" }) => {
-	const entityCategory = categorys[category] || categorys.default;
+const recepies = {
+	stick: ["wood", "villager"],
+	default: ["villager", "villager"]
+};
 
-	return {
+function registerEntity({ id, title, category = "default", recepie }) {
+	const entityCategory = categorys[category] || categorys.default;
+	const _recepie = recepies[id] || undefined;
+
+	const entity = {
 		id: id,
 		category: entityCategory.name,
 		args: {
 			title,
 			...entityCategory.args
+		},
+		recepie: _recepie
+	};
+
+	return {
+		...entity,
+		factory: () => {
+			return entity;
 		}
 	};
-};
+}
 
 const cardTypes = {};
 cardTypes.villager = registerEntity({
-		id: "villager",
-		title: "Villager",
-		category: cardCategory.person
+	id: "villager",
+	title: "Villager",
+	category: cardCategory.person
 });
 cardTypes.stone = registerEntity({
-		id: "stone",
-		title: "Stone",
-		category: cardCategory.ingredient
+	id: "stone",
+	title: "Stone",
+	category: cardCategory.ingredient
 });
 cardTypes.wood = registerEntity({
-		id: "wood",
-		title: "Wood",
-		category: cardCategory.ingredient
+	id: "wood",
+	title: "Wood",
+	category: cardCategory.ingredient
 });
 cardTypes.stick = registerEntity({
 	id: "stick",
 	title: "Stick",
-	category: cardCategory.ingredient,
-	recepie: [cardTypes.wood.id]
+	category: cardCategory.ingredient
 });
 cardTypes.default = registerEntity({
-		id: "default",
-		title: "Default",
-		category: cardCategory.default
+	id: "default",
+	title: "Default",
+	category: cardCategory.default
 });
 
 export { cardTypes };

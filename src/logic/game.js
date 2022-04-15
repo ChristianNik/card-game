@@ -36,11 +36,16 @@ class CardStackModel {
 
 	destroy() {
 		this.cards = this.cards.filter(c => c.type === "villager");
-		return this;
+		const villagerCount = this.cards.length;
+		if (villagerCount > 1) {
+			this.cards = this.cards.slice(0, 1);
+		}
+		return villagerCount;
 	}
 }
 
 const stack = ref([
+	new CardStackModel().addCard(new CardModel("villager")),
 	new CardStackModel().addCard(new CardModel("villager")),
 	new CardStackModel().addCard(new CardModel("tree")),
 	new CardStackModel().addCard(new CardModel("tree")),
@@ -77,8 +82,15 @@ function craftDone(event) {
 
 	current.destroy();
 
+	const villagers = [];
+
+	for (let i = 0; i < current.destroy(); i++) {
+		villagers.push(new CardStackModel().addCard(new CardModel("villager")));
+	}
+
 	stack.value = [
 		...stack.value.filter(s => s.cards.length > 0),
+		...villagers,
 		new CardStackModel().addCard(new CardModel(event.type))
 	];
 }

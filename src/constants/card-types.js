@@ -81,6 +81,22 @@ const recepies = {
 		duration: 3,
 		ingredients: [new EntityIngredient("tree"), new EntityIngredient("villager")]
 	}),
+	baby: new EntityRecepie({
+		duration: 30,
+		ingredients: [
+			new EntityIngredient("villager", {
+				count: 2
+			})
+		]
+	}),
+	villager: new EntityRecepie({
+		duration: 60,
+		ingredients: [
+			new EntityIngredient("baby", {
+				count: 1
+			})
+		]
+	}),
 	default: new EntityRecepie({
 		duration: 5,
 		ingredients: [
@@ -128,6 +144,11 @@ cardTypes.tree = registerEntity({
 	id: "tree",
 	title: "Tree",
 	category: cardCategory.recource
+});
+cardTypes.baby = registerEntity({
+	id: "baby",
+	title: "Baby",
+	category: cardCategory.person
 });
 //
 //

@@ -26,6 +26,9 @@ const onDrop = (event, dropId) => {
   emit("change", { current: targetId, target: dropId });
 };
 
+const craftRecepie = ref("");
+const cancraft = ref(false);
+
 watchEffect(() => {
   const ingreds = props.cards.reduce((acc, card) => {
     if (acc[card.type] == null) {
@@ -43,8 +46,6 @@ watchEffect(() => {
 });
 
 const progress = ref(0);
-const cancraft = ref(false);
-const craftRecepie = ref();
 let interval;
 
 watchEffect(() => {

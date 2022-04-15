@@ -57,19 +57,27 @@ const categorys = {
 //
 // Recepies
 //
+
+class EntityRecepie {
+	constructor({ duration, ingredients }) {
+		this.duration = duration;
+		this.ingredients = ingredients;
+	}
+}
+
 const recepies = {
-	stick: {
+	stick: new EntityRecepie({
 		duration: 1,
 		ingredients: ["wood", "villager"]
-	},
-	wood: {
+	}),
+	wood: new EntityRecepie({
 		duration: 3,
 		ingredients: ["tree", "villager"]
-	},
-	default: {
+	}),
+	default: new EntityRecepie({
 		duration: 5,
 		ingredients: ["stick", "stone", "villager"]
-	}
+	})
 };
 //
 //

@@ -1,7 +1,7 @@
 <script setup>
 import { onUpdated, watchEffect } from "@vue/runtime-core";
 import { ref } from "vue";
-import { getCraftable } from "../logic/crafting";
+import { getCraftable, getRecepieEntity } from "../logic/crafting";
 import Card from "./Card.vue";
 
 const emit = defineEmits(["dragstart", "drop", "craftdone"]);
@@ -33,14 +33,13 @@ onUpdated(() => {
   const craftable = getCraftable(ingreds);
   if (!craftable) return;
 
-  craftRecepie.value = craftable;
+  craftRecepie.value = getRecepieEntity(craftable);
   cancraft.value = true;
 });
 
-const craftDurationInSeconds = 10;
 const progress = ref(0);
 const cancraft = ref(false);
-const craftRecepie = ref("");
+const craftRecepie = ref();
 let interval;
 
 watchEffect(() => {
@@ -49,7 +48,10 @@ watchEffect(() => {
       progress.value = progress.value + 1;
     };
 
-    interval = setInterval(increment, (craftDurationInSeconds * 1000) / 100);
+    interval = setInterval(
+      increment,
+      (craftRecepie.value.recepie.duration * 1000) / 100
+    );
   }
 });
 watchEffect(() => {
@@ -57,7 +59,8 @@ watchEffect(() => {
     clearInterval(interval);
 
     cancraft.value = false;
-    emit("craftdone", { current: props.id, type: craftRecepie.value });
+    progress.value = 0;
+    emit("craftdone", { current: props.id, type: craftRecepie.value.id });
   }
 });
 </script>

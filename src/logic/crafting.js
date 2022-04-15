@@ -5,15 +5,19 @@ function getCraftable(ingreds = []) {
 		const item = cardTypes[key];
 		if (!item.recepie) return;
 
-		const sameLength = ingreds.length == item.recepie.length;
+		const sameLength = ingreds.length == item.recepie.ingredients.length;
 		if (!sameLength) return false;
 
 		return ingreds.every(ingred => {
-			return item.recepie.indexOf(ingred) > -1;
+			return item.recepie.ingredients.indexOf(ingred) > -1;
 		});
 	});
 
 	return match;
 }
 
-export { getCraftable };
+function getRecepieEntity(name) {
+	return cardTypes[name];
+}
+
+export { getCraftable, getRecepieEntity };

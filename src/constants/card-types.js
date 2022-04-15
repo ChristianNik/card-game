@@ -43,12 +43,21 @@ const categorys = {
 };
 
 const recepies = {
-	stick: ["wood", "villager"],
-	wood: ["tree", "villager"],
-	default: ["stick", "stone", "villager"]
+	stick: {
+		duration: 1,
+		ingredients: ["wood", "villager"]
+	},
+	wood: {
+		duration: 3,
+		ingredients: ["tree", "villager"]
+	},
+	default: {
+		duration: 5,
+		ingredients: ["stick", "stone", "villager"]
+	}
 };
 
-function registerEntity({ id, title, category = "default", recepie }) {
+function registerEntity({ id, title, category = "default" }) {
 	const entityCategory = categorys[category] || categorys.default;
 	const _recepie = recepies[id] || undefined;
 

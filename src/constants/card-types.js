@@ -65,18 +65,33 @@ class EntityRecepie {
 	}
 }
 
+class EntityIngredient {
+	constructor(name, { count = 1 } = {}) {
+		this.count = count;
+		this.name = name;
+	}
+}
+
 const recepies = {
 	stick: new EntityRecepie({
 		duration: 1,
-		ingredients: ["wood", "villager"]
+		ingredients: [new EntityIngredient("wood"), new EntityIngredient("villager")]
 	}),
 	wood: new EntityRecepie({
 		duration: 3,
-		ingredients: ["tree", "villager"]
+		ingredients: [new EntityIngredient("tree"), new EntityIngredient("villager")]
 	}),
 	default: new EntityRecepie({
 		duration: 5,
-		ingredients: ["stick", "stone", "villager"]
+		ingredients: [
+			new EntityIngredient("stick", {
+				count: 1
+			}),
+			new EntityIngredient("stone", {
+				count: 3
+			}),
+			new EntityIngredient("villager")
+		]
 	})
 };
 //

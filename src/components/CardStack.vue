@@ -28,7 +28,13 @@ const onDrop = (event, dropId) => {
 };
 
 onUpdated(() => {
-  const ingreds = props.cards.map((card) => card.type);
+  const ingreds = props.cards.reduce((acc, card) => {
+    if (acc[card.type] == null) {
+      acc[card.type] = 0;
+    }
+    acc[card.type] = acc[card.type] + 1;
+    return acc;
+  }, {});
 
   const craftable = getCraftable(ingreds);
   if (!craftable) return;

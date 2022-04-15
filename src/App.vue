@@ -2,75 +2,88 @@
 import { ref } from "vue";
 import Card from "./components/Card.vue";
 import VillagerCard from "./components/VillagerCard.vue";
+import CardStack from "./components/CardStack.vue";
 
-const cards = ref([
-  {
-    id: "1",
-    type: "default",
-    children: [],
-  },
-  {
-    id: "2",
-    type: "villager",
-    children: [],
-  },
-  {
-    id: "3",
-    type: "villager",
-    children: [],
-  },
+const generateId = () => Math.random().toString(16).substr(2, 8);
+
+class CardModel {
+  constructor() {
+    this._id = generateId();
+    this._stackId;
+  }
+
+  setStackId(id) {
+    this._stackId = id;
+  }
+}
+
+class CardStackModel {
+  constructor() {
+    this._id = generateId();
+    this.cards = [];
+  }
+
+  addCard(card) {
+    card.setStackId(this._id);
+    this.cards.push(card);
+    return this;
+  }
+
+  pop() {
+    return this.cards.pop();
+  }
+
+  findById(id) {
+    return this.cards.find((c) => c._id === id);
+  }
+}
+
+const stack = ref([
+  new CardStackModel()
+    .addCard(new CardModel())
+    .addCard(new CardModel())
+    .addCard(new CardModel()),
+  new CardStackModel().addCard(new CardModel()),
 ]);
 
-const startDrag = (event, _id) => {
-  event.dataTransfer.dropEffect = "move";
-  event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("cardID", _id);
-};
+function handleStackChange(event) {
+  const current = stack.value.find((stack) => stack._id == event.current);
+  const target = stack.value.find((stack) => stack._id == event.target);
 
-const onDrop = (event, dropId) => {
-  const cardID = event.dataTransfer.getData("cardID");
-  console.log(cardID, "->", dropId);
+  const card = current.pop();
+  if (!card) return;
+  target.addCard(card);
+}
 
-  if (dropId === cardID) return;
+function dropToNewStack(event) {
+  const targetId = event.dataTransfer.getData("cardID");
+  const current = stack.value.find((stack) => stack._id == targetId);
 
-  const draggedCard = cards.value.find((card) => {
-    return card.id === cardID;
-  });
+  const card = current.pop();
 
-  const card = cards.value.find((card) => {
-    return card.id === dropId;
-  });
-
-  // add card to new parent
-  card.children.push(draggedCard);
-
-  // remove card from parent
-  cards.value = cards.value.filter((card) => card.id !== cardID);
-};
+  if (!card) return;
+  stack.value = [
+    ...stack.value.filter((s) => s.cards.length > 0),
+    new CardStackModel().addCard(card),
+  ];
+}
 </script>
 
 <template>
-  <div class="flex gap-3 m-3 bg-gray-100 p-6">
-    <card
-      :title="`Default ${card.id}`"
-      v-for="card in cards"
-      :key="card.id"
-      :id="card.id"
-      :children="card.children"
-      @dragstart="startDrag($event, card.id)"
-      @drop="onDrop($event, card.id)"
-    >
-      <card
-        :title="`Default ${vcard.id}`"
-        v-for="vcard in card.children"
-        :key="vcard.id"
-        :id="vcard.id"
-        :children="card.children"
-        @dragstart="startDrag($event, card.id)"
-        @drop="onDrop($event, card.id)"
-      />
-    </card>
-  </div>
+  <main
+    class="bg-emerald-200 p-6 h-screen flex gap-3"
+    @dragenter.prevent
+    @dragover.prevent
+    @drop="dropToNewStack"
+  >
+    <card-stack
+      v-for="group in stack"
+      :key="group._id"
+      :cards="group?.cards"
+      :id="group?._id"
+      @change="handleStackChange"
+    />
+  </main>
 </template>
 
 <style>

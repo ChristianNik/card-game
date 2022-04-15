@@ -1,10 +1,9 @@
-import { getCraftable } from "../logic/crafting";
-
 const cardCategory = {
 	foot: "foot",
 	person: "person",
 	enemy: "enemy",
 	ingredient: "ingredient",
+	recource: "recource",
 	default: "default"
 };
 
@@ -25,6 +24,14 @@ const categorys = {
 			bg2: "#FEF08A"
 		}
 	},
+	recource: {
+		name: cardCategory.recource,
+		args: {
+			color: "#fff",
+			bg1: "#42413C",
+			bg2: "#61605B"
+		}
+	},
 	default: {
 		name: cardCategory.default,
 		args: {
@@ -37,7 +44,8 @@ const categorys = {
 
 const recepies = {
 	stick: ["wood", "villager"],
-	default: ["villager", "villager"]
+	wood: ["tree", "villager"],
+	default: ["stick", "stone", "villager"]
 };
 
 function registerEntity({ id, title, category = "default", recepie }) {
@@ -87,6 +95,11 @@ cardTypes.default = registerEntity({
 	id: "default",
 	title: "Default",
 	category: cardCategory.default
+});
+cardTypes.tree = registerEntity({
+	id: "tree",
+	title: "Tree",
+	category: cardCategory.recource
 });
 
 export { cardTypes };

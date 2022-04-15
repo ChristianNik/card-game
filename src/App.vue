@@ -44,12 +44,8 @@ class CardStackModel {
 }
 
 const stack = ref([
-  new CardStackModel()
-    .addCard(new CardModel())
-    .addCard(new CardModel())
-    .addCard(new CardModel("villager")),
-  new CardStackModel().addCard(new CardModel()),
-  new CardStackModel().addCard(new CardModel("wood")),
+  new CardStackModel().addCard(new CardModel("villager")),
+  new CardStackModel().addCard(new CardModel("tree")),
   new CardStackModel().addCard(new CardModel("stone")),
 ]);
 
@@ -66,7 +62,7 @@ function dropToNewStack(event) {
   const targetId = event.dataTransfer.getData("cardID");
   const current = stack.value.find((stack) => stack._id == targetId);
 
-  const card = current.pop();
+  const card = current?.pop();
 
   if (!card) return;
   stack.value = [

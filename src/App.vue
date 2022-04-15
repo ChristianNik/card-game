@@ -45,6 +45,7 @@ const stack = ref([
     .addCard(new CardModel("villager")),
   new CardStackModel().addCard(new CardModel()),
   new CardStackModel().addCard(new CardModel("wood")),
+  new CardStackModel().addCard(new CardModel("stone")),
 ]);
 
 function handleStackChange(event) {

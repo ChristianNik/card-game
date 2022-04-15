@@ -43,6 +43,7 @@ function getCardArgs(type) {
       :bg2="args.bg2"
       :color="args.color"
       :collapsed="collapsed"
+      :type="type"
     />
   </div>
 </template>

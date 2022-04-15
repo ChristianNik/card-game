@@ -1,3 +1,5 @@
+icons: https://www.flaticon.com/free-icon/stone_4405457?term=stone&page=1&position=2&page=1&position=2&related_id=4405457&origin=search
+
 <script setup>
 import { ref } from "vue";
 
@@ -7,6 +9,7 @@ defineProps({
   bg1: String,
   bg2: String,
   id: String,
+  type: String,
   collapsed: Boolean,
 });
 
@@ -63,8 +66,8 @@ const dragLeave = () => {
           "
           :style="`background-color: ${bg2 || '#61605B'}`"
         />
-        <div class="z-10 text-4xl font-bold opacity-30">
-          {{ title.slice(0, 1) }}
+        <div class="z-10">
+          <img class="w-28" :src="`../src/assets/${type}.png`" alt="" />
         </div>
       </div>
       <div class="flex justify-between p-2 min-h-[48px]">

@@ -4,13 +4,27 @@ defineProps({
   color: String,
   bg1: String,
   bg2: String,
-  id: String,
 });
+
+const startDrag = (event, item) => {
+  console.log(event);
+
+  event.dataTransfer.dropEffect = "move";
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("itemID", "item.id");
+};
+
+const onDrop = (event, item) => {
+  const itemID = event.dataTransfer.getData("itemID");
+  console.log(itemID);
+};
 </script>
 
 <template>
   <div
     draggable="true"
+    @dragstart="startDrag($event)"
+    @drop="onDrop($event)"
     @dragenter.prevent
     @dragover.prevent
     class="card min-h-[16rem] w-52 flex flex-col rounded"
@@ -22,7 +36,6 @@ defineProps({
     >
       <h1 class="p-2 min-h-[35px]">{{ title }}</h1>
     </header>
-
     <slot>
       <main
         class="

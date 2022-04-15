@@ -1,9 +1,14 @@
 <script setup >
 import Card from "./Card.vue";
+
+defineProps({
+  id: String,
+});
 </script>
 
 <template>
-  <Card title="Vilager" color="#000" bg1="#FEF9C3" bg2="#FEF08A">
+  <Card title="Vilager" :id="id" color="#000" bg1="#FEF9C3" bg2="#FEF08A">
+    <slot />
     <template v-slot:right>
       <div
         class="

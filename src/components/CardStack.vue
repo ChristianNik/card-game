@@ -1,9 +1,11 @@
 <script setup>
+import { onUpdated } from "@vue/runtime-core";
+import { getCraftable } from "../logic/crafting";
 import Card from "./Card.vue";
 
-const emit = defineEmits(["dragstart", "drop"]);
+const emit = defineEmits(["dragstart", "drop", "craftdone"]);
 
-defineProps({
+const props = defineProps({
   cards: Array,
   id: String,
 });
@@ -23,6 +25,15 @@ const onDrop = (event, dropId) => {
 
   emit("change", { current: targetId, target: dropId });
 };
+
+onUpdated(() => {
+  const ingreds = props.cards.map((card) => card.type);
+
+  const craftable = getCraftable(ingreds);
+  if (!craftable) return;
+
+  emit("craftdone", { current: props.id, type: craftable });
+});
 </script>
 
 <template>

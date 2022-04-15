@@ -36,6 +36,11 @@ class CardStackModel {
   findById(id) {
     return this.cards.find((c) => c._id === id);
   }
+
+  destroy() {
+    this.cards = this.cards.filter((c) => c.type === "villager");
+    return this;
+  }
 }
 
 const stack = ref([
@@ -69,11 +74,22 @@ function dropToNewStack(event) {
     new CardStackModel().addCard(card),
   ];
 }
+
+function craftDone(event) {
+  const current = stack.value.find((stack) => stack._id == event.current);
+
+  current.destroy();
+
+  stack.value = [
+    ...stack.value.filter((s) => s.cards.length > 0),
+    new CardStackModel().addCard(new CardModel(event.type)),
+  ];
+}
 </script>
 
 <template>
   <main
-    class="bg-emerald-200 p-6 h-screen flex gap-3"
+    class="bg-emerald-200 p-6 h-screen flex flex-wrap gap-3"
     @dragenter.prevent
     @dragover.prevent
     @drop="dropToNewStack"
@@ -84,6 +100,7 @@ function dropToNewStack(event) {
       :cards="group?.cards"
       :id="group?._id"
       @change="handleStackChange"
+      @craftdone="craftDone"
     />
   </main>
 </template>

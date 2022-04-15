@@ -1,3 +1,7 @@
+//
+//
+// Categories
+//
 const cardCategory = {
 	foot: "foot",
 	person: "person",
@@ -6,7 +10,10 @@ const cardCategory = {
 	recource: "recource",
 	default: "default"
 };
-
+//
+//
+// Category Colors
+//
 const categorys = {
 	ingredient: {
 		name: cardCategory.ingredient,
@@ -41,7 +48,10 @@ const categorys = {
 		}
 	}
 };
-
+//
+//
+// Recepies
+//
 const recepies = {
 	stick: {
 		duration: 1,
@@ -56,29 +66,10 @@ const recepies = {
 		ingredients: ["stick", "stone", "villager"]
 	}
 };
-
-function registerEntity({ id, title, category = "default" }) {
-	const entityCategory = categorys[category] || categorys.default;
-	const _recepie = recepies[id] || undefined;
-
-	const entity = {
-		id: id,
-		category: entityCategory.name,
-		args: {
-			title,
-			...entityCategory.args
-		},
-		recepie: _recepie
-	};
-
-	return {
-		...entity,
-		factory: () => {
-			return entity;
-		}
-	};
-}
-
+//
+//
+// Entries
+//
 const cardTypes = {};
 cardTypes.villager = registerEntity({
 	id: "villager",
@@ -110,5 +101,29 @@ cardTypes.tree = registerEntity({
 	title: "Tree",
 	category: cardCategory.recource
 });
+//
+//
+//
+function registerEntity({ id, title, category = "default" }) {
+	const entityCategory = categorys[category] || categorys.default;
+	const _recepie = recepies[id] || undefined;
+
+	const entity = {
+		id: id,
+		category: entityCategory.name,
+		args: {
+			title,
+			...entityCategory.args
+		},
+		recepie: _recepie
+	};
+
+	return {
+		...entity,
+		factory: () => {
+			return entity;
+		}
+	};
+}
 
 export { cardTypes };

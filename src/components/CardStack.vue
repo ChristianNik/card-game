@@ -1,6 +1,5 @@
 <script setup>
-import { onUpdated, watchEffect } from "@vue/runtime-core";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { getCraftable, getRecepieEntity } from "../logic/crafting";
 import Card from "./Card.vue";
 
@@ -27,7 +26,7 @@ const onDrop = (event, dropId) => {
   emit("change", { current: targetId, target: dropId });
 };
 
-onUpdated(() => {
+watchEffect(() => {
   const ingreds = props.cards.reduce((acc, card) => {
     if (acc[card.type] == null) {
       acc[card.type] = 0;

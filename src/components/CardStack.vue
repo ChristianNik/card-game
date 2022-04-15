@@ -1,5 +1,6 @@
 <script setup>
-import { onUpdated } from "@vue/runtime-core";
+import { onUpdated, watchEffect } from "@vue/runtime-core";
+import { ref } from "vue";
 import { getCraftable } from "../logic/crafting";
 import Card from "./Card.vue";
 
@@ -32,23 +33,60 @@ onUpdated(() => {
   const craftable = getCraftable(ingreds);
   if (!craftable) return;
 
-  emit("craftdone", { current: props.id, type: craftable });
+  craftRecepie.value = craftable;
+  cancraft.value = true;
+});
+
+const craftDurationInSeconds = 10;
+const progress = ref(0);
+const cancraft = ref(false);
+const craftRecepie = ref("");
+let interval;
+
+watchEffect(() => {
+  if (cancraft.value) {
+    const increment = () => {
+      progress.value = progress.value + 1;
+    };
+
+    interval = setInterval(increment, (craftDurationInSeconds * 1000) / 100);
+  }
+});
+watchEffect(() => {
+  if (progress.value === 100) {
+    clearInterval(interval);
+
+    cancraft.value = false;
+    emit("craftdone", { current: props.id, type: craftRecepie.value });
+  }
 });
 </script>
 
 <template>
-  <div class="card-stack flex flex-col">
-    <card
-      :title="`Default ${card._id}`"
-      v-for="(card, index) in cards"
-      :key="card._id"
-      :id="card._id"
-      :type="card.type"
-      :collapsed="index !== cards.length - 1"
-      @dragstart="startDrag($event, id)"
-      @drop="onDrop($event, id)"
+  <div>
+    <div
+      v-if="cancraft"
+      class="h-8 p-2 mb-2 rounded"
+      style="background-color: #43423d"
     >
-    </card>
+      <div
+        class="h-4 w-10 bg-white rounded-sm"
+        :style="`width: ${progress}%`"
+      />
+    </div>
+    <div class="card-stack flex flex-col">
+      <card
+        :title="`Default ${card._id}`"
+        v-for="(card, index) in cards"
+        :key="card._id"
+        :id="card._id"
+        :type="card.type"
+        :collapsed="index !== cards.length - 1"
+        @dragstart="startDrag($event, id)"
+        @drop="onDrop($event, id)"
+      >
+      </card>
+    </div>
   </div>
 </template>
 

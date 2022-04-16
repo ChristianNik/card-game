@@ -6,10 +6,16 @@ import { CardRender, VillagerCardRender } from "../logic/canvas";
 let ctx;
 let canvas;
 
+const elements = [
+  new CardRender(50, 50),
+  new CardRender(50, 90),
+  new VillagerCardRender(50 + 200, 50),
+];
+
 onMounted(() => {
   canvas = document.getElementById("myCanvas");
   ctx = canvas.getContext("2d");
-
+  recizeCanvas();
   render();
 });
 
@@ -17,9 +23,7 @@ function render() {
   ctx.fillStyle = "#AFC5FF";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  new CardRender(50, 50).render(ctx, { compact: true });
-  new CardRender(50, 90).render(ctx, { compact: false });
-  new VillagerCardRender(50 + 200, 50).render(ctx);
+  elements.forEach((element) => element.render(ctx));
 }
 
 function click(event) {
@@ -27,14 +31,13 @@ function click(event) {
 
   render();
 }
+
+function recizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = 500;
+}
 </script>
 
 <template>
-  <canvas
-    id="myCanvas"
-    width="500"
-    height="400"
-    style="border: 1px solid #000000"
-    @click="click"
-  ></canvas>
+  <canvas id="myCanvas" @click="click"></canvas>
 </template>

@@ -28,10 +28,10 @@ class CardRender {
 		this.textColor = textColor;
 	}
 
-	render(ctx, { compact = false } = {}) {
+	render(ctx) {
 		const width = 182;
 		const headerHeight = 40;
-		const height = compact ? headerHeight : 227;
+		const height = 227;
 		const borderRadius = 5;
 
 		// ground
@@ -58,13 +58,11 @@ class CardRender {
 		ctx.textBaseline = "middle";
 		ctx.fillText(this.title, this.x + 10, this.y + 22);
 
-		if (!compact) {
-			// body circle
-			ctx.fillStyle = this.primaryColor;
-			ctx.beginPath();
-			ctx.arc(this.x + width / 2, this.y + height / 2, 55, 0, 2 * Math.PI);
-			ctx.fill();
-		}
+		// body circle
+		ctx.fillStyle = this.primaryColor;
+		ctx.beginPath();
+		ctx.arc(this.x + width / 2, this.y + height / 2, 55, 0, 2 * Math.PI);
+		ctx.fill();
 	}
 }
 

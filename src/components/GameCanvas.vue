@@ -2,9 +2,7 @@
 <script setup>
 import { onMounted } from "vue";
 import { CardRender, VillagerCardRender } from "../logic/canvas";
-
-let ctx;
-let canvas;
+import { generateId } from "../utils";
 
 class Game {
   constructor() {
@@ -70,7 +68,7 @@ function createCircle(x) {
   circle.arc(x, 75, 50, 0, 2 * Math.PI);
 
   return {
-    id: Math.random(),
+    id: generateId(),
     path: circle,
   };
 }

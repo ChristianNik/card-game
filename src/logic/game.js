@@ -1,6 +1,5 @@
 import { ref } from "vue";
-
-const generateId = () => Math.random().toString(16).substr(2, 8);
+import { generateId } from "../utils";
 
 class CardModel {
 	constructor(type = "default") {

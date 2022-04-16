@@ -6,67 +6,85 @@ import { CardRender, VillagerCardRender } from "../logic/canvas";
 let ctx;
 let canvas;
 
-const elements = [];
+class Game {
+  constructor() {
+    this.elements = [];
+    this.hoverElement = null;
+  }
 
-onMounted(() => {
-  canvas = document.getElementById("myCanvas");
-  ctx = canvas.getContext("2d");
-  recizeCanvas();
+  init(id) {
+    this.canvas = document.getElementById(id);
+    this.ctx = this.canvas.getContext("2d");
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = 500;
+  }
 
-  addCircle(150);
-  addCircle(280);
+  render() {
+    this.ctx.fillStyle = "#AFC5FF";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-  render();
-});
+    this.elements.forEach((element) => {
+      this.ctx.fillStyle = "red";
+      this.ctx.fill(element.path);
+    });
+  }
 
-function render() {
-  ctx.fillStyle = "#AFC5FF";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  addElement(element) {
+    this.elements.push(element);
+    this.render();
+  }
 
-  elements.forEach((element) => {
-    ctx.fillStyle = "red";
-    ctx.fill(element.path);
-  });
+  handleMouseMove(event) {
+    this.elements.forEach((element) => {
+      if (this.ctx.isPointInPath(element.path, event.offsetX, event.offsetY)) {
+        this.ctx.fillStyle = "green";
+        this.ctx.fill(element.path);
+        this.hoverElement = element;
+      } else {
+        this.ctx.fillStyle = "red";
+        this.ctx.fill(element.path);
+        if (this.hoverElement?.id === element.id) {
+          this.hoverElement = null;
+        }
+      }
+    });
+  }
+
+  handleClick(event) {
+    console.log(this.hoverElement);
+  }
 }
 
-function addCircle(x) {
+const game = new Game();
+
+onMounted(() => {
+  game.init("myCanvas");
+  game.addElement(createCircle(150));
+  game.addElement(createCircle(270));
+
+  game.render();
+});
+
+function createCircle(x) {
   const circle = new Path2D();
   circle.arc(x, 75, 50, 0, 2 * Math.PI);
 
-  elements.push({
+  return {
     id: Math.random(),
     path: circle,
-  });
+  };
 }
 
-let hoverElement = null;
-
-function mousemove(event) {
-  elements.forEach((element) => {
-    if (ctx.isPointInPath(element.path, event.offsetX, event.offsetY)) {
-      ctx.fillStyle = "green";
-      ctx.fill(element.path);
-      hoverElement = element;
-    } else {
-      ctx.fillStyle = "red";
-      ctx.fill(element.path);
-      if (hoverElement?.id === element.id) {
-        hoverElement = null;
-      }
-    }
-  });
-}
-
-function click(event) {
-  console.log(hoverElement);
-}
-
-function recizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = 500;
+function add() {
+  game.addElement(createCircle(300));
 }
 </script>
 
 <template>
-  <canvas id="myCanvas" @mousemove="mousemove" @click="click"></canvas>
+  <button @click="add">Add</button>
+  <canvas
+    id="myCanvas"
+    @mousemove="game.handleMouseMove"
+    @click="game.handleClick"
+  ></canvas>
 </template>

@@ -40,7 +40,7 @@ class CardStackModel {
 		if (villagerCount > 1) {
 			this.cards = this.cards.slice(0, 1);
 		}
-		return villagerCount;
+		return villagerCount - 1;
 	}
 }
 
@@ -80,10 +80,7 @@ function dropToNewStack(event) {
 function craftDone(event) {
 	const current = stack.value.find(stack => stack._id == event.current);
 
-	current.destroy();
-
 	const villagers = [];
-
 	for (let i = 0; i < current.destroy(); i++) {
 		villagers.push(new CardStackModel().addCard(new CardModel("villager")));
 	}

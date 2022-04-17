@@ -4,10 +4,12 @@ class CardObject extends GameObject {
 	constructor(
 		x,
 		y,
-		title = "Placeholder",
-		primaryColor = "#61605B",
-		accentColor = "#43423D",
-		textColor = "#fff"
+		{
+			title = "Placeholder",
+			primaryColor = "#61605B",
+			accentColor = "#43423D",
+			textColor = "#fff"
+		} = {}
 	) {
 		super(x, y);
 		this.title = title;

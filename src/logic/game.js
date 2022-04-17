@@ -109,8 +109,8 @@ class Game {
 		return this.elements.find(e => e._id === id);
 	}
 
-	clearCanvas() {
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	elevateElementById(id) {
+		this.elements.sort((a, b) => (a._id === id ? 1 : -1));
 	}
 
 	render() {
@@ -152,7 +152,6 @@ class Game {
 			}
 			if (this.hoverId === element._id && !this.isDragging) {
 				this.hoverId = null;
-				this.clearCanvas();
 				this.render();
 			}
 		});
@@ -174,6 +173,9 @@ class Game {
 
 	handleMouseDown(event) {
 		this.isDragging = true;
+		if (!this.hoverId) return;
+
+		this.elevateElementById(this.hoverId);
 	}
 	handleMouseUp(event) {
 		this.isDragging = false;

@@ -17,6 +17,11 @@ class GameObject {
     ctx.fillStyle = "red";
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
+
+  renderHover(ctx) {
+    ctx.fillStyle = "green";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
 }
 
 class CardObject extends GameObject {
@@ -33,41 +38,46 @@ class CardObject extends GameObject {
     this.primaryColor = primaryColor;
     this.accentColor = accentColor;
     this.textColor = textColor;
+
+    this.borderRadius = 5;
+    this.headerHeight = 40;
   }
-
-  render(ctx) {
-    const headerHeight = 40;
-    const borderRadius = 5;
-
-    // ground border
+  _renderGroundBorder(ctx) {
+    ctx.strokeStyle = "#000";
     ctx.lineWidth = 6;
-    ctx.roundRect(this.x, this.y, this.width, this.height, borderRadius);
+    ctx.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
     ctx.stroke();
-
-    // ground
+  }
+  _renderGround(ctx) {
     ctx.fillStyle = this.accentColor;
-    ctx.roundRect(this.x, this.y, this.width, this.height, borderRadius);
+    ctx.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
     ctx.fill();
-
-    // ground border
+  }
+  _renderHeader(ctx) {
     ctx.fillStyle = this.primaryColor;
-    ctx.roundRect(this.x, this.y, this.width, headerHeight, borderRadius);
+    ctx.roundRect(
+      this.x,
+      this.y,
+      this.width,
+      this.headerHeight,
+      this.borderRadius
+    );
     ctx.fill();
-
-    // header border
+  }
+  _renderHeaderBorder(ctx) {
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(this.x, this.y + headerHeight);
-    ctx.lineTo(this.x + this.width, this.y + headerHeight);
+    ctx.moveTo(this.x, this.y + this.headerHeight);
+    ctx.lineTo(this.x + this.width, this.y + this.headerHeight);
     ctx.stroke();
-
-    // title
+  }
+  _renderTitle(ctx) {
     ctx.fillStyle = this.textColor;
     ctx.font = `bold 1.125rem ui-sans-serif, system-ui, Arial`;
     ctx.textBaseline = "middle";
     ctx.fillText(this.title, this.x + 10, this.y + 22);
-
-    // body circle
+  }
+  _renderBody(ctx) {
     ctx.fillStyle = this.primaryColor;
     ctx.beginPath();
     ctx.arc(
@@ -78,6 +88,38 @@ class CardObject extends GameObject {
       2 * Math.PI
     );
     ctx.fill();
+  }
+
+  render(ctx) {
+    ctx.strokeStyle = "#000";
+    this._renderGroundBorder(ctx);
+    this._renderGround(ctx);
+    this._renderHeader(ctx);
+    this._renderHeaderBorder(ctx);
+    this._renderTitle(ctx);
+    this._renderBody(ctx);
+  }
+
+  renderHover(ctx) {
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = "#fff";
+    ctx.setLineDash([12, 12]);
+    ctx.roundRect(
+      this.x - 10,
+      this.y - 10,
+      this.width + 20,
+      this.height + 20,
+      this.borderRadius * 2
+    );
+    ctx.stroke();
+    ctx.setLineDash([0, 0]);
+
+    this._renderGroundBorder(ctx);
+    this._renderGround(ctx);
+    this._renderHeader(ctx);
+    this._renderHeaderBorder(ctx);
+    this._renderTitle(ctx);
+    this._renderBody(ctx);
   }
 }
 
@@ -94,13 +136,28 @@ class Game {
     this.canvas.height = 500;
   }
 
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   render() {
     this.ctx.fillStyle = "#AFC5FF";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.elements.forEach((element) => {
-      // this.ctx.fillStyle = "red";
-      this.ctx.fill(element.render(this.ctx));
+      // resets
+      this.ctx.fillStyle = "#000";
+      this.ctx.strokeStyle = "#000";
+      this.ctx.lineWidth = 1;
+      this.ctx.font = "";
+      this.ctx.setLineDash([0, 0]);
+
+      //
+      const el =
+        this.hoverElement?._id == element._id
+          ? element.renderHover(this.ctx)
+          : element.render(this.ctx);
+      this.ctx.fill(el);
     });
   }
 
@@ -111,18 +168,24 @@ class Game {
 
   handleMouseMove(event) {
     this.elements.forEach((element) => {
-      // const el = element.render(this.ctx);
-      // if (this.ctx.isPointInPath(el, event.offsetX, event.offsetY)) {
-      //   // this.ctx.fillStyle = "green";
-      //   this.ctx.fill(el);
-      //   this.hoverElement = element;
-      // } else {
-      //   // this.ctx.fillStyle = "red";
-      //   this.ctx.fill(el);
-      //   if (this.hoverElement?.id === element.id) {
-      //     this.hoverElement = null;
-      //   }
-      // }
+      const matchX =
+        event.offsetX >= element.x &&
+        event.offsetX <= element.x + element.width;
+      const matchY =
+        event.offsetY >= element.y &&
+        event.offsetY <= element.y + element.height;
+
+      if (matchX && matchY) {
+        this.hoverElement = element;
+        this.ctx.fill(element.renderHover?.(this.ctx));
+        this.render();
+        return;
+      }
+      if (this.hoverElement?._id === element._id) {
+        this.hoverElement = null;
+        this.clearCanvas();
+        this.render();
+      }
     });
   }
 
@@ -140,32 +203,9 @@ onMounted(() => {
 
   game.render();
 });
-
-function createCircle(x, y) {
-  return {
-    id: generateId(),
-    render(ctx) {
-      const circle = new Path2D();
-
-      ctx.fillStyle = "blue";
-      ctx.roundRect(x, y, 100, 300, 5);
-      ctx.fill();
-
-      ctx.fillStyle = "blue";
-      ctx.rect(x, y, 300, 150);
-
-      return ctx;
-    },
-  };
-}
-
-function add() {
-  game.addGameObject(createCircle(300));
-}
 </script>
 
 <template>
-  <button @click="add">Add</button>
   <canvas
     id="myCanvas"
     @mousemove="game.handleMouseMove"

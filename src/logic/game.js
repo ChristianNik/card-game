@@ -125,11 +125,26 @@ class Game {
 			this.ctx.font = "";
 			this.ctx.setLineDash([0, 0]);
 			//
-			const el =
-				this.hoverId == element._id
-					? element.renderHover(this.ctx)
-					: element.render(this.ctx);
-			this.ctx.fill(el);
+
+			// TODO: refactor
+			if (element.parent) {
+				element.x = element.parent.x;
+				element.y = element.parent.y + element.parent.headerHeight;
+				this.elevateElementById(element._id);
+				this.ctx.fill(element.parent.render(this.ctx));
+				const el =
+					this.hoverId == element._id
+						? element.renderHover(this.ctx)
+						: element.render(this.ctx);
+				this.ctx.fill(el);
+			} else {
+				this.ctx.fill(element.render(this.ctx));
+				const el =
+					this.hoverId == element._id
+						? element.renderHover(this.ctx)
+						: element.render(this.ctx);
+				this.ctx.fill(el);
+			}
 		});
 	}
 
@@ -161,6 +176,8 @@ class Game {
 			const element = this.findElementById(this.hoverId);
 			if (!element) return;
 
+			element.parent = null;
+
 			element.x = event.offsetX - element.width / 2;
 			element.y = event.offsetY - element.height / 2;
 			this.render();
@@ -179,6 +196,14 @@ class Game {
 	}
 	handleMouseUp(event) {
 		this.isDragging = false;
+	}
+
+	handleStack() {
+		const current = this.elements[2];
+		const target = this.elements[1];
+
+		target.setParent(current);
+		this.render();
 	}
 }
 

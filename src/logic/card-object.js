@@ -8,7 +8,8 @@ class CardObject extends GameObject {
 			title = "Placeholder",
 			primaryColor = "#61605B",
 			accentColor = "#43423D",
-			textColor = "#fff"
+			textColor = "#fff",
+			parent = null
 		} = {}
 	) {
 		super(x, y);
@@ -19,7 +20,13 @@ class CardObject extends GameObject {
 
 		this.borderRadius = 5;
 		this.headerHeight = 40;
+		this.parent = parent;
 	}
+
+	setParent(parent) {
+		this.parent = parent;
+	}
+
 	_renderGroundBorder(ctx) {
 		ctx.strokeStyle = "#000";
 		ctx.lineWidth = 6;

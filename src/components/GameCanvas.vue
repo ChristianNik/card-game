@@ -10,14 +10,15 @@ const game = new Game();
 onMounted(() => {
   game.init("myCanvas");
   game.addGameObject(new GameObject(5, 5));
-  game.addGameObject(new CardObject(100, 100));
-  game.addGameObject(new CardObject(500, 100, "Test"));
+  game.addGameObject(new CardObject(100, 100, { title: "Card 1" }));
+  game.addGameObject(new CardObject(500, 100, { title: "Card 2" }));
 
   game.render();
 });
 </script>
 
 <template>
+  <button @click="game.handleStack">Stack</button>
   <canvas
     id="myCanvas"
     @click="game.handleClick"

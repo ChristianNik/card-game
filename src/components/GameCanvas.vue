@@ -15,10 +15,15 @@ onMounted(() => {
 
   game.render();
 });
+
+function handleAddCard() {
+  game.addGameObject(new CardObject(500, 100, { title: "Card 2" }));
+}
 </script>
 
 <template>
   <button @click="game.handleStack">Stack</button>
+  <button @click="handleAddCard">Add Card</button>
   <canvas
     id="myCanvas"
     @click="game.handleClick"

@@ -69,6 +69,23 @@ class CardObject extends GameObject {
 		ctx.fill();
 	}
 
+	async _renderDevTools(ctx) {
+		ctx.fillStyle = this.accentColor;
+		ctx.roundRect(
+			this.x + 1,
+			this.y + this.headerHeight + 3,
+			this.width - 1,
+			this.height - this.headerHeight - 3,
+			this.borderRadius
+		);
+		await ctx.fill();
+
+		ctx.fillStyle = this.textColor;
+		ctx.font = `bold 1.125rem ui-sans-serif, system-ui, Arial`;
+		ctx.textBaseline = "middle";
+		ctx.fillText(`ID: ${this._id}`, this.x + 10, this.y + this.headerHeight + 22);
+	}
+
 	render(ctx) {
 		ctx.strokeStyle = "#000";
 		this._renderGroundBorder(ctx);
@@ -96,6 +113,9 @@ class CardObject extends GameObject {
 		this._renderGroundBorder(ctx);
 		this._renderGround(ctx);
 		this._renderBody(ctx);
+
+		this._renderDevTools(ctx);
+
 		this._renderHeader(ctx);
 		this._renderHeaderBorder(ctx);
 		this._renderTitle(ctx);

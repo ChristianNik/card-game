@@ -94,7 +94,8 @@ function craftDone(event) {
 class Game {
 	constructor() {
 		this.elements = [];
-		this.hoverElement = null;
+		this.hoverId = null;
+		this.isDragging = false;
 	}
 
 	init(id) {
@@ -102,6 +103,10 @@ class Game {
 		this.ctx = this.canvas.getContext("2d");
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = 500;
+	}
+
+	findElementById(id) {
+		return this.elements.find(e => e._id === id);
 	}
 
 	clearCanvas() {
@@ -119,10 +124,9 @@ class Game {
 			this.ctx.lineWidth = 1;
 			this.ctx.font = "";
 			this.ctx.setLineDash([0, 0]);
-
 			//
 			const el =
-				this.hoverElement?._id == element._id
+				this.hoverId == element._id
 					? element.renderHover(this.ctx)
 					: element.render(this.ctx);
 			this.ctx.fill(el);
@@ -140,22 +144,39 @@ class Game {
 			const matchY =
 				event.offsetY >= element.y && event.offsetY <= element.y + element.height;
 
-			if (matchX && matchY) {
-				this.hoverElement = element;
+			if (matchX && matchY && !this.isDragging) {
+				this.hoverId = element._id;
 				this.ctx.fill(element.renderHover?.(this.ctx));
 				this.render();
 				return;
 			}
-			if (this.hoverElement?._id === element._id) {
-				this.hoverElement = null;
+			if (this.hoverId === element._id && !this.isDragging) {
+				this.hoverId = null;
 				this.clearCanvas();
 				this.render();
 			}
 		});
+
+		//drag
+		if (this.isDragging) {
+			const element = this.findElementById(this.hoverId);
+			if (!element) return;
+
+			element.x = event.offsetX - element.width / 2;
+			element.y = event.offsetY - element.height / 2;
+			this.render();
+		}
 	}
 
 	handleClick(event) {
-		console.log(this.hoverElement);
+		console.log(this.hoverId);
+	}
+
+	handleMouseDown(event) {
+		this.isDragging = true;
+	}
+	handleMouseUp(event) {
+		this.isDragging = false;
 	}
 }
 

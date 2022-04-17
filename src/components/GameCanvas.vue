@@ -20,7 +20,9 @@ onMounted(() => {
 <template>
   <canvas
     id="myCanvas"
-    @mousemove="game.handleMouseMove"
     @click="game.handleClick"
+    @mousemove="game.handleMouseMove"
+    @mousedown="game.handleMouseDown"
+    @mouseup="game.handleMouseUp"
   ></canvas>
 </template>

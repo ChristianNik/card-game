@@ -12,6 +12,7 @@ CanvasRenderingContext2D.prototype.roundRect = function roundRect(x, y, w, h, r)
 };
 
 Path2D.prototype.roundRect = function roundRect(x, y, w, h, r) {
+	console.log("daw");
 	if (w < 2 * r) r = w / 2;
 	if (h < 2 * r) r = h / 2;
 	// this.beginPath();

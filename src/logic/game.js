@@ -91,4 +91,72 @@ function craftDone(event) {
 	];
 }
 
-export { stack, handleStackChange, dropToNewStack, craftDone };
+class Game {
+	constructor() {
+		this.elements = [];
+		this.hoverElement = null;
+	}
+
+	init(id) {
+		this.canvas = document.getElementById(id);
+		this.ctx = this.canvas.getContext("2d");
+		this.canvas.width = window.innerWidth;
+		this.canvas.height = 500;
+	}
+
+	clearCanvas() {
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	}
+
+	render() {
+		this.ctx.fillStyle = "#AFC5FF";
+		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+		this.elements.forEach(element => {
+			// resets
+			this.ctx.fillStyle = "#000";
+			this.ctx.strokeStyle = "#000";
+			this.ctx.lineWidth = 1;
+			this.ctx.font = "";
+			this.ctx.setLineDash([0, 0]);
+
+			//
+			const el =
+				this.hoverElement?._id == element._id
+					? element.renderHover(this.ctx)
+					: element.render(this.ctx);
+			this.ctx.fill(el);
+		});
+	}
+
+	addGameObject(element) {
+		this.elements.push(element);
+		this.render();
+	}
+
+	handleMouseMove(event) {
+		this.elements.forEach(element => {
+			const matchX = event.offsetX >= element.x && event.offsetX <= element.x + element.width;
+			const matchY =
+				event.offsetY >= element.y && event.offsetY <= element.y + element.height;
+
+			if (matchX && matchY) {
+				this.hoverElement = element;
+				this.ctx.fill(element.renderHover?.(this.ctx));
+				this.render();
+				return;
+			}
+			if (this.hoverElement?._id === element._id) {
+				this.hoverElement = null;
+				this.clearCanvas();
+				this.render();
+			}
+		});
+	}
+
+	handleClick(event) {
+		console.log(this.hoverElement);
+	}
+}
+
+export { Game, stack, handleStackChange, dropToNewStack, craftDone };

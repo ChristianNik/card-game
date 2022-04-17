@@ -186,8 +186,8 @@ class Game {
 			if (!element) return;
 
 			// remove from stack
-			element.parent?.setChild(null);
-			element.setParent(null);
+			element.parent?.setChild?.(null);
+			element.setParent?.(null);
 
 			element.x = event.offsetX - element.width / 2;
 			element.y = event.offsetY - element.height / 2;

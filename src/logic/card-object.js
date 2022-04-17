@@ -60,10 +60,10 @@ class CardObject extends GameObject {
 		ctx.strokeStyle = "#000";
 		this._renderGroundBorder(ctx);
 		this._renderGround(ctx);
+		this._renderBody(ctx);
 		this._renderHeader(ctx);
 		this._renderHeaderBorder(ctx);
 		this._renderTitle(ctx);
-		this._renderBody(ctx);
 	}
 
 	renderHover(ctx) {
@@ -82,10 +82,10 @@ class CardObject extends GameObject {
 
 		this._renderGroundBorder(ctx);
 		this._renderGround(ctx);
+		this._renderBody(ctx);
 		this._renderHeader(ctx);
 		this._renderHeaderBorder(ctx);
 		this._renderTitle(ctx);
-		this._renderBody(ctx);
 	}
 }
 export { CardObject };

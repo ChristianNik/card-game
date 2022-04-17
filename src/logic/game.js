@@ -96,6 +96,7 @@ class Game {
 		this.elements = [];
 		this.hoverId = null;
 		this.isDragging = false;
+		this.hoverStack = new Set();
 	}
 
 	init(id) {
@@ -128,9 +129,11 @@ class Game {
 
 			// TODO: refactor
 			if (element.parent) {
-				element.x = element.parent.x;
-				element.y = element.parent.y + element.parent.headerHeight;
-				this.elevateElementById(element._id);
+				// update stack position
+				if (this.isDragging) {
+					element.x = element.parent.x;
+					element.y = element.parent.y + element.headerHeight;
+				}
 				this.ctx.fill(element.parent.render(this.ctx));
 				const el =
 					this.hoverId == element._id
@@ -158,7 +161,13 @@ class Game {
 			const matchX = event.offsetX >= element.x && event.offsetX <= element.x + element.width;
 			const matchY =
 				event.offsetY >= element.y && event.offsetY <= element.y + element.height;
-
+			// add all id we are curently hovering on
+			if (matchX && matchY && this.isDragging) {
+				if (this.hoverStack.has(element._id)) return;
+				this.hoverStack.add(element._id);
+			} else {
+				this.hoverStack.delete(element._id);
+			}
 			if (matchX && matchY && !this.isDragging) {
 				this.hoverId = element._id;
 				this.ctx.fill(element.renderHover?.(this.ctx));
@@ -176,7 +185,9 @@ class Game {
 			const element = this.findElementById(this.hoverId);
 			if (!element) return;
 
-			element.parent = null;
+			// remove from stack
+			element.parent?.setChild(null);
+			element.setParent(null);
 
 			element.x = event.offsetX - element.width / 2;
 			element.y = event.offsetY - element.height / 2;
@@ -192,10 +203,32 @@ class Game {
 		this.isDragging = true;
 		if (!this.hoverId) return;
 
+		// dont elevate parent with childs
+		const element = this.findElementById(this.hoverId);
+		if (element.child) return;
+
 		this.elevateElementById(this.hoverId);
 	}
 	handleMouseUp(event) {
 		this.isDragging = false;
+		if (this.hoverStack.size < 2) return;
+
+		const ids = [...this.hoverStack];
+		this.stackCards(ids[1], ids[0]);
+	}
+
+	stackCards(currentId, targetId) {
+		const current = this.findElementById(currentId);
+		const target = this.findElementById(targetId);
+
+		if (current.parent?._id === targetId) return;
+
+		target.setParent(current);
+		current.setChild(target);
+		target.x = current.x;
+		target.y = current.y + target.parent.headerHeight;
+
+		this.render();
 	}
 
 	handleStack() {

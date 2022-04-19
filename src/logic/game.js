@@ -94,11 +94,16 @@ function craftDone(event) {
 class Game {
 	constructor() {
 		this.elements = [];
+		this.cardStacks = {};
 		this.hoverId = null;
 		this.isDragging = false;
 		this.hoverStack = new Set();
 	}
-
+	//
+	//
+	//
+	// BASE
+	//
 	init(id) {
 		this.canvas = document.getElementById(id);
 		this.ctx = this.canvas.getContext("2d");
@@ -110,59 +115,93 @@ class Game {
 		return this.elements.find(e => e._id === id);
 	}
 
+	getCardById(id) {
+		if (!id) return null;
+		return this.cards().find(c => c._id === id) || null;
+	}
+
 	elevateElementById(id) {
 		this.elements.sort((a, b) => (a._id === id ? 1 : -1));
 	}
 
-	render() {
+	cards() {
+		return Object.keys(this.cardStacks)
+			.map(key => this.cardStacks[key].cards)
+			.flat();
+	}
+	//
+	//
+	//
+	// UI
+	//
+	resetStyles() {
+		this.ctx.fillStyle = "#000";
+		this.ctx.strokeStyle = "#000";
+		this.ctx.lineWidth = 1;
+		this.ctx.font = "";
+		this.ctx.setLineDash([0, 0]);
+	}
+
+	renderGround() {
 		this.ctx.fillStyle = "#AFC5FF";
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+	}
 
-		this.elements.forEach(element => {
-			// resets
-			this.ctx.fillStyle = "#000";
-			this.ctx.strokeStyle = "#000";
-			this.ctx.lineWidth = 1;
-			this.ctx.font = "";
-			this.ctx.setLineDash([0, 0]);
-			//
+	renderCards() {
+		this.renderGround();
 
-			// TODO: refactor
-			if (element.parent) {
-				// update stack position
-				if (this.isDragging) {
-					element.x = element.parent.x;
-					element.y = element.parent.y + element.headerHeight;
-				}
-				this.ctx.fill(element.parent.render(this.ctx));
-				const el =
-					this.hoverId == element._id
-						? element.renderHover(this.ctx)
-						: element.render(this.ctx);
-				this.ctx.fill(el);
-			} else {
-				this.ctx.fill(element.render(this.ctx));
-				const el =
-					this.hoverId == element._id
-						? element.renderHover(this.ctx)
-						: element.render(this.ctx);
-				this.ctx.fill(el);
-			}
+		Object.keys(this.cardStacks).forEach(key => {
+			this.resetStyles();
+			const stack = this.cardStacks[key];
+
+			stack.cards.forEach(card => {
+				this.ctx.fill(card.render(this.ctx));
+			});
 		});
 	}
 
-	addGameObject(element) {
-		this.elements.push(element);
-		this.render();
-	}
+	addCard(card, stack = generateId()) {
+		if (!this.cardStacks[stack]) {
+			this.cardStacks[stack] = {
+				x: card.x,
+				y: card.y,
+				cards: []
+			};
+		} else {
+			const currentStack = this.cardStacks[stack];
 
+			const parent = currentStack.cards[currentStack.cards.length - 1];
+			card.y = parent.y + parent.headerHeight;
+		}
+
+		this.cardStacks[stack].cards.push(card);
+		this.renderCards();
+	}
+	//
+	//
+	//
+	// HANDLER
+	//
 	handleMouseMove(event) {
+		this.cards().forEach(card => {
+			const matchX = event.offsetX >= card.x && event.offsetX <= card.x + card.width;
+			const matchY = event.offsetY >= card.y && event.offsetY <= card.y + card.height;
+			// add all id we are curently hovering on
+			if (matchX && matchY) {
+				if (this.hoverStack.has(card._id)) return;
+				this.hoverStack.add(card._id);
+			} else {
+				this.hoverStack.delete(card._id);
+			}
+		});
+		console.log(this.hoverStack);
+
 		this.elements.forEach(element => {
 			const matchX = event.offsetX >= element.x && event.offsetX <= element.x + element.width;
 			const matchY =
 				event.offsetY >= element.y && event.offsetY <= element.y + element.height;
 			// add all id we are curently hovering on
-			if (matchX && matchY && this.isDragging) {
+			if (matchX && matchY) {
 				if (this.hoverStack.has(element._id)) return;
 				this.hoverStack.add(element._id);
 			} else {
@@ -196,7 +235,8 @@ class Game {
 	}
 
 	handleClick(event) {
-		console.log(this.hoverId);
+		const id = [...this.hoverStack][0];
+		console.log(this.getCardById(id));
 	}
 
 	handleMouseDown(event) {
@@ -218,18 +258,14 @@ class Game {
 	}
 
 	stackCards(currentId, targetId) {
-		const current = this.findElementById(currentId);
-		const target = this.findElementById(targetId);
-
-		if (current.parent?._id === targetId) return;
-
-		current.setParent(target);
-		target.setChild(current);
-
-		current.x = target.x;
-		current.y = target.y + current.parent.headerHeight;
-
-		this.render();
+		// const current = this.findElementById(currentId);
+		// const target = this.findElementById(targetId);
+		// if (current.parent?._id === targetId) return;
+		// current.setParent(target);
+		// target.setChild(current);
+		// current.x = target.x;
+		// current.y = target.y + current.parent.headerHeight;
+		// this.render();
 	}
 }
 

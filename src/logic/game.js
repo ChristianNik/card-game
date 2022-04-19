@@ -123,7 +123,6 @@ class Game {
 				this.removeHoverId(card._id);
 			}
 		});
-		// console.log(this.hoverStack);
 
 		//drag
 		this.handleDragging(event);
@@ -152,7 +151,7 @@ class Game {
 			card.setStackId(generateId());
 
 			card.x = event.offsetX - card.width / 2;
-			card.y = event.offsetY - card.height / 2;
+			card.y = event.offsetY - card.headerHeight / 2;
 
 			this.setChildrenPosition(card.child, card.x, card.y + card.headerHeight);
 			this.renderCards();
@@ -175,30 +174,23 @@ class Game {
 	}
 	handleMouseUp(event) {
 		this.isDragging = false;
-		if (this.hoverStack.size < 2) return;
+		if (this.hoverStack.size <= 1) return;
 		const ids = [...this.hoverStack];
 		this.stackCards(ids[0], ids[1]);
 	}
 
 	stackCards(targetId, dropOnId) {
-		// TODO: stackCards
-		// const target = this.getCardById(targetId);
-		// const dropOn = this.getCardById(dropOnId);
-		// console.log("dropOn :", dropOn);
-		// if (!!dropOn.child?._id) return;
-		// console.log(`stack: ${targetId} -> ${dropOnId}}`);
-		// target.setParent(dropOn);
-		// target.setStackId(dropOn.stackId);
-		// dropOn.setChild(target);
-		// // FIXME: 8000+ render
-		// // this.setChildrenPosition(target.child, dropOn.x, dropOn.y + dropOn.headerHeight);
-		// console.log(dropOn.x, dropOn.y + dropOn.headerHeight);
-		// target.x = dropOn.x;
-		// target.y = dropOn.y + dropOn.headerHeight;
-		// this.cards = [...this.cards].sort((a, b) => {
-		// 	return a.child?._id == b._id ? -1 : 1;
-		// });
-		// this.renderCards();
+		const target = this.getCardById(targetId);
+		const dropOn = this.getCardById(dropOnId);
+		if (!!dropOn?.child) return;
+
+		target.setParent(dropOn);
+		target.setStackId(dropOn.stackId);
+		dropOn.setChild(target);
+
+		this.setChildrenPosition(target, dropOn.x, dropOn.y + dropOn.headerHeight);
+		this.cards = [...this.cards].sort((a, b) => (a.child?._id == b._id ? -1 : 1));
+		this.renderCards();
 	}
 }
 

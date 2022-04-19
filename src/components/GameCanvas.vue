@@ -9,11 +9,15 @@ const game = new Game();
 
 onMounted(() => {
   game.init("myCanvas");
-  game.addGameObject(new GameObject(5, 5));
-  game.addGameObject(new CardObject(100, 100, { title: "Card 1" }));
-  game.addGameObject(new CardObject(500, 100, { title: "Card 2" }));
+  game.addCard(new CardObject(10, 10, { title: "Card 1" }), "A");
+  game.addCard(new CardObject(10, 10, { title: "Card 2" }), "A");
+  game.addCard(new CardObject(10, 10, { title: "Card 3" }), "A");
+  game.addCard(new CardObject(10, 10, { title: "Card 4" }), "A");
 
-  game.render();
+  game.addCard(new CardObject(300, 10, { title: "Card 5" }), "B");
+  game.addCard(new CardObject(300, 10, { title: "Card 6" }), "B");
+
+  game.renderCards();
 });
 
 function handleAddCard() {

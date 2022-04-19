@@ -7,6 +7,9 @@ class Game {
 
 		this.hoverStack = new Set();
 		this.hoverTargetId = null;
+
+		this._start;
+		this._previousTimeStamp;
 	}
 	//
 	//
@@ -49,13 +52,21 @@ class Game {
 		this.bgctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
-	renderCards() {
-		this.cards.forEach(card => {
-			this.ctx.save();
-			this.ctx.fill(card.render(this.ctx));
-			this.ctx.restore();
-		});
-		requestAnimationFrame(() => this.renderCards());
+	renderCards(timestamp) {
+		if (this._start === undefined) {
+			this._start = timestamp;
+		}
+
+		if (this.previousTimeStamp !== timestamp) {
+			this.previousTimeStamp = timestamp;
+
+			this.cards.forEach(card => {
+				this.ctx.save();
+				this.ctx.fill(card.render(this.ctx));
+				this.ctx.restore();
+			});
+		}
+		requestAnimationFrame(timestamp => this.renderCards(timestamp));
 	}
 
 	addCard(card, stackId = generateId()) {

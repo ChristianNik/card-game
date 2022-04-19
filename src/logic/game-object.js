@@ -8,7 +8,10 @@ class GameObject {
 		this.width = 182;
 		this.height = 227;
 	}
-
+	/**
+	 *
+	 * @param {CanvasRenderingContext2D} ctx
+	 */
 	render(ctx) {
 		ctx.fillStyle = "red";
 		ctx.fillRect(this.x, this.y, this.width, this.height);

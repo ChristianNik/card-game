@@ -91,7 +91,10 @@ class CardObject extends GameObject {
 		ctx.textBaseline = "middle";
 		ctx.fillText(`ID: ${this._id}`, this.x + 10, this.y + this.headerHeight + 22);
 	}
-
+	/**
+	 *
+	 * @param {CanvasRenderingContext2D} ctx
+	 */
 	render(ctx) {
 		ctx.strokeStyle = "#000";
 		this._renderGroundBorder(ctx);

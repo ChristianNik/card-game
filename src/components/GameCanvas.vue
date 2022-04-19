@@ -9,13 +9,10 @@ const game = new Game();
 
 onMounted(() => {
   game.init("game-layer", "bg-layer");
-  game.addCard(new CardObject(10, 10, { title: "Card 1" }), "A");
-  game.addCard(new CardObject(10, 10, { title: "Card 2" }), "A");
-  game.addCard(new CardObject(10, 10, { title: "Card 3" }), "A");
-  game.addCard(new CardObject(10, 10, { title: "Card 4" }), "A");
 
-  game.addCard(new CardObject(300, 10, { title: "Card 5" }), "B");
-  game.addCard(new CardObject(300, 10, { title: "Card 6" }), "B");
+  for (let i = 0; i < 5; i++) {
+    game.addCard(new CardObject(10, 10 + i * 100, { title: `Card ${i}` }));
+  }
 
   game.initRender();
 });

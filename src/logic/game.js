@@ -3,10 +3,6 @@ import { generateId } from "../utils";
 class Game {
 	constructor() {
 		this.cards = [];
-		/**
-		 * @deprecated
-		 */
-		this.hoverId = null;
 		this.isDragging = false;
 
 		this.hoverStack = new Set();
@@ -59,6 +55,7 @@ class Game {
 			this.ctx.fill(card.render(this.ctx));
 			this.ctx.restore();
 		});
+		requestAnimationFrame(() => this.renderCards());
 	}
 
 	addCard(card, stackId = generateId()) {
@@ -70,7 +67,6 @@ class Game {
 		card.setStackId(stackId);
 		if (parent) {
 			card.y = parent.y + parent.headerHeight;
-			card.setParent(parent);
 			parent.setChild(card);
 		}
 
@@ -92,7 +88,7 @@ class Game {
 			const cardB = this.getCardById(b);
 
 			if (cardA._id === this.hoverTargetId) return -1;
-			return cardA.parent?._id === cardB._id ? -1 : 1;
+			return cardA?._id === cardB.child?._id ? -1 : 1;
 		});
 		this.hoverStack = new Set(sortedStack);
 	}
@@ -146,7 +142,6 @@ class Game {
 
 			// TODO: remove from stack
 			card.parent?.setChild?.(null);
-			card.setParent(null);
 			// FIX: get new id on every drag
 			card.setStackId(generateId());
 
@@ -154,7 +149,6 @@ class Game {
 			card.y = event.offsetY - card.headerHeight / 2;
 
 			this.setChildrenPosition(card.child, card.x, card.y + card.headerHeight);
-			this.renderCards();
 		}
 	}
 
@@ -182,15 +176,13 @@ class Game {
 	stackCards(targetId, dropOnId) {
 		const target = this.getCardById(targetId);
 		const dropOn = this.getCardById(dropOnId);
-		if (!!dropOn?.child) return;
+		if (!target || !dropOn) return;
+		if (!!dropOn.child) return;
 
-		target.setParent(dropOn);
 		target.setStackId(dropOn.stackId);
 		dropOn.setChild(target);
 
 		this.setChildrenPosition(target, dropOn.x, dropOn.y + dropOn.headerHeight);
-		this.cards = [...this.cards].sort((a, b) => (a.child?._id == b._id ? -1 : 1));
-		this.renderCards();
 	}
 }
 

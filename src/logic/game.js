@@ -17,11 +17,16 @@ class Game {
 	//
 	// BASE
 	//
-	init(id) {
-		this.canvas = document.getElementById(id);
+	init(mainId, bgId) {
+		this.canvas = document.getElementById(mainId);
 		this.ctx = this.canvas.getContext("2d");
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
+
+		this.bgcanvas = document.getElementById(bgId);
+		this.bgctx = this.bgcanvas.getContext("2d");
+		this.bgcanvas.width = window.innerWidth;
+		this.bgcanvas.height = window.innerHeight;
 	}
 
 	getCardById(id) {
@@ -38,14 +43,17 @@ class Game {
 	//
 	// UI
 	//
+
+	initRender() {
+		this.renderGround();
+		this.renderCards();
+	}
 	renderGround() {
-		this.ctx.fillStyle = "#A7F3D0";
-		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+		this.bgctx.fillStyle = "#A7F3D0";
+		this.bgctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
 	renderCards() {
-		this.renderGround();
-
 		this.cards.forEach(card => {
 			this.ctx.save();
 			this.ctx.fill(card.render(this.ctx));

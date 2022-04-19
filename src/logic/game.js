@@ -140,10 +140,12 @@ class Game {
 			const card = this.hoverTarget();
 			if (!card) return;
 
-			// TODO: remove from stack
-			card.parent?.setChild?.(null);
-			// FIX: get new id on every drag
-			card.setStackId(generateId());
+			const parent = this.cards.find(card => card.child?._id === this.hoverTargetId);
+			parent?.setChild(null);
+
+			if (this.cards.find(c => c._id !== card._id && c.stackId == card.stackId)) {
+				card.setStackId(generateId());
+			}
 
 			card.x = event.offsetX - card.width / 2;
 			card.y = event.offsetY - card.headerHeight / 2;
@@ -153,7 +155,7 @@ class Game {
 	}
 
 	handleClick(event) {
-		console.log(this.hoverTarget());
+		// console.log(this.hoverTarget());
 	}
 
 	handleMouseDown(event) {
@@ -168,7 +170,11 @@ class Game {
 	}
 	handleMouseUp(event) {
 		this.isDragging = false;
-		if (this.hoverStack.size <= 1) return;
+		if (this.hoverStack.size <= 1) {
+			const parent = this.cards.find(card => card.child?._id === this.hoverTargetId);
+			parent?.setChild(null);
+			return;
+		}
 		const ids = [...this.hoverStack];
 		this.stackCards(ids[0], ids[1]);
 	}
@@ -176,7 +182,6 @@ class Game {
 	stackCards(targetId, dropOnId) {
 		const target = this.getCardById(targetId);
 		const dropOn = this.getCardById(dropOnId);
-		if (!target || !dropOn) return;
 		if (!!dropOn.child) return;
 
 		target.setStackId(dropOn.stackId);

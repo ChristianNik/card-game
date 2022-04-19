@@ -93,8 +93,7 @@ function craftDone(event) {
 
 class Game {
 	constructor() {
-		this.elements = [];
-		this.cardStacks = {};
+		this.cards = [];
 		/**
 		 * @deprecated
 		 */
@@ -116,38 +115,20 @@ class Game {
 		this.canvas.height = 500;
 	}
 
-	findElementById(id) {
-		return this.elements.find(e => e._id === id);
-	}
-
 	getCardById(id) {
 		if (!id) return null;
-		return this.cards().find(c => c._id === id) || null;
+		return this.cards.find(c => c._id === id) || null;
 	}
 
 	elevateElementById(id) {
 		// TODO: refactor
-		this.elements.sort((a, b) => (a._id === id ? 1 : -1));
-	}
-
-	cards() {
-		return Object.keys(this.cardStacks)
-			.map(key => this.cardStacks[key].cards)
-			.flat();
+		this.cards.sort((a, b) => (a._id === id ? 1 : -1));
 	}
 	//
 	//
 	//
 	// UI
 	//
-	resetStyles() {
-		this.ctx.fillStyle = "#000";
-		this.ctx.strokeStyle = "#000";
-		this.ctx.lineWidth = 1;
-		this.ctx.font = "";
-		this.ctx.setLineDash([0, 0]);
-	}
-
 	renderGround() {
 		this.ctx.fillStyle = "#AFC5FF";
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -156,34 +137,27 @@ class Game {
 	renderCards() {
 		this.renderGround();
 
-		Object.keys(this.cardStacks).forEach(key => {
-			this.resetStyles();
-			const stack = this.cardStacks[key];
-
-			stack.cards.forEach(card => {
-				this.ctx.fill(card.render(this.ctx));
-			});
+		this.cards.forEach(card => {
+			this.ctx.save();
+			this.ctx.fill(card.render(this.ctx));
+			this.ctx.restore();
 		});
 	}
 
-	addCard(card, stack = generateId()) {
-		if (!this.cardStacks[stack]) {
-			this.cardStacks[stack] = {
-				x: card.x,
-				y: card.y,
-				cards: []
-			};
-		} else {
-			const currentStack = this.cardStacks[stack];
+	addCard(card, stackId = generateId()) {
+		const parent = this.cards
+			.filter(c => c.stackId === stackId)
+			.reverse()
+			.find(c => c.stackId === stackId);
 
-			const parent = currentStack.cards[currentStack.cards.length - 1];
+		card.setStackId(stackId);
+		if (parent) {
 			card.y = parent.y + parent.headerHeight;
 			card.setParent(parent);
-			card.setStackId(stack);
 			parent.setChild(card);
 		}
 
-		this.cardStacks[stack].cards.push(card);
+		this.cards.push(card);
 		this.renderCards();
 	}
 	//
@@ -200,6 +174,7 @@ class Game {
 			const cardA = this.getCardById(a);
 			const cardB = this.getCardById(b);
 
+			if (cardA._id === this.hoverTargetId) return -1;
 			return cardA.parent?._id === cardB._id ? -1 : 1;
 		});
 		this.hoverStack = new Set(sortedStack);
@@ -221,7 +196,7 @@ class Game {
 	// HANDLER
 	//
 	handleMouseMove(event) {
-		this.cards().forEach(card => {
+		this.cards.forEach(card => {
 			const matchX = event.offsetX >= card.x && event.offsetX <= card.x + card.width;
 			const matchY = event.offsetY >= card.y && event.offsetY <= card.y + card.height;
 			// add all id we are curently hovering on
@@ -256,12 +231,14 @@ class Game {
 			// TODO: remove from stack
 			card.parent?.setChild?.(null);
 			card.setParent(null);
+			// FIX: get new id on every drag
+			card.setStackId(generateId());
 
 			card.x = event.offsetX - card.width / 2;
 			card.y = event.offsetY - card.height / 2;
 
+			// FIXME: 8000+ render
 			this.setChildrenPosition(card.child, card.x, card.y + card.headerHeight);
-
 			this.renderCards();
 		}
 	}
@@ -288,15 +265,19 @@ class Game {
 		this.stackCards(ids[0], ids[1]);
 	}
 
-	stackCards(currentId, targetId) {
-		// const current = this.findElementById(currentId);
-		// const target = this.findElementById(targetId);
-		// if (current.parent?._id === targetId) return;
-		// current.setParent(target);
-		// target.setChild(current);
-		// current.x = target.x;
-		// current.y = target.y + current.parent.headerHeight;
-		// this.render();
+	stackCards(targetId, dropOnId) {
+		const target = this.getCardById(targetId);
+		const dropOn = this.getCardById(dropOnId);
+
+		target.setParent(dropOn);
+		target.setStackId(dropOn.stackId);
+		dropOn.setChild(target);
+
+		this.setChildrenPosition(target, dropOn.x, dropOn.y + dropOn.headerHeight);
+		this.cards = [...this.cards].sort((a, b) => {
+			return a.child?._id == b._id ? -1 : 1;
+		});
+		this.renderCards();
 	}
 }
 

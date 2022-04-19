@@ -214,7 +214,7 @@ class Game {
 		if (this.hoverStack.size < 2) return;
 
 		const ids = [...this.hoverStack];
-		this.stackCards(ids[1], ids[0]);
+		this.stackCards(ids[0], ids[1]);
 	}
 
 	stackCards(currentId, targetId) {
@@ -223,19 +223,12 @@ class Game {
 
 		if (current.parent?._id === targetId) return;
 
-		target.setParent(current);
-		current.setChild(target);
-		target.x = current.x;
-		target.y = current.y + target.parent.headerHeight;
+		current.setParent(target);
+		target.setChild(current);
 
-		this.render();
-	}
+		current.x = target.x;
+		current.y = target.y + current.parent.headerHeight;
 
-	handleStack() {
-		const current = this.elements[2];
-		const target = this.elements[1];
-
-		target.setParent(current);
 		this.render();
 	}
 }

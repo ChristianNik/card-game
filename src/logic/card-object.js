@@ -10,7 +10,8 @@ class CardObject extends GameObject {
 			accentColor = "#43423D",
 			textColor = "#fff",
 			parent = null,
-			child = null
+			child = null,
+			stackId = null
 		} = {}
 	) {
 		super(x, y);
@@ -23,6 +24,7 @@ class CardObject extends GameObject {
 		this.headerHeight = 40;
 		this.parent = parent;
 		this.child = child;
+		this.stackId = stackId;
 	}
 
 	setParent(parent) {
@@ -31,6 +33,10 @@ class CardObject extends GameObject {
 
 	setChild(child) {
 		this.child = child;
+	}
+
+	setStackId(id) {
+		this.stackId = id;
 	}
 
 	_renderGroundBorder(ctx) {

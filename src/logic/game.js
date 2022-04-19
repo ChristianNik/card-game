@@ -126,6 +126,7 @@ class Game {
 	}
 
 	elevateElementById(id) {
+		// TODO: refactor
 		this.elements.sort((a, b) => (a._id === id ? 1 : -1));
 	}
 
@@ -178,6 +179,8 @@ class Game {
 			const parent = currentStack.cards[currentStack.cards.length - 1];
 			card.y = parent.y + parent.headerHeight;
 			card.setParent(parent);
+			card.setStackId(stack);
+			parent.setChild(card);
 		}
 
 		this.cardStacks[stack].cards.push(card);
@@ -202,7 +205,7 @@ class Game {
 		this.hoverStack = new Set(sortedStack);
 	}
 	removeHoverId(id) {
-		if (this.hoverTargetId === id) {
+		if (this.hoverTargetId === id && !this.isDragging) {
 			this.hoverTargetId = null;
 		}
 
@@ -228,34 +231,21 @@ class Game {
 				this.removeHoverId(card._id);
 			}
 		});
-		console.log(this.hoverStack);
-
-		this.elements.forEach(element => {
-			const matchX = event.offsetX >= element.x && event.offsetX <= element.x + element.width;
-			const matchY =
-				event.offsetY >= element.y && event.offsetY <= element.y + element.height;
-			// add all id we are curently hovering on
-			if (matchX && matchY) {
-				if (this.hoverStack.has(element._id)) return;
-				this.hoverStack.add(element._id);
-			} else {
-				if (!this.hoverStack.has(element._id)) return;
-				this.hoverStack.delete(element._id);
-			}
-			if (matchX && matchY && !this.isDragging) {
-				this.hoverId = element._id;
-				this.ctx.fill(element.renderHover?.(this.ctx));
-				this.render();
-				return;
-			}
-			if (this.hoverId === element._id && !this.isDragging) {
-				this.hoverId = null;
-				this.render();
-			}
-		});
+		// console.log(this.hoverStack);
 
 		//drag
 		this.handleDragging(event);
+	}
+
+	setChildrenPosition(card, x, y) {
+		if (!card) return;
+
+		card.x = x;
+		card.y = y;
+
+		if (card?.child) {
+			this.setChildrenPosition(card.child, card.x, card.y + card.headerHeight);
+		}
 	}
 
 	handleDragging(event) {
@@ -264,11 +254,14 @@ class Game {
 			if (!card) return;
 
 			// TODO: remove from stack
-			// element.parent?.setChild?.(null);
-			// card.setParent(null);
+			card.parent?.setChild?.(null);
+			card.setParent(null);
 
 			card.x = event.offsetX - card.width / 2;
 			card.y = event.offsetY - card.height / 2;
+
+			this.setChildrenPosition(card.child, card.x, card.y + card.headerHeight);
+
 			this.renderCards();
 		}
 	}
@@ -279,13 +272,13 @@ class Game {
 
 	handleMouseDown(event) {
 		this.isDragging = true;
-		if (!this.hoverId) return;
+		if (!this.hoverTargetId) return;
 
 		// dont elevate parent with childs
-		const element = this.findElementById(this.hoverId);
-		if (element.child) return;
+		const element = this.getCardById(this.hoverTargetId);
+		if (element?.child) return;
 
-		this.elevateElementById(this.hoverId);
+		this.elevateElementById(this.hoverTargetId);
 	}
 	handleMouseUp(event) {
 		this.isDragging = false;

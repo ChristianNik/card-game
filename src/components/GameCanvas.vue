@@ -9,13 +9,13 @@ const game = new Game();
 
 onMounted(() => {
   game.init("myCanvas");
-  game.addCard(new CardObject(10, 10, "From Add Card"), "A");
-  game.addCard(new CardObject(10, 10, "From Add Card"), "A");
-  game.addCard(new CardObject(10, 10, "From Add Card"), "A");
-  game.addCard(new CardObject(10, 10, "From Add Card"), "A");
+  game.addCard(new CardObject(10, 10, { title: "Card 1" }), "A");
+  game.addCard(new CardObject(10, 10, { title: "Card 2" }), "A");
+  game.addCard(new CardObject(10, 10, { title: "Card 3" }), "A");
+  game.addCard(new CardObject(10, 10, { title: "Card 4" }), "A");
 
-  game.addCard(new CardObject(300, 10, "From Add Card"), "B");
-  game.addCard(new CardObject(300, 10, "From Add Card"), "B");
+  game.addCard(new CardObject(300, 10, { title: "Card 5" }), "B");
+  game.addCard(new CardObject(300, 10, { title: "Card 6" }), "B");
 
   game.renderCards();
 });

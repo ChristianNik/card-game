@@ -38,6 +38,26 @@ class Game {
 		// TODO: refactor
 		this.cards.sort((a, b) => (a._id === id ? 1 : -1));
 	}
+
+	//
+	// STACK
+	//
+	getStack(stackId) {
+		return (
+			this.cards
+				.filter(c => c.stackId === stackId)
+				.sort((a, b) => (a._id === b.child?._id ? 1 : -1)) || null
+		);
+	}
+
+	getStackRoot(stackId) {
+		return this.getStack(stackId)?.[0];
+	}
+
+	lastStackChild(stackId) {
+		return this.cards.find(c => c.child == null && c.stackId === stackId);
+	}
+
 	//
 	//
 	//
@@ -169,7 +189,9 @@ class Game {
 	}
 
 	handleClick(event) {
-		// console.log(this.hoverTarget());
+		const card = this.hoverTarget();
+		if (!card) return;
+		console.log(card.stackId, this.getStack(card.stackId));
 	}
 
 	handleMouseDown(event) {
@@ -186,13 +208,13 @@ class Game {
 		this.isMouseDown = false;
 
 		if (this.isDragging) {
-		if (this.hoverStack.size <= 1) {
-			const parent = this.cards.find(card => card.child?._id === this.hoverTargetId);
-			parent?.setChild(null);
-			return;
-		}
-		const ids = [...this.hoverStack];
-		this.stackCards(ids[0], ids[1]);
+			if (this.hoverStack.size <= 1) {
+				const parent = this.cards.find(card => card.child?._id === this.hoverTargetId);
+				parent?.setChild(null);
+				return;
+			}
+			const ids = [...this.hoverStack];
+			this.stackCards(ids[0], ids[1]);
 		}
 
 		this.isDragging = false;

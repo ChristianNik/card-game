@@ -9,7 +9,6 @@ class CardObject extends GameObject {
 			primaryColor = "#61605B",
 			accentColor = "#43423D",
 			textColor = "#fff",
-			parent = null,
 			child = null,
 			stackId = null
 		} = {}
@@ -23,17 +22,23 @@ class CardObject extends GameObject {
 		this.borderWidth = 6;
 		this.borderRadius = 5;
 		this.headerHeight = 40;
-		this.parent = parent;
 		this.child = child;
 		this.stackId = stackId;
 	}
 
-	setParent(parent) {
-		this.parent = parent;
-	}
-
 	setChild(child) {
 		this.child = child;
+
+		this.forEachChild(c => (c.stackId = this.stackId));
+	}
+
+	forEachChild(fn = child => {}) {
+		let tmp = this.child;
+
+		while (tmp?.child) {
+			fn(tmp.child);
+			tmp = tmp.child;
+		}
 	}
 
 	setStackId(id) {

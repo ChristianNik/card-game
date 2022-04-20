@@ -2,7 +2,7 @@ import { generateId } from "../utils";
 
 class GameObject {
 	constructor(x = 0, y = 0) {
-		this._id = generateId();
+		this.id = generateId();
 		this.x = x;
 		this.y = y;
 		this.width = 182;

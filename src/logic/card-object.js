@@ -117,7 +117,7 @@ class CardObject extends GameObject {
 		ctx.fillStyle = this.textColor;
 		ctx.font = `bold 1.125rem ui-sans-serif, system-ui, Arial`;
 		ctx.textBaseline = "middle";
-		ctx.fillText(`ID: ${this._id}`, this.x + 10, this.y + this.headerHeight + 22);
+		ctx.fillText(`ID: ${this.id}`, this.x + 10, this.y + this.headerHeight + 22);
 	}
 	/**
 	 *

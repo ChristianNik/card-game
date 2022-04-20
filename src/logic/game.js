@@ -35,12 +35,12 @@ class Game {
 
 	getCardById(id) {
 		if (!id) return null;
-		return this.cards.find(c => c._id === id) || null;
+		return this.cards.find(c => c.id === id) || null;
 	}
 
 	elevateElementById(id) {
 		// TODO: refactor
-		this.cards.sort((a, b) => (a._id === id ? 1 : -1));
+		this.cards.sort((a, b) => (a.id === id ? 1 : -1));
 	}
 
 	//
@@ -50,7 +50,7 @@ class Game {
 		return (
 			this.cards
 				.filter(c => c.stackId === stackId)
-				.sort((a, b) => (a._id === b.child?._id ? 1 : -1)) || null
+				.sort((a, b) => (a.id === b.child?.id ? 1 : -1)) || null
 		);
 	}
 
@@ -113,7 +113,7 @@ class Game {
 	removeCardById(id) {
 		const filtered = this.cards.filter(c => {
 			// todo: remove id from cild when exists
-			if (c._id === id) {
+			if (c.id === id) {
 				c.clear(this.ctx);
 				return false;
 			}
@@ -136,8 +136,8 @@ class Game {
 			const cardA = this.getCardById(a);
 			const cardB = this.getCardById(b);
 
-			if (cardA?._id === this.hoverTargetId) return -1;
-			return cardA?._id === cardB?.child?._id ? -1 : 1;
+			if (cardA?.id === this.hoverTargetId) return -1;
+			return cardA?.id === cardB?.child?.id ? -1 : 1;
 		});
 		this.hoverStack = new Set(sortedStack);
 	}
@@ -165,9 +165,9 @@ class Game {
 			const matchY = event.offsetY >= card.y && event.offsetY <= card.y + card.height;
 			// add all id we are curently hovering on
 			if (matchX && matchY) {
-				this.addHoverId(card._id);
+				this.addHoverId(card.id);
 			} else {
-				this.removeHoverId(card._id);
+				this.removeHoverId(card.id);
 			}
 		});
 
@@ -191,10 +191,10 @@ class Game {
 			const card = this.hoverTarget();
 			if (!card) return;
 
-			const parent = this.cards.find(card => card.child?._id === this.hoverTargetId);
+			const parent = this.cards.find(card => card.child?.id === this.hoverTargetId);
 			parent?.setChild(null);
 
-			if (this.cards.find(c => c._id !== card._id && c.stackId == card.stackId)) {
+			if (this.cards.find(c => c.id !== card.id && c.stackId == card.stackId)) {
 				card.setStackId(generateId());
 			}
 
@@ -226,7 +226,7 @@ class Game {
 
 		if (this.isDragging) {
 			if (this.hoverStack.size <= 1) {
-				const parent = this.cards.find(card => card.child?._id === this.hoverTargetId);
+				const parent = this.cards.find(card => card.child?.id === this.hoverTargetId);
 				parent?.setChild(null);
 				return;
 			}
@@ -275,7 +275,7 @@ class Game {
 				const ingred = craftRecepie.ingredients.find(i => i.name === card.type.id);
 
 				if (ingred.willConsume) {
-					this.removeCardById(card._id);
+					this.removeCardById(card.id);
 				}
 			});
 			this.addCard(CardObject.fromType(100, 100, cardTypes[craftRecepie.id]));

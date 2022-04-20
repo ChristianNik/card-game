@@ -1,5 +1,6 @@
 import { cardTypes } from "../constants/entities";
 import { getRecepieEntity } from "../constants/recepies";
+import { CardStack } from "../models/card-stack";
 import { generateId } from "../utils";
 import { CardObject } from "./card-object";
 import { getCraftable } from "./crafting";
@@ -92,6 +93,11 @@ class Game {
 			});
 		}
 		requestAnimationFrame(timestamp => this.renderCards(timestamp));
+	}
+
+	addCardStack(stack) {
+		this.cards.push(stack);
+		stack.render(this.ctx);
 	}
 
 	addCard(card, stackId = generateId()) {
@@ -188,8 +194,17 @@ class Game {
 
 	handleDragging(event) {
 		if (this.isDragging) {
+			this.cards.forEach(element => {
+				if (element.id !== this.hoverTargetId) return;
+				if (element instanceof CardStack) {
+					element.handleDragging(event);
+				}
+			});
+		}
+
+		if (this.isDragging) {
 			const card = this.hoverTarget();
-			if (!card) return;
+			if (!card || !(card instanceof CardObject)) return;
 
 			const parent = this.cards.find(card => card.child?.id === this.hoverTargetId);
 			parent?.setChild(null);

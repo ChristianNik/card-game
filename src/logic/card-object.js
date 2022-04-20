@@ -167,7 +167,7 @@ class CardObject extends GameObject {
 			this.prevX,
 			this.prevY,
 			Math.floor(this.width + this.borderWidth + 1),
-			Math.floor(this.height + this.borderWidth + 1)
+			Math.floor(this.height + this.headerHeight + this.borderWidth + 1)
 		);
 		ctx.restore();
 		this.prevX = Math.floor(this.x - this.borderWidth / 2);

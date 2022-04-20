@@ -5,18 +5,32 @@ import { Game } from "../logic/game";
 import { GameObject } from "../logic/game-object";
 import { CardObject } from "../logic/card-object";
 import { cardTypes } from "../constants/entities";
+import { CardStack } from "../models/card-stack";
 
 const game = new Game();
 
 onMounted(() => {
   game.init("game-layer", "bg-layer");
 
-  for (let i = 0; i < 2; i++) {
-    game.addCard(CardObject.fromType(10, 300 + 250 * i, cardTypes.tree));
-  }
+  const stack = new CardStack(100, 100, {
+    onCraftDone: (itemId) => {
+      game.addCardStack(
+        new CardStack(300, 100).push(
+          CardObject.fromType(0, 0, cardTypes[itemId])
+        )
+      );
+    },
+  });
+  game.addCardStack(stack);
 
-  game.addCard(CardObject.fromType(10, 50, cardTypes.wood));
-  game.addCard(CardObject.fromType(250, 50, cardTypes.villager));
+  setTimeout(() => {
+    stack.push(CardObject.fromType(0, 0, cardTypes.wood));
+  }, 100);
+
+  setTimeout(() => {
+    stack.push(CardObject.fromType(0, 0, cardTypes.villager));
+    stack.craft();
+  }, 200);
 
   game.initRender();
 });

@@ -161,6 +161,7 @@ class CardObject extends GameObject {
 	}
 
 	clear(ctx) {
+		// fix: infinite clears
 		ctx.save();
 		ctx.clearRect(
 			this.prevX,

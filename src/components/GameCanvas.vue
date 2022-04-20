@@ -11,16 +11,11 @@ const game = new Game();
 onMounted(() => {
   game.init("game-layer", "bg-layer");
 
-  // for (let i = 0; i < 5; i++) {
-  //   game.addCard(
-  //     new CardObject(10, 10 + i * 100, {
-  //       title: `Card ${i}`,
-  //       type: cardTypes.tree,
-  //     })
-  //   );
-  // }
+  for (let i = 0; i < 2; i++) {
+    game.addCard(CardObject.fromType(10, 300 + 250 * i, cardTypes.tree));
+  }
 
-  game.addCard(CardObject.fromType(10, 50, cardTypes.stick));
+  game.addCard(CardObject.fromType(10, 50, cardTypes.wood));
   game.addCard(CardObject.fromType(250, 50, cardTypes.villager));
 
   game.initRender();

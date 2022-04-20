@@ -1,4 +1,8 @@
+import { cardTypes } from "../constants/entities";
+import { getRecepieEntity } from "../constants/recepies";
 import { generateId } from "../utils";
+import { CardObject } from "./card-object";
+import { getCraftable } from "./crafting";
 
 class Game {
 	constructor() {
@@ -105,6 +109,19 @@ class Game {
 		this.cards.push(card);
 		card.render(this.ctx);
 	}
+
+	removeCardById(id) {
+		const filtered = this.cards.filter(c => {
+			// todo: remove id from cild when exists
+			if (c._id === id) {
+				c.clear(this.ctx);
+				return false;
+			}
+			return true;
+		});
+
+		this.cards = filtered;
+	}
 	//
 	// HOVER
 	//
@@ -119,8 +136,8 @@ class Game {
 			const cardA = this.getCardById(a);
 			const cardB = this.getCardById(b);
 
-			if (cardA._id === this.hoverTargetId) return -1;
-			return cardA?._id === cardB.child?._id ? -1 : 1;
+			if (cardA?._id === this.hoverTargetId) return -1;
+			return cardA?._id === cardB?.child?._id ? -1 : 1;
 		});
 		this.hoverStack = new Set(sortedStack);
 	}
@@ -191,7 +208,7 @@ class Game {
 	handleClick(event) {
 		const card = this.hoverTarget();
 		if (!card) return;
-		console.log(card.stackId, this.getStack(card.stackId));
+		// console.log(card.stackId, this.getStack(card.stackId));
 	}
 
 	handleMouseDown(event) {
@@ -223,12 +240,46 @@ class Game {
 	stackCards(targetId, dropOnId) {
 		const target = this.getCardById(targetId);
 		const dropOn = this.getCardById(dropOnId);
-		if (!!dropOn.child) return;
+		if (!target) return;
+		if (!!dropOn?.child) return;
 
 		target.setStackId(dropOn.stackId);
 		dropOn.setChild(target);
 
 		this.setChildrenPosition(target, dropOn.x, dropOn.y + dropOn.headerHeight);
+
+		//
+		// CRAFTING
+		//
+
+		const stack = this.getStack(dropOn.stackId);
+
+		const stackIngredients = stack.reduce((acc, card) => {
+			if (!acc[card.type.id]) {
+				acc[card.type.id] = 0;
+			}
+
+			acc[card.type.id]++;
+
+			return acc;
+		}, {});
+
+		const craftable = getCraftable(stackIngredients);
+		const craftRecepie = getRecepieEntity(craftable);
+
+		if (!craftRecepie) return;
+
+		setTimeout(() => {
+			this.hoverStack.clear();
+			stack.forEach(card => {
+				const ingred = craftRecepie.ingredients.find(i => i.name === card.type.id);
+
+				if (ingred.willConsume) {
+					this.removeCardById(card._id);
+				}
+			});
+			this.addCard(CardObject.fromType(100, 100, cardTypes[craftRecepie.id]));
+		}, 1000);
 	}
 }
 

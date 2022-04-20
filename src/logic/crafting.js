@@ -24,8 +24,4 @@ function getCraftable(ingreds = {}) {
 	return match;
 }
 
-function getRecepieEntity(name) {
-	return cardTypes[name];
-}
-
-export { getCraftable, getRecepieEntity };
+export { getCraftable };

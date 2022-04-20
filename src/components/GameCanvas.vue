@@ -8,31 +8,44 @@ import { CardObject } from "../logic/card-object";
 const game = new Game();
 
 onMounted(() => {
-  game.init("myCanvas");
-  game.addCard(new CardObject(10, 10, { title: "Card 1" }), "A");
-  game.addCard(new CardObject(10, 10, { title: "Card 2" }), "A");
-  game.addCard(new CardObject(10, 10, { title: "Card 3" }), "A");
-  game.addCard(new CardObject(10, 10, { title: "Card 4" }), "A");
+  game.init("game-layer", "bg-layer");
 
-  game.addCard(new CardObject(300, 10, { title: "Card 5" }), "B");
-  game.addCard(new CardObject(300, 10, { title: "Card 6" }), "B");
+  for (let i = 0; i < 5; i++) {
+    game.addCard(new CardObject(10, 10 + i * 100, { title: `Card ${i}` }));
+  }
 
-  game.renderCards();
+  game.initRender();
 });
-
-function handleAddCard() {
-  game.addGameObject(new CardObject(500, 100, { title: "Card 2" }));
-}
 </script>
 
 <template>
-  <button @click="game.handleStack">Stack</button>
-  <button @click="handleAddCard">Add Card</button>
-  <canvas
-    id="myCanvas"
-    @click="game.handleClick"
-    @mousemove="game.handleMouseMove"
-    @mousedown="game.handleMouseDown"
-    @mouseup="game.handleMouseUp"
-  ></canvas>
+  <div>
+    <canvas id="bg-layer"></canvas>
+
+    <canvas
+      id="game-layer"
+      @click="game.handleClick"
+      @mousemove="game.handleMouseMove"
+      @mousedown="game.handleMouseDown"
+      @mouseup="game.handleMouseUp"
+    ></canvas>
+  </div>
 </template>
+
+
+<style scoped>
+div {
+  position: relativ;
+}
+canvas {
+  position: absolute;
+  background-color: transparent;
+}
+
+#game-layer {
+  z-index: 2;
+}
+#bg-layer {
+  z-index: 1;
+}
+</style>

@@ -20,6 +20,7 @@ class CardObject extends GameObject {
 		this.accentColor = accentColor;
 		this.textColor = textColor;
 
+		this.borderWidth = 6;
 		this.borderRadius = 5;
 		this.headerHeight = 40;
 		this.parent = parent;
@@ -41,7 +42,7 @@ class CardObject extends GameObject {
 
 	_renderGroundBorder(ctx) {
 		ctx.strokeStyle = "#000";
-		ctx.lineWidth = 6;
+		ctx.lineWidth = this.borderWidth;
 		ctx.roundRect(this.x, this.y, this.width, this.height, this.borderRadius);
 		ctx.stroke();
 	}
@@ -56,7 +57,7 @@ class CardObject extends GameObject {
 		ctx.fill();
 	}
 	_renderHeaderBorder(ctx) {
-		ctx.lineWidth = 3;
+		ctx.lineWidth = this.borderWidth / 2;
 		ctx.beginPath();
 		ctx.moveTo(this.x, this.y + this.headerHeight);
 		ctx.lineTo(this.x + this.width, this.y + this.headerHeight);
@@ -91,8 +92,13 @@ class CardObject extends GameObject {
 		ctx.textBaseline = "middle";
 		ctx.fillText(`ID: ${this._id}`, this.x + 10, this.y + this.headerHeight + 22);
 	}
-
+	/**
+	 *
+	 * @param {CanvasRenderingContext2D} ctx
+	 */
 	render(ctx) {
+		this.clear(ctx);
+
 		ctx.strokeStyle = "#000";
 		this._renderGroundBorder(ctx);
 		this._renderGround(ctx);
@@ -125,6 +131,19 @@ class CardObject extends GameObject {
 		this._renderHeader(ctx);
 		this._renderHeaderBorder(ctx);
 		this._renderTitle(ctx);
+	}
+
+	clear(ctx) {
+		ctx.save();
+		ctx.clearRect(
+			this.prevX,
+			this.prevY,
+			Math.floor(this.width + this.borderWidth + 1),
+			Math.floor(this.height + this.borderWidth + 1)
+		);
+		ctx.restore();
+		this.prevX = Math.floor(this.x - this.borderWidth / 2);
+		this.prevY = Math.floor(this.y - this.borderWidth / 2);
 	}
 }
 export { CardObject };

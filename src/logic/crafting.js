@@ -1,4 +1,4 @@
-import { cardTypes } from "../constants/card-types";
+import { cardTypes } from "../constants/entities";
 
 function getCraftable(ingreds = {}) {
 	const ingredientCount = Object.values(ingreds).reduce((acc, value) => acc + value, 0);

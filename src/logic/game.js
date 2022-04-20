@@ -1,118 +1,31 @@
-import { ref } from "vue";
 import { generateId } from "../utils";
-
-class CardModel {
-	constructor(type = "default") {
-		this._id = generateId();
-		this._stackId;
-		this.type = type;
-	}
-
-	setStackId(id) {
-		this._stackId = id;
-	}
-}
-
-class CardStackModel {
-	constructor() {
-		this._id = generateId();
-		this.cards = [];
-	}
-
-	addCard(card) {
-		card.setStackId(this._id);
-		this.cards.push(card);
-		return this;
-	}
-
-	pop() {
-		return this.cards.pop();
-	}
-
-	findById(id) {
-		return this.cards.find(c => c._id === id);
-	}
-
-	destroy() {
-		this.cards = this.cards.filter(c => c.type === "villager");
-		const villagerCount = this.cards.length;
-		if (villagerCount > 1) {
-			this.cards = this.cards.slice(0, 1);
-		}
-		return villagerCount - 1;
-	}
-}
-
-const stack = ref([
-	new CardStackModel().addCard(new CardModel("villager")),
-	new CardStackModel().addCard(new CardModel("villager")),
-	new CardStackModel().addCard(new CardModel("tree")),
-	new CardStackModel().addCard(new CardModel("tree")),
-	new CardStackModel()
-		.addCard(new CardModel("stone"))
-		.addCard(new CardModel("stone"))
-		.addCard(new CardModel("stone"))
-]);
-
-function handleStackChange(event) {
-	const current = stack.value.find(stack => stack._id == event.current);
-	const target = stack.value.find(stack => stack._id == event.target);
-
-	const card = current.pop();
-	if (!card) return;
-	target.addCard(card);
-}
-
-function dropToNewStack(event) {
-	const targetId = event.dataTransfer.getData("cardID");
-	const current = stack.value.find(stack => stack._id == targetId);
-
-	const card = current?.pop();
-
-	if (!card) return;
-	stack.value = [
-		...stack.value.filter(s => s.cards.length > 0),
-		new CardStackModel().addCard(card)
-	];
-}
-
-function craftDone(event) {
-	const current = stack.value.find(stack => stack._id == event.current);
-
-	const villagers = [];
-	for (let i = 0; i < current.destroy(); i++) {
-		villagers.push(new CardStackModel().addCard(new CardModel("villager")));
-	}
-
-	stack.value = [
-		...stack.value.filter(s => s.cards.length > 0),
-		...villagers,
-		new CardStackModel().addCard(new CardModel(event.type))
-	];
-}
 
 class Game {
 	constructor() {
 		this.cards = [];
-		/**
-		 * @deprecated
-		 */
-		this.hoverId = null;
 		this.isDragging = false;
 
 		this.hoverStack = new Set();
 		this.hoverTargetId = null;
+
+		this._start;
+		this._previousTimeStamp;
 	}
 	//
 	//
 	//
 	// BASE
 	//
-	init(id) {
-		this.canvas = document.getElementById(id);
+	init(mainId, bgId) {
+		this.canvas = document.getElementById(mainId);
 		this.ctx = this.canvas.getContext("2d");
 		this.canvas.width = window.innerWidth;
-		this.canvas.height = 500;
+		this.canvas.height = window.innerHeight;
+
+		this.bgcanvas = document.getElementById(bgId);
+		this.bgctx = this.bgcanvas.getContext("2d");
+		this.bgcanvas.width = window.innerWidth;
+		this.bgcanvas.height = window.innerHeight;
 	}
 
 	getCardById(id) {
@@ -129,19 +42,31 @@ class Game {
 	//
 	// UI
 	//
+
+	initRender() {
+		this.renderGround();
+		this.renderCards();
+	}
 	renderGround() {
-		this.ctx.fillStyle = "#AFC5FF";
-		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+		this.bgctx.fillStyle = "#A7F3D0";
+		this.bgctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
-	renderCards() {
-		this.renderGround();
+	renderCards(timestamp) {
+		if (this._start === undefined) {
+			this._start = timestamp;
+		}
 
-		this.cards.forEach(card => {
-			this.ctx.save();
-			this.ctx.fill(card.render(this.ctx));
-			this.ctx.restore();
-		});
+		if (this.previousTimeStamp !== timestamp) {
+			this.previousTimeStamp = timestamp;
+
+			this.cards.forEach(card => {
+				this.ctx.save();
+				this.ctx.fill(card.render(this.ctx));
+				this.ctx.restore();
+			});
+		}
+		requestAnimationFrame(timestamp => this.renderCards(timestamp));
 	}
 
 	addCard(card, stackId = generateId()) {
@@ -153,12 +78,11 @@ class Game {
 		card.setStackId(stackId);
 		if (parent) {
 			card.y = parent.y + parent.headerHeight;
-			card.setParent(parent);
 			parent.setChild(card);
 		}
 
 		this.cards.push(card);
-		this.renderCards();
+		card.render(this.ctx);
 	}
 	//
 	// HOVER
@@ -175,7 +99,7 @@ class Game {
 			const cardB = this.getCardById(b);
 
 			if (cardA._id === this.hoverTargetId) return -1;
-			return cardA.parent?._id === cardB._id ? -1 : 1;
+			return cardA?._id === cardB.child?._id ? -1 : 1;
 		});
 		this.hoverStack = new Set(sortedStack);
 	}
@@ -206,7 +130,6 @@ class Game {
 				this.removeHoverId(card._id);
 			}
 		});
-		// console.log(this.hoverStack);
 
 		//drag
 		this.handleDragging(event);
@@ -228,23 +151,22 @@ class Game {
 			const card = this.hoverTarget();
 			if (!card) return;
 
-			// TODO: remove from stack
-			card.parent?.setChild?.(null);
-			card.setParent(null);
-			// FIX: get new id on every drag
-			card.setStackId(generateId());
+			const parent = this.cards.find(card => card.child?._id === this.hoverTargetId);
+			parent?.setChild(null);
+
+			if (this.cards.find(c => c._id !== card._id && c.stackId == card.stackId)) {
+				card.setStackId(generateId());
+			}
 
 			card.x = event.offsetX - card.width / 2;
-			card.y = event.offsetY - card.height / 2;
+			card.y = event.offsetY - card.headerHeight / 2;
 
-			// FIXME: 8000+ render
 			this.setChildrenPosition(card.child, card.x, card.y + card.headerHeight);
-			this.renderCards();
 		}
 	}
 
 	handleClick(event) {
-		console.log(this.hoverTarget());
+		// console.log(this.hoverTarget());
 	}
 
 	handleMouseDown(event) {
@@ -259,8 +181,11 @@ class Game {
 	}
 	handleMouseUp(event) {
 		this.isDragging = false;
-		if (this.hoverStack.size < 2) return;
-
+		if (this.hoverStack.size <= 1) {
+			const parent = this.cards.find(card => card.child?._id === this.hoverTargetId);
+			parent?.setChild(null);
+			return;
+		}
 		const ids = [...this.hoverStack];
 		this.stackCards(ids[0], ids[1]);
 	}
@@ -268,17 +193,13 @@ class Game {
 	stackCards(targetId, dropOnId) {
 		const target = this.getCardById(targetId);
 		const dropOn = this.getCardById(dropOnId);
+		if (!!dropOn.child) return;
 
-		target.setParent(dropOn);
 		target.setStackId(dropOn.stackId);
 		dropOn.setChild(target);
 
 		this.setChildrenPosition(target, dropOn.x, dropOn.y + dropOn.headerHeight);
-		this.cards = [...this.cards].sort((a, b) => {
-			return a.child?._id == b._id ? -1 : 1;
-		});
-		this.renderCards();
 	}
 }
 
-export { Game, stack, handleStackChange, dropToNewStack, craftDone };
+export { Game };

@@ -1,3 +1,4 @@
+import { Entity } from "../constants/entities";
 import { GameObject } from "./game-object";
 
 class CardObject extends GameObject {
@@ -10,7 +11,8 @@ class CardObject extends GameObject {
 			accentColor = "#43423D",
 			textColor = "#fff",
 			child = null,
-			stackId = null
+			stackId = null,
+			type = ""
 		} = {}
 	) {
 		super(x, y);
@@ -22,8 +24,28 @@ class CardObject extends GameObject {
 		this.borderWidth = 6;
 		this.borderRadius = 5;
 		this.headerHeight = 40;
-		this.child = child;
+
 		this.stackId = stackId;
+		this.child = child;
+
+		this.type = type;
+	}
+
+	/**
+	 *
+	 * @param {Number} x
+	 * @param {Number} y
+	 * @param {Entity} type
+	 * @returns
+	 */
+	static fromType(x, y, type) {
+		return new CardObject(x, y, {
+			title: type.args.title,
+			type: type,
+			textColor: type.args.color,
+			primaryColor: type.args.bg2,
+			accentColor: type.args.bg1
+		});
 	}
 
 	setChild(child) {

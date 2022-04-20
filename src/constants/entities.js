@@ -1,4 +1,14 @@
 import { cardCategory, categories } from "./categories";
+import { recepies } from "./recepies";
+
+class Entity {
+	constructor({ id, category, args, recepie }) {
+		this.id = id;
+		this.category = category;
+		this.args = args;
+		this.recepie = recepie;
+	}
+}
 
 const cardTypes = {};
 cardTypes.villager = registerEntity({
@@ -41,7 +51,7 @@ function registerEntity({ id, title, category = "default" }) {
 	const entityCategory = categories[category] || categories.default;
 	const _recepie = recepies[id] || undefined;
 
-	const entity = {
+	const entity = new Entity({
 		id: id,
 		category: entityCategory.name,
 		args: {
@@ -49,7 +59,7 @@ function registerEntity({ id, title, category = "default" }) {
 			...entityCategory.args
 		},
 		recepie: _recepie
-	};
+	});
 
 	return {
 		...entity,
@@ -59,4 +69,4 @@ function registerEntity({ id, title, category = "default" }) {
 	};
 }
 
-export { cardTypes };
+export { Entity, cardTypes };

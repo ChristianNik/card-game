@@ -4,6 +4,7 @@ class Game {
 	constructor() {
 		this.cards = [];
 		this.isDragging = false;
+		this.isMouseDown = false;
 
 		this.hoverStack = new Set();
 		this.hoverTargetId = null;
@@ -120,6 +121,8 @@ class Game {
 	// HANDLER
 	//
 	handleMouseMove(event) {
+		this.isDragging = this.isMouseDown;
+
 		this.cards.forEach(card => {
 			const matchX = event.offsetX >= card.x && event.offsetX <= card.x + card.width;
 			const matchY = event.offsetY >= card.y && event.offsetY <= card.y + card.height;
@@ -170,7 +173,7 @@ class Game {
 	}
 
 	handleMouseDown(event) {
-		this.isDragging = true;
+		this.isMouseDown = true;
 		if (!this.hoverTargetId) return;
 
 		// dont elevate parent with childs
@@ -180,7 +183,9 @@ class Game {
 		this.elevateElementById(this.hoverTargetId);
 	}
 	handleMouseUp(event) {
-		this.isDragging = false;
+		this.isMouseDown = false;
+
+		if (this.isDragging) {
 		if (this.hoverStack.size <= 1) {
 			const parent = this.cards.find(card => card.child?._id === this.hoverTargetId);
 			parent?.setChild(null);
@@ -188,6 +193,9 @@ class Game {
 		}
 		const ids = [...this.hoverStack];
 		this.stackCards(ids[0], ids[1]);
+		}
+
+		this.isDragging = false;
 	}
 
 	stackCards(targetId, dropOnId) {

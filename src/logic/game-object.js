@@ -15,23 +15,22 @@ class GameObject {
 	 * @param {CanvasRenderingContext2D} ctx
 	 */
 	render(ctx) {
+		this.clear(ctx);
+
 		ctx.fillStyle = "red";
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 
 	renderHover(ctx) {
+		this.clear(ctx);
+
 		ctx.fillStyle = "green";
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 
 	clear(ctx) {
 		ctx.save();
-		ctx.clearRect(
-			this.prevX,
-			this.prevY,
-			Math.floor(this.width - 1),
-			Math.floor(this.height - 1)
-		);
+		ctx.clearRect(this.prevX, this.prevY, Math.floor(this.width), Math.floor(this.height));
 		ctx.restore();
 		this.prevX = Math.floor(this.x);
 		this.prevY = Math.floor(this.y);

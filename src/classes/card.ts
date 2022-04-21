@@ -20,9 +20,11 @@ class Card {
 	accentColor = "#43423D";
 	textColor = "#fff";
 
-	constructor(x: number, y: number) {
+	constructor(x: number, y: number, title?: string) {
 		this.x = x;
 		this.y = y;
+
+		title && (this.title = title);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {

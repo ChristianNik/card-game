@@ -1,8 +1,19 @@
-import './style.css'
+import Card from "./classes/card";
+import "./style.css";
 
-const app = document.querySelector<HTMLDivElement>('#app')!
+const bgcanvas: any = document.querySelector("#bg-layer");
+const bgctx: CanvasRenderingContext2D = bgcanvas.getContext("2d");
 
-app.innerHTML = `
-  <h1>Hello Vite!</h1>
-  <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-`
+bgcanvas.width = innerWidth;
+bgcanvas.height = innerHeight;
+
+bgctx.fillStyle = "#A7F3D0";
+bgctx.fillRect(0, 0, bgcanvas.width, bgcanvas.height);
+
+const canvas: any = document.querySelector("#game-layer");
+const ctx: CanvasRenderingContext2D = canvas.getContext("2d");
+
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+new Card(10, 10).draw(ctx);

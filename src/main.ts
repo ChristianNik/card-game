@@ -1,6 +1,7 @@
 import "./style.css";
 import Card from "./classes/card";
 import CardStack from "./classes/card-stack";
+import CardStackManager from "./classes/card-stack-manager";
 
 const bgcanvas: any = document.querySelector("#bg-layer");
 const bgctx: CanvasRenderingContext2D = bgcanvas.getContext("2d");
@@ -77,20 +78,20 @@ const cardD = new Card(600, 10, "CardD");
 const stackA = new CardStack([cardA.id, cardB.id, cardC.id]);
 const stackB = new CardStack([cardD.id]);
 
+const cards: Card[] = [cardA, cardB, cardC, cardD];
+const stackManager = new CardStackManager([stackA, stackB]);
+
 setTimeout(() => {
-	moveToStack(cardB.id);
+	stackManager.moveToStack(cardB.id);
 }, 1000);
 
 setTimeout(() => {
-	moveToStack(cardC.id, stackB.id);
+	stackManager.moveToStack(cardC.id, stackB.id);
 }, 2000);
 
 setTimeout(() => {
-	moveToStack(cardC.id);
+	stackManager.moveToStack(cardC.id);
 }, 3000);
-
-const cards: Card[] = [cardA, cardB, cardC, cardD];
-const cardStack = [stackA, stackB];
 
 //
 // cards
@@ -100,74 +101,12 @@ function getCardById(id: string) {
 	return cards.find(c => c.id === id);
 }
 
-//
-// cardstack
-//
-
-function getStackById(stackId: string) {
-	return cardStack.find(s => s.id === stackId);
-}
-
-function findMatchedStack(cardId: string): { stack: CardStack; index: number } | null {
-	let matchIndex = -1;
-	const matchedStack = cardStack.find(stack => {
-		return stack.cards.find((id, i) => {
-			if (cardId === id) {
-				matchIndex = i;
-				return true;
-			}
-			return false;
-		});
-	});
-	if (matchedStack) {
-		return {
-			stack: matchedStack,
-			index: matchIndex
-		};
-	}
-	return null;
-}
-/**
- * Moves a card to a Stack when defined or creates a new stack
- * @param cardId Id of the Card
- * @param stackId Id of the taget Stack
- * @returns
- */
-function moveToStack(cardId: string, stackId?: string) {
-	// find card stack
-
-	const match = findMatchedStack(cardId);
-
-	// exit when no match
-	if (!match) return;
-
-	const cards = match.stack.cards.slice(match.index);
-
-	if (stackId) {
-		// move to stack if it exists
-		const stack = getStackById(stackId);
-		stack.pushMany(cards);
-	} else {
-		// move card and children to new stack
-		const stack = new CardStack(cards);
-
-		const rootCard = stack.getRootCard();
-		const matchedStackRootCard = match.stack.getRootCard();
-		rootCard.y = matchedStackRootCard.y;
-		rootCard.x = matchedStackRootCard.x + 300;
-		cardStack.push(stack);
-	}
-
-	// remove card and children from old stack
-	match.stack.cards.splice(match.index);
-}
-
 function animate() {
 	requestAnimationFrame(animate);
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	cardStack.forEach(stack => {
+	stackManager.cardStack.forEach(stack => {
 		const stackRootCard = getCardById(stack.cards[0]);
 
 		stack.cards.forEach((cardId, i) => {

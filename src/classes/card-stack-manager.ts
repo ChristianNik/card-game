@@ -72,11 +72,6 @@ class CardStackManager {
 		} else {
 			// move card and children to new stack
 			const stack = new CardStack(cards);
-
-			const rootCard = this.getCardById(stack.getRootCardId());
-			const matchedStackRootCard = this.getCardById(match.stack.getRootCardId());
-			rootCard.y = matchedStackRootCard.y;
-			rootCard.x = matchedStackRootCard.x + 300;
 			this.cardStack.push(stack);
 		}
 

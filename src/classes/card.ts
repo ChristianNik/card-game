@@ -69,6 +69,10 @@ class Card {
 		_drawHeaderBorder();
 		_drawTitle();
 	}
+
+	update(ctx: CanvasRenderingContext2D) {
+		this.draw(ctx);
+	}
 }
 
 export default Card;

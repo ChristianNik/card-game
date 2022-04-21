@@ -64,6 +64,8 @@ class CardStackManager {
 		if (stackId) {
 			// move to stack if it exists
 			const stack = this.getStackById(stackId);
+			console.log("stackId :", stackId);
+			console.log("stack :", stack);
 			stack.pushMany(cards);
 		} else {
 			// move card and children to new stack

@@ -69,11 +69,7 @@ class Card {
 			ctx.textAlign = "right";
 			ctx.textBaseline = "top";
 			ctx.font = `bold 0.7rem ui-sans-serif, system-ui, Arial`;
-			ctx.fillText(
-				this.id,
-				this.x + this.width - padding,
-				this.y + this.height - padding - 16 * 0.7
-			);
+			ctx.fillText(this.id, this.x + this.width - padding, this.y);
 		};
 
 		_drawGroundBorder();

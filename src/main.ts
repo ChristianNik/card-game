@@ -44,7 +44,11 @@ window.addEventListener("mouseup", event => {
 	mouse.y = event.y;
 	mouse.down = false;
 
-	console.log(hover.stack);
+	if (!(hover.stack.size > 1)) return;
+
+	const targetCardId = [...hover.stack][1];
+	const match = stackManager.findMatchedStack(targetCardId);
+	stackManager.moveToStack(hover.currentId(), match.stack.id);
 });
 
 window.addEventListener("mousemove", event => {

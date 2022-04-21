@@ -17,6 +17,10 @@ class CardStackManager {
 		return this.cards.find(c => c.id === id);
 	}
 
+	getCardIndexById(id: string): number {
+		return this.cards.findIndex(c => c.id === id);
+	}
+
 	getStackById(stackId: string) {
 		return this.cardStack.find(s => s.id === stackId);
 	}
@@ -64,8 +68,6 @@ class CardStackManager {
 		if (stackId) {
 			// move to stack if it exists
 			const stack = this.getStackById(stackId);
-			console.log("stackId :", stackId);
-			console.log("stack :", stack);
 			stack.pushMany(cards);
 		} else {
 			// move card and children to new stack

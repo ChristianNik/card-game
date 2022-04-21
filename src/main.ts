@@ -23,6 +23,7 @@ canvas.height = innerHeight;
 //
 
 let hover = {
+	prevId: undefined,
 	stack: new Set<string>(),
 	currentId: () => [...hover.stack][0]
 };
@@ -72,9 +73,21 @@ window.addEventListener("mousemove", event => {
 		if (stackManager.isStackRoot(card.id)) {
 			card.x = event.x - card.width / 2;
 			card.y = event.y - card.headerHeight / 2;
-			return;
+		} else {
+			stackManager.moveToStack(card.id);
 		}
-		stackManager.moveToStack(card.id);
+	}
+
+	if (mouse.down && hover.currentId() !== hover.prevId) {
+		hover.prevId = hover.currentId();
+
+		stackManager.cards = stackManager.cards.sort((a, b) => {
+			const currentHoverId = hover.currentId();
+			if (a.id === currentHoverId) return 1;
+			if (b.id === currentHoverId) return -1;
+
+			return 0;
+		});
 	}
 });
 
@@ -143,25 +156,32 @@ function animate() {
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	stackManager.cardStack.forEach(stack => {
-		const stackRootCard = stackManager.getCardById(stack.cards[0]);
+	stackManager.cardStack
+		.sort((a, b) => {
+			const indexA = stackManager.getCardIndexById(a.cards[0]);
+			const indexB = stackManager.getCardIndexById(b.cards[0]);
 
-		stack.cards.forEach((cardId, i) => {
-			const card = stackManager.getCardById(cardId);
-			if (!card) throw new Error(`Card with id '${cardId}' not found.`);
+			return indexA < indexB ? -1 : 1;
+		})
+		.forEach(stack => {
+			const stackRootCard = stackManager.getCardById(stack.cards[0]);
 
-			const isRoot = i === 0;
+			stack.cards.forEach((cardId, i) => {
+				const card = stackManager.getCardById(cardId);
+				if (!card) throw new Error(`Card with id '${cardId}' not found.`);
 
-			if (!isRoot) {
-				card.x = stackRootCard.x;
-				card.y = stackRootCard.y + 40 * i;
-			}
+				const isRoot = i === 0;
 
-			ctx.save();
-			card.update(ctx);
-			ctx.restore();
+				if (!isRoot) {
+					card.x = stackRootCard.x;
+					card.y = stackRootCard.y + 40 * i;
+				}
+
+				ctx.save();
+				card.update(ctx);
+				ctx.restore();
+			});
 		});
-	});
 }
 
 animate();

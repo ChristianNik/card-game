@@ -63,6 +63,18 @@ class Card {
 			ctx.arc(this.x + this.width / 2, this.y + this.height / 2, 55, 0, 2 * Math.PI);
 			ctx.fill();
 		};
+		const _drawId = () => {
+			const padding = 6;
+
+			ctx.textAlign = "right";
+			ctx.textBaseline = "top";
+			ctx.font = `bold 0.7rem ui-sans-serif, system-ui, Arial`;
+			ctx.fillText(
+				this.id,
+				this.x + this.width - padding,
+				this.y + this.height - padding - 16 * 0.7
+			);
+		};
 
 		_drawGroundBorder();
 		_drawGround();
@@ -70,6 +82,7 @@ class Card {
 		_drawHeader();
 		_drawHeaderBorder();
 		_drawTitle();
+		_drawId();
 	}
 
 	update(ctx: CanvasRenderingContext2D) {

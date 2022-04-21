@@ -47,7 +47,7 @@ window.addEventListener("mousemove", event => {
 		const matchX = event.offsetX >= card.x && event.offsetX <= card.x + card.width;
 		const matchY = event.offsetY >= card.y && event.offsetY <= card.y + card.height;
 		// add all id we are curently hovering on
-		if (matchX && matchY) {
+		if (matchX && matchY && !hover.currentId) {
 			hover.currentId = card.id;
 		} else if (hover.currentId === card.id && !mouse.down) {
 			hover.currentId = null;
@@ -58,7 +58,7 @@ window.addEventListener("mousemove", event => {
 	if (mouse.down && hover.currentId) {
 		const card = getCardById(hover.currentId);
 
-		card.x = event.x;
+		card.x = event.x - card.width / 2;
 		card.y = event.y;
 	}
 });

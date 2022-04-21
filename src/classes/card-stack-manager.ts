@@ -1,9 +1,20 @@
+import Card from "./card";
 import CardStack from "./card-stack";
 
+interface ManagerInits {
+	initCards?: Card[];
+	initCardStack?: CardStack[];
+}
 class CardStackManager {
+	cards: Card[] = [];
 	cardStack: CardStack[] = [];
-	constructor(cardStack?: CardStack[]) {
-		cardStack && (this.cardStack = cardStack);
+	constructor({ initCards, initCardStack }: ManagerInits) {
+		initCards && (this.cards = initCards);
+		initCardStack && (this.cardStack = initCardStack);
+	}
+
+	getCardById(id: string): Card {
+		return this.cards.find(c => c.id === id);
 	}
 
 	getStackById(stackId: string) {
@@ -54,8 +65,8 @@ class CardStackManager {
 			// move card and children to new stack
 			const stack = new CardStack(cards);
 
-			const rootCard = stack.getRootCard();
-			const matchedStackRootCard = match.stack.getRootCard();
+			const rootCard = this.getCardById(stack.getRootCardId());
+			const matchedStackRootCard = this.getCardById(match.stack.getRootCardId());
 			rootCard.y = matchedStackRootCard.y;
 			rootCard.x = matchedStackRootCard.x + 300;
 			this.cardStack.push(stack);

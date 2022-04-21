@@ -1,4 +1,3 @@
-import { getCardById } from "../main";
 import { generateId } from "../utils";
 
 class CardStack {
@@ -9,8 +8,8 @@ class CardStack {
 		this.cards = cards || [];
 	}
 
-	getRootCard() {
-		return getCardById(this.cards[0]);
+	getRootCardId(): string | null {
+		return this.cards[0] || null;
 	}
 
 	push(cardId: string) {

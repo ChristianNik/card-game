@@ -45,7 +45,7 @@ window.addEventListener("mouseup", event => {
 });
 
 window.addEventListener("mousemove", event => {
-	cards.forEach(card => {
+	stackManager.cards.forEach(card => {
 		const matchX = event.offsetX >= card.x && event.offsetX <= card.x + card.width;
 		const matchY = event.offsetY >= card.y && event.offsetY <= card.y + card.height;
 		// add all id we are curently hovering on
@@ -58,7 +58,7 @@ window.addEventListener("mousemove", event => {
 
 	// drag card under cuurent mouse pos
 	if (mouse.down && hover.currentId) {
-		const card = getCardById(hover.currentId);
+		const card = stackManager.getCardById(hover.currentId);
 
 		card.x = event.x - card.width / 2;
 		card.y = event.y - card.headerHeight / 2;
@@ -72,14 +72,15 @@ window.addEventListener("mousemove", event => {
 const cardA = new Card(10, 10, "CardA");
 const cardB = new Card(250, 10, "CardB");
 const cardC = new Card(350, 10, "CardC");
-
 const cardD = new Card(600, 10, "CardD");
 
 const stackA = new CardStack([cardA.id, cardB.id, cardC.id]);
 const stackB = new CardStack([cardD.id]);
 
-const cards: Card[] = [cardA, cardB, cardC, cardD];
-const stackManager = new CardStackManager([stackA, stackB]);
+const stackManager = new CardStackManager({
+	initCardStack: [stackA, stackB],
+	initCards: [cardA, cardB, cardC, cardD]
+});
 
 setTimeout(() => {
 	stackManager.moveToStack(cardB.id);
@@ -94,12 +95,8 @@ setTimeout(() => {
 }, 3000);
 
 //
-// cards
 //
-
-function getCardById(id: string) {
-	return cards.find(c => c.id === id);
-}
+//
 
 function animate() {
 	requestAnimationFrame(animate);
@@ -107,10 +104,10 @@ function animate() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	stackManager.cardStack.forEach(stack => {
-		const stackRootCard = getCardById(stack.cards[0]);
+		const stackRootCard = stackManager.getCardById(stack.cards[0]);
 
 		stack.cards.forEach((cardId, i) => {
-			const card = getCardById(cardId);
+			const card = stackManager.getCardById(cardId);
 			if (!card) throw new Error(`Card with id '${cardId}' not found.`);
 
 			const isRoot = i === 0;
@@ -129,4 +126,4 @@ function animate() {
 
 animate();
 
-export { getCardById };
+export {};

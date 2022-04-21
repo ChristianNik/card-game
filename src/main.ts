@@ -43,6 +43,8 @@ window.addEventListener("mouseup", event => {
 	mouse.x = event.x;
 	mouse.y = event.y;
 	mouse.down = false;
+
+	console.log(hover.stack);
 });
 
 window.addEventListener("mousemove", event => {
@@ -50,7 +52,7 @@ window.addEventListener("mousemove", event => {
 		const matchX = event.offsetX >= card.x && event.offsetX <= card.x + card.width;
 		const matchY = event.offsetY >= card.y && event.offsetY <= card.y + card.height;
 		// add all id we are curently hovering on
-		if (matchX && matchY && !mouse.down) {
+		if (matchX && matchY) {
 			addHoverId(card.id);
 		} else {
 			if (!(card.id === hover.currentId() && mouse.down)) {
@@ -58,7 +60,6 @@ window.addEventListener("mousemove", event => {
 			}
 		}
 	});
-	// console.log(hover.stack);
 
 	// drag card under cuurent mouse pos
 	if (mouse.down && hover.currentId()) {
@@ -77,9 +78,19 @@ function addHoverId(id) {
 	if (hover.stack.has(id)) return;
 
 	hover.stack.add(id);
+	const currentHoverId = hover.currentId();
+
 	const sortedStack = [...hover.stack].sort((idA, idB) => {
 		const matchA = stackManager.findMatchedStack(idA);
 		const matchB = stackManager.findMatchedStack(idB);
+
+		if (mouse.down) {
+			return currentHoverId === idA
+				? -1
+				: currentHoverId === idB
+				? 1
+				: matchB.index - matchA.index;
+		}
 
 		return matchB.index - matchA.index;
 	});

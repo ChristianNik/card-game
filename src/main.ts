@@ -23,7 +23,8 @@ canvas.height = innerHeight;
 //
 
 let hover = {
-	currentId: undefined
+	stack: new Set<string>(),
+	currentId: () => [...hover.stack][0]
 };
 
 let mouse = {
@@ -49,21 +50,45 @@ window.addEventListener("mousemove", event => {
 		const matchX = event.offsetX >= card.x && event.offsetX <= card.x + card.width;
 		const matchY = event.offsetY >= card.y && event.offsetY <= card.y + card.height;
 		// add all id we are curently hovering on
-		if (matchX && matchY && !hover.currentId) {
-			hover.currentId = card.id;
-		} else if (hover.currentId === card.id && !mouse.down) {
-			hover.currentId = null;
+		if (matchX && matchY && !mouse.down) {
+			addHoverId(card.id);
+		} else {
+			if (!(card.id === hover.currentId() && mouse.down)) {
+				removeHoverId(card.id);
+			}
 		}
 	});
+	// console.log(hover.stack);
 
 	// drag card under cuurent mouse pos
-	if (mouse.down && hover.currentId) {
-		const card = stackManager.getCardById(hover.currentId);
+	if (mouse.down && hover.currentId()) {
+		const card = stackManager.getCardById(hover.currentId());
 
-		card.x = event.x - card.width / 2;
-		card.y = event.y - card.headerHeight / 2;
+		if (stackManager.isStackRoot(card.id)) {
+			card.x = event.x - card.width / 2;
+			card.y = event.y - card.headerHeight / 2;
+			return;
+		}
+		stackManager.moveToStack(card.id);
 	}
 });
+
+function addHoverId(id) {
+	if (hover.stack.has(id)) return;
+
+	hover.stack.add(id);
+	const sortedStack = [...hover.stack].sort((idA, idB) => {
+		const matchA = stackManager.findMatchedStack(idA);
+		const matchB = stackManager.findMatchedStack(idB);
+
+		return matchB.index - matchA.index;
+	});
+	hover.stack = new Set(sortedStack);
+}
+function removeHoverId(id) {
+	if (!hover.stack.has(id)) return;
+	hover.stack.delete(id);
+}
 
 //
 // MAIN
@@ -82,17 +107,17 @@ const stackManager = new CardStackManager({
 	initCards: [cardA, cardB, cardC, cardD]
 });
 
-setTimeout(() => {
-	stackManager.moveToStack(cardB.id);
-}, 1000);
+// setTimeout(() => {
+// 	stackManager.moveToStack(cardB.id);
+// }, 100);
 
-setTimeout(() => {
-	stackManager.moveToStack(cardC.id, stackB.id);
-}, 2000);
+// setTimeout(() => {
+// 	stackManager.moveToStack(cardC.id, stackB.id);
+// }, 200);
 
-setTimeout(() => {
-	stackManager.moveToStack(cardC.id);
-}, 3000);
+// setTimeout(() => {
+// 	stackManager.moveToStack(cardC.id);
+// }, 300);
 
 //
 //

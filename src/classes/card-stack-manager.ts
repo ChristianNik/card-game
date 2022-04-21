@@ -21,6 +21,10 @@ class CardStackManager {
 		return this.cardStack.find(s => s.id === stackId);
 	}
 
+	isStackRoot(stackId: string) {
+		return this.findMatchedStack(stackId).stack.cards[0] === stackId;
+	}
+
 	findMatchedStack(cardId: string): { stack: CardStack; index: number } | null {
 		let matchIndex = -1;
 		const matchedStack = this.cardStack.find(stack => {

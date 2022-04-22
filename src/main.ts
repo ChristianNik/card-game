@@ -128,9 +128,9 @@ const cardC = new Card(350, 10, { title: "CardC" });
 const cardD = Card.fromType("villager", 500, 100);
 const cardE = Card.fromType("wood", 800, 100);
 
-const stackA = new CardStack([cardA.id, cardB.id, cardC.id]);
-const stackB = new CardStack([cardD.id]);
-const stackC = new CardStack([cardE.id]);
+const stackA = new CardStack([cardA, cardB, cardC]);
+const stackB = new CardStack([cardD]);
+const stackC = new CardStack([cardE]);
 
 const stackManager = new CardStackManager({
 	initCardStack: [stackA, stackB, stackC],
@@ -159,40 +159,37 @@ function animate() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	stackManager.cardStack
-		.sort((a, b) => {
-			const indexA = stackManager.getCardIndexById(a.cards[0]);
-			const indexB = stackManager.getCardIndexById(b.cards[0]);
+		.sort((stackA, stackB) => {
+			const indexA = stackManager.getCardIndexById(stackA.rootCard?.id);
+			const indexB = stackManager.getCardIndexById(stackB.rootCard?.id);
 
 			return indexA < indexB ? -1 : 1;
 		})
 		.forEach(stack => {
-			const stackRootCard = stackManager.getCardById(stack.cards[0]);
-
-			if (stack.canCraft && stackRootCard) {
+			if (stack.canCraft && stack.rootCard) {
 				// draw progressbar
 				const progressBarOffset = 10;
-				const progressBarMaxWidth = stackRootCard.width - progressBarOffset * 2;
+				const progressBarMaxWidth = stack.rootCard.width - progressBarOffset * 2;
 
 				ctx.fillStyle = "#000";
-				ctx.fillRect(stackRootCard.x, stackRootCard.y - 45, stackRootCard.width, 40);
+				ctx.fillRect(stack.rootCard.x, stack.rootCard.y - 45, stack.rootCard.width, 40);
 				ctx.fillStyle = "#fff";
 				ctx.fillRect(
-					stackRootCard.x + progressBarOffset,
-					stackRootCard.y - 45 + progressBarOffset,
+					stack.rootCard.x + progressBarOffset,
+					stack.rootCard.y - 45 + progressBarOffset,
 					progressBarMaxWidth * stack.progressBarValue,
-					stackRootCard.headerHeight - progressBarOffset * 2
+					stack.rootCard.headerHeight - progressBarOffset * 2
 				);
 			}
 
-			stack.cards.forEach((cardId, i) => {
-				const card = stackManager.getCardById(cardId);
-				if (!card) throw new Error(`Card with id '${cardId}' not found.`);
+			stack.cards.forEach((card, i) => {
+				if (!card) throw new Error(`Card with id '${card.id}' not found.`);
 
 				const isRoot = i === 0;
 
 				if (!isRoot) {
-					card.x = stackRootCard.x;
-					card.y = stackRootCard.y + 40 * i;
+					card.x = stack.rootCard.x;
+					card.y = stack.rootCard.y + 40 * i;
 				}
 
 				ctx.save();

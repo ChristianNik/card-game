@@ -1,32 +1,33 @@
 import { recepies } from "../config/recepies";
 import { getCraftable } from "../logic/crafting";
 import { generateId } from "../utils";
+import Card from "./card";
 
 class CardStack {
 	private __interval;
 	id = generateId();
-	cards: string[] = [];
+	cards: Card[] = [];
 	canCraft: boolean = false;
 	progressBarValue: number = 0;
 
-	constructor(cards: string[]) {
+	constructor(cards: Card[]) {
 		this.cards = cards || [];
 		console.log("constructor: craft?");
 		this.tryCraft();
 	}
 
-	getRootCardId(): string | null {
+	get rootCard(): Card | null {
 		return this.cards[0] || null;
 	}
 
-	push(cardId: string) {
-		this.cards.push(cardId);
+	push(card: Card) {
+		this.cards.push(card);
 		this.tryCraft();
 		return this;
 	}
 
-	pushMany(cardsIds: string[]) {
-		cardsIds.forEach(id => this.push(id));
+	pushMany(cards: Card[]) {
+		cards.forEach(card => this.push(card));
 		return this;
 	}
 

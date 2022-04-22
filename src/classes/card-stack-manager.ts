@@ -26,14 +26,14 @@ class CardStackManager {
 	}
 
 	isStackRoot(stackId: string) {
-		return this.findMatchedStack(stackId).stack.cards[0] === stackId;
+		return this.findMatchedStack(stackId).stack.cards[0].id === stackId;
 	}
 
 	findMatchedStack(cardId: string): { stack: CardStack; index: number } | null {
 		let matchIndex = -1;
 		const matchedStack = this.cardStack.find(stack => {
-			return stack.cards.find((id, i) => {
-				if (cardId === id) {
+			return stack.cards.find((card, i) => {
+				if (cardId === card.id) {
 					matchIndex = i;
 					return true;
 				}

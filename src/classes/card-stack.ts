@@ -1,11 +1,13 @@
+import { recepies } from "../config/recepies";
+import { getCraftable } from "../logic/crafting";
 import { generateId } from "../utils";
 
 class CardStack {
+	private __interval;
 	id = generateId();
 	cards: string[] = [];
 	canCraft: boolean = false;
 	progressBarValue: number = 0;
-	__interval;
 
 	constructor(cards: string[]) {
 		this.cards = cards || [];
@@ -39,13 +41,17 @@ class CardStack {
 	}
 
 	tryCraft() {
-		this.canCraft = this.canCraft ? false : this.cards.length > 1;
-		if (!this.canCraft) return;
+		// todo: get ingredients from cards
+		const recepieId = getCraftable({
+			wood: 1,
+			villager: 1
+		});
 
-		// const craftRecepie = this.getCraftableRecepie();
-		// if (!craftRecepie) return;
+		if (!recepieId) return;
+		const craftRecepie = recepies[recepieId];
+		if (!craftRecepie) return;
 
-		// this._currentRecepie = craftRecepie;
+		this.canCraft = true;
 
 		const increment = () => {
 			if (this.progressBarValue >= 1) {
@@ -56,8 +62,7 @@ class CardStack {
 
 			this.progressBarValue += 0.01;
 		};
-		this.__interval = setInterval(increment, (Math.random() + 500) / 10);
-		// this.__interval = setInterval(increment, (craftRecepie.duration * 100) / 10);
+		this.__interval = setInterval(increment, (craftRecepie.duration * 100) / 10);
 	}
 }
 

@@ -126,13 +126,15 @@ const cardA = new Card(100, 100, { title: "CardA" });
 const cardB = new Card(250, 10, { title: "CardB" });
 const cardC = new Card(350, 10, { title: "CardC" });
 const cardD = Card.fromType("villager", 500, 100);
+const cardE = Card.fromType("wood", 800, 100);
 
 const stackA = new CardStack([cardA.id, cardB.id, cardC.id]);
 const stackB = new CardStack([cardD.id]);
+const stackC = new CardStack([cardE.id]);
 
 const stackManager = new CardStackManager({
-	initCardStack: [stackA, stackB],
-	initCards: [cardA, cardB, cardC, cardD]
+	initCardStack: [stackA, stackB, stackC],
+	initCards: [cardA, cardB, cardC, cardD, cardE]
 });
 
 // setTimeout(() => {

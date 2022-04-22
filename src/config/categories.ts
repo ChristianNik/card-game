@@ -55,5 +55,5 @@ const categories = {
 	})
 };
 
-export { categories, cardCategory };
+export { EntityCategory, categories, cardCategory };
 export type { TCategory, EntityCategoryArgs };

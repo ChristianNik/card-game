@@ -1,10 +1,13 @@
+import { entities, TEnities } from "../config/entities";
 import { generateId } from "../utils";
 
-/**
- * position
- * stackable
- * dragable
- */
+interface CardOptions {
+	title?: string;
+	primaryColor?: string;
+	accentColor?: string;
+	textColor?: string;
+}
+
 class Card {
 	id = generateId();
 	x: number;
@@ -20,11 +23,25 @@ class Card {
 	accentColor = "#43423D";
 	textColor = "#fff";
 
-	constructor(x: number, y: number, title?: string) {
+	constructor(x: number, y: number, options?: CardOptions) {
 		this.x = x;
 		this.y = y;
 
-		title && (this.title = title);
+		options?.title && (this.title = options.title);
+		options?.accentColor && (this.accentColor = options.accentColor);
+		options?.primaryColor && (this.primaryColor = options.primaryColor);
+		options?.textColor && (this.textColor = options.textColor);
+	}
+
+	static fromType(type: TEnities, x: number = 0, y: number = 0) {
+		const entity = entities[type];
+
+		return new Card(x, y, {
+			title: entity.args.title,
+			accentColor: entity.category.args.bg1,
+			primaryColor: entity.category.args.bg2,
+			textColor: entity.category.args.color
+		});
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {

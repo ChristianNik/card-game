@@ -122,10 +122,10 @@ function removeHoverId(id) {
 // MAIN
 //
 
-const cardA = new Card(100, 100, "CardA");
-const cardB = new Card(250, 10, "CardB");
-const cardC = new Card(350, 10, "CardC");
-const cardD = new Card(600, 10, "CardD");
+const cardA = new Card(100, 100, { title: "CardA" });
+const cardB = new Card(250, 10, { title: "CardB" });
+const cardC = new Card(350, 10, { title: "CardC" });
+const cardD = Card.fromType("villager", 500, 100);
 
 const stackA = new CardStack([cardA.id, cardB.id, cardC.id]);
 const stackB = new CardStack([cardD.id]);

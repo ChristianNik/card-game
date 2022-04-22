@@ -122,7 +122,7 @@ function removeHoverId(id) {
 // MAIN
 //
 
-const cardA = new Card(10, 10, "CardA");
+const cardA = new Card(100, 100, "CardA");
 const cardB = new Card(250, 10, "CardB");
 const cardC = new Card(350, 10, "CardC");
 const cardD = new Card(600, 10, "CardD");
@@ -166,6 +166,22 @@ function animate() {
 		.forEach(stack => {
 			const stackRootCard = stackManager.getCardById(stack.cards[0]);
 
+			if (stack.canCraft && stackRootCard) {
+				// draw progressbar
+				const progressBarOffset = 10;
+				const progressBarMaxWidth = stackRootCard.width - progressBarOffset * 2;
+
+				ctx.fillStyle = "#000";
+				ctx.fillRect(stackRootCard.x, stackRootCard.y - 45, stackRootCard.width, 40);
+				ctx.fillStyle = "#fff";
+				ctx.fillRect(
+					stackRootCard.x + progressBarOffset,
+					stackRootCard.y - 45 + progressBarOffset,
+					progressBarMaxWidth * stack.progressBarValue,
+					stackRootCard.headerHeight - progressBarOffset * 2
+				);
+			}
+
 			stack.cards.forEach((cardId, i) => {
 				const card = stackManager.getCardById(cardId);
 				if (!card) throw new Error(`Card with id '${cardId}' not found.`);
@@ -185,5 +201,3 @@ function animate() {
 }
 
 animate();
-
-export {};

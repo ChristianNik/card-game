@@ -19,6 +19,12 @@ const ctx: CanvasRenderingContext2D = canvas.getContext("2d");
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
+const uicanvas: any = document.querySelector("#ui-layer");
+const uictx: CanvasRenderingContext2D = uicanvas.getContext("2d");
+
+uicanvas.width = innerWidth;
+uicanvas.height = innerHeight;
+
 //
 // HOVER
 //
@@ -187,12 +193,18 @@ const stackManager = new CardStackManager({
 //
 //
 
+function drawUI(ctx: CanvasRenderingContext2D) {
+	ctx.save();
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	drawDebugText(ctx, { stackManager });
+	ctx.restore();
+}
+
 function animate() {
 	requestAnimationFrame(animate);
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	drawDebugText(ctx, { stackManager });
+	drawUI(uictx);
 
 	stackManager.cardStack
 		.sort((stackA, stackB) => {

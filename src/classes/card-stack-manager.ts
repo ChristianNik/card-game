@@ -65,8 +65,7 @@ class CardStackManager {
 
 	splitStack(stackId: string) {
 		const stack = this.getStackById(stackId);
-		stack.cards.forEach(card => this.addCard(card));
-		stack.cards = [];
+		stack.cards.splice(1).forEach(card => this.cardStack.push(new CardStack([card])));
 	}
 
 	clearStacks() {

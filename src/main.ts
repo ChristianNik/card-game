@@ -2,6 +2,7 @@ import "./style.css";
 import Card from "./classes/card";
 import CardStack from "./classes/card-stack";
 import CardStackManager from "./classes/card-stack-manager";
+import { drawDebugText } from "./utils";
 
 const bgcanvas: any = document.querySelector("#bg-layer");
 const bgctx: CanvasRenderingContext2D = bgcanvas.getContext("2d");
@@ -189,6 +190,8 @@ function animate() {
 	requestAnimationFrame(animate);
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	drawDebugText(ctx, { stackManager });
 
 	stackManager.cardStack
 		.sort((stackA, stackB) => {

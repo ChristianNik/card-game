@@ -1,5 +1,17 @@
+import { TEnities } from "./entities";
 class EntityRecepie {
-	constructor({ id, duration, ingredients }) {
+	id: TEnities;
+	duration: number;
+	ingredients: EntityIngredient[];
+	constructor({
+		id,
+		duration,
+		ingredients
+	}: {
+		id: TEnities;
+		duration: number;
+		ingredients: EntityIngredient[];
+	}) {
 		this.id = id;
 		this.duration = duration;
 		this.ingredients = ingredients;
@@ -7,9 +19,15 @@ class EntityRecepie {
 }
 
 class EntityIngredient {
-	constructor(name, { count = 1, willConsume = true } = {}) {
+	count: number;
+	type: TEnities;
+	willConsume: boolean;
+	constructor(
+		type: TEnities,
+		{ count = 1, willConsume = true }: { count?: number; willConsume?: boolean } = {}
+	) {
 		this.count = count;
-		this.name = name;
+		this.type = type;
 		this.willConsume = willConsume;
 	}
 }
@@ -40,7 +58,8 @@ const recepies = {
 		duration: 30,
 		ingredients: [
 			new EntityIngredient("villager", {
-				count: 2
+				count: 2,
+				willConsume: false
 			})
 		]
 	}),
@@ -70,8 +89,11 @@ const recepies = {
 	})
 };
 
-function getRecepieEntity(id) {
-	return recepies[id];
+function getRecepieEntity(id: string): EntityIngredient | null {
+	return recepies[id] || null;
 }
 
+type TRecepies = typeof recepies;
+
 export { EntityRecepie, EntityIngredient, getRecepieEntity, recepies };
+export type { TRecepies };

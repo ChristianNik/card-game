@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+}
+
+#app {
+  position: relativ;
+}
+
+canvas {
+  position: absolute;
+  background-color: transparent;
+}
+
+#game-layer {
+  z-index: 2;
+}
+#bg-layer {
+  z-index: 1;
+}

@@ -1,8 +1,3 @@
-//
-//
-// Categories
-
-//
 const cardCategory = {
 	foot: "foot",
 	person: "person",
@@ -12,11 +7,17 @@ const cardCategory = {
 	test: "test",
 	default: "default"
 };
-//
-//
-// Category Colors
-//
+
+type TCategory = keyof typeof cardCategory;
+interface EntityCategoryArgs {
+	color: string;
+	bg1: string;
+	bg2: string;
+}
+
 class EntityCategory {
+	name: TCategory;
+	args: EntityCategoryArgs;
 	constructor({ category, textColor, primaryColor, accentColor }) {
 		this.name = category;
 		this.args = {
@@ -54,4 +55,5 @@ const categories = {
 	})
 };
 
-export { categories, cardCategory };
+export { EntityCategory, categories, cardCategory };
+export type { TCategory, EntityCategoryArgs };

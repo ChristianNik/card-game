@@ -18,7 +18,7 @@ function getCraftable(ingreds: Partial<{ [key in TEnities]: number }>): keyof TR
 
 		if (!sameLength) return null;
 
-		return item.recepie.ingredients.every(i => ingreds[i.name] - i.count == 0);
+		return item.recepie.ingredients.every(i => ingreds[i.type] - i.count == 0);
 	});
 
 	return (match as keyof TRecepies) || null;

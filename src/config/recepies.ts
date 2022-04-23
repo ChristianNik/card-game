@@ -20,14 +20,14 @@ class EntityRecepie {
 
 class EntityIngredient {
 	count: number;
-	name: string;
+	type: TEnities;
 	willConsume: boolean;
 	constructor(
-		name: string,
+		type: TEnities,
 		{ count = 1, willConsume = true }: { count?: number; willConsume?: boolean } = {}
 	) {
 		this.count = count;
-		this.name = name;
+		this.type = type;
 		this.willConsume = willConsume;
 	}
 }

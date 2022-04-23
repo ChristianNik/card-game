@@ -1,7 +1,7 @@
-import { TEnities } from "../config/entities";
 import { EntityRecepie, recepies } from "../config/recepies";
 import { getCraftable } from "../logic/crafting";
 import { generateId } from "../utils";
+import { globalevents } from "../utils/global-events";
 import Card from "./card";
 
 class CardStack {
@@ -17,9 +17,7 @@ class CardStack {
 			this.recepie = null;
 		},
 		craft_success: () => {
-			console.log(this.id, "craft_success", this.recepie.id);
-
-			this.events?.craft_success?.(this.recepie.id);
+			globalevents.emit.craftingDone(this.recepie.id, this.id);
 			this._events.craft_done();
 		}
 	};
@@ -29,10 +27,6 @@ class CardStack {
 	progressBarValue: number = 0;
 
 	recepie: EntityRecepie | null;
-
-	events: {
-		craft_success?: (id: TEnities) => void;
-	} = {};
 
 	constructor(cards: Card[]) {
 		this.cards = cards || [];
@@ -88,6 +82,17 @@ class CardStack {
 			this.progressBarValue += 0.01;
 		};
 		this.__interval = setInterval(increment, (craftRecepie.duration * 100) / 10);
+	}
+
+	getCardsToRemove() {
+		const cardsIdsToRemove = this.cards
+			.filter(card => {
+				const ingred = this.recepie.ingredients.find(i => i.type === card.type);
+				return ingred.willConsume;
+			})
+			.map(c => c.id);
+
+		return cardsIdsToRemove;
 	}
 }
 

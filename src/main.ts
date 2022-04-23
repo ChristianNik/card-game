@@ -96,6 +96,21 @@ window.addEventListener("mousemove", event => {
 	}
 });
 
+window.addEventListener("g_craftingdone", (event: any) => {
+	stackManager.addCard(Card.fromType(event.detail.type));
+
+	const stack = stackManager.getStackById(event.detail.stackId);
+	const cardsIdsToRemove = stack.getCardsToRemove();
+
+	// remove from hover stack
+	cardsIdsToRemove.forEach(cId => hover.stack.delete(cId));
+	stackManager.cards = stackManager.cards.filter(card => !cardsIdsToRemove.includes(card.id));
+	stack.cards = stack.cards.filter(card => !cardsIdsToRemove.includes(card.id));
+
+	// remove stacks with no cards
+	stackManager.cardStack = stackManager.cardStack.filter(stack => stack.cards.length > 0);
+});
+
 function addHoverId(id) {
 	if (hover.stack.has(id)) return;
 

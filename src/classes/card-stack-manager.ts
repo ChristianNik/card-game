@@ -13,9 +13,18 @@ class CardStackManager {
 		initCardStack && (this.cardStack = initCardStack);
 	}
 
-	addCard(card: Card) {
+	addCard(card: Card, stackId?: string) {
 		this.cards.push(card);
+		if (stackId) {
+			this.getStackById(stackId).push(card);
+			return;
+		}
 		this.cardStack.push(new CardStack([card]));
+	}
+
+	addCards(cards: Card[]) {
+		this.cards.push(...cards);
+		this.cardStack.push(new CardStack(cards));
 	}
 
 	getCardById(id: string): Card {
@@ -52,6 +61,16 @@ class CardStackManager {
 			};
 		}
 		return null;
+	}
+
+	splitStack(stackId: string) {
+		const stack = this.getStackById(stackId);
+		stack.cards.forEach(card => this.addCard(card));
+		stack.cards = [];
+	}
+
+	clearCards() {
+		this.cardStack = this.cardStack.filter(stack => stack.cards.length > 0);
 	}
 
 	/**

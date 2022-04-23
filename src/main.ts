@@ -107,8 +107,11 @@ window.addEventListener("g_craftingdone", (event: any) => {
 	stackManager.cards = stackManager.cards.filter(card => !cardsIdsToRemove.includes(card.id));
 	stack.cards = stack.cards.filter(card => !cardsIdsToRemove.includes(card.id));
 
+	//  move cards to new stack
+	stackManager.splitStack(stack.id);
+
 	// remove stacks with no cards
-	stackManager.cardStack = stackManager.cardStack.filter(stack => stack.cards.length > 0);
+	stackManager.clearCards();
 });
 
 function addHoverId(id) {

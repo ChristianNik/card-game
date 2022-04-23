@@ -58,7 +58,8 @@ const recepies = {
 		duration: 30,
 		ingredients: [
 			new EntityIngredient("villager", {
-				count: 2
+				count: 2,
+				willConsume: false
 			})
 		]
 	}),

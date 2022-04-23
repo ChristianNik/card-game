@@ -24,6 +24,7 @@ class CardStack {
 	id = generateId();
 	cards: Card[] = [];
 	canCraft: boolean = false;
+	// TODO: getter / setter with max = 1
 	progressBarValue: number = 0;
 
 	recepie: EntityRecepie | null;
@@ -95,23 +96,39 @@ class CardStack {
 		return cardsIdsToRemove;
 	}
 
+	private _drawProgressBar(ctx: CanvasRenderingContext2D) {
+		const height = 24;
+		const offset = 16;
+		const x = this.rootCard.x;
+		const y = this.rootCard.y - height - offset;
+
+		const padding = 2;
+
+		const progressBarHeight = height - padding * 2;
+		const progressBarMaxWidth = this.rootCard.width - padding * 2;
+
+		// ground
+		ctx.fillStyle = "#000";
+		ctx.fillRect(x, y, this.rootCard.width, height);
+
+		// border
+		ctx.lineWidth = 4;
+		ctx.strokeRect(x, y, this.rootCard.width, height);
+		// bar
+		ctx.fillStyle = "#fff";
+		ctx.fillRect(
+			x + padding,
+			y + padding,
+			progressBarMaxWidth * this.progressBarValue,
+			progressBarHeight
+		);
+	}
+
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.save();
 
 		if (this.canCraft && this.rootCard) {
-			// draw progressbar
-			const progressBarOffset = 10;
-			const progressBarMaxWidth = this.rootCard.width - progressBarOffset * 2;
-
-			ctx.fillStyle = "#000";
-			ctx.fillRect(this.rootCard.x, this.rootCard.y - 45, this.rootCard.width, 40);
-			ctx.fillStyle = "#fff";
-			ctx.fillRect(
-				this.rootCard.x + progressBarOffset,
-				this.rootCard.y - 45 + progressBarOffset,
-				progressBarMaxWidth * this.progressBarValue,
-				this.rootCard.headerHeight - progressBarOffset * 2
-			);
+			this._drawProgressBar(ctx);
 		}
 
 		this.cards.forEach((card, i) => {

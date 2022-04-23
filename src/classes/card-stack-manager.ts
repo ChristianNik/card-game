@@ -69,7 +69,7 @@ class CardStackManager {
 		stack.cards = [];
 	}
 
-	clearCards() {
+	clearStacks() {
 		this.cardStack = this.cardStack.filter(stack => stack.cards.length > 0);
 	}
 

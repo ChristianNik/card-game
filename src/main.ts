@@ -60,6 +60,7 @@ window.addEventListener("mouseup", event => {
 	const targetCardId = [...hover.stack][1];
 	const match = stackManager.findMatchedStack(targetCardId);
 	stackManager.moveToStack(hover.currentId(), match.stack.id);
+	stackManager.clearStacks();
 });
 
 window.addEventListener("mousemove", event => {
@@ -121,7 +122,7 @@ window.addEventListener("g_craftingdone", (event: any) => {
 	stackManager.splitStack(stack.id);
 
 	// remove stacks with no cards
-	stackManager.clearCards();
+	stackManager.clearStacks();
 });
 
 function addHoverId(id) {

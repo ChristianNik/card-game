@@ -1,18 +1,41 @@
-import { recepies } from "../config/recepies";
+import { TEnities } from "../config/entities";
+import { EntityRecepie, recepies } from "../config/recepies";
 import { getCraftable } from "../logic/crafting";
 import { generateId } from "../utils";
 import Card from "./card";
 
 class CardStack {
 	private __interval;
+	private _events = {
+		craft_start: recepie => {
+			this.recepie = recepie;
+			this.canCraft = true;
+		},
+		craft_done: () => {
+			this.canCraft = false;
+			this.progressBarValue = 0;
+			this.recepie = null;
+		},
+		craft_success: () => {
+			console.log(this.id, "craft_success", this.recepie.id);
+
+			this.events?.craft_success?.(this.recepie.id);
+			this._events.craft_done();
+		}
+	};
 	id = generateId();
 	cards: Card[] = [];
 	canCraft: boolean = false;
 	progressBarValue: number = 0;
 
+	recepie: EntityRecepie | null;
+
+	events: {
+		craft_success?: (id: TEnities) => void;
+	} = {};
+
 	constructor(cards: Card[]) {
 		this.cards = cards || [];
-		console.log("constructor: craft?");
 		this.tryCraft();
 	}
 
@@ -31,36 +54,37 @@ class CardStack {
 		return this;
 	}
 
-	craftStateDone() {
-		// this.events.onCraftDone(this._currentRecepie?.id);
-
-		console.log(this.id, "craftStateDone");
-
-		this.canCraft = false;
-		this.progressBarValue = 0;
-		// this._currentRecepie = null;
+	getIngredients() {
+		return this.cards.reduce((acc, card) => {
+			if (!acc[card.type]) {
+				acc[card.type] = 0;
+			}
+			acc[card.type]++;
+			return acc;
+		}, {});
 	}
 
 	tryCraft() {
-		// todo: get ingredients from cards
-		const recepieId = getCraftable({
-			wood: 1,
-			villager: 1
-		});
-
+		const recepieId = getCraftable(this.getIngredients());
 		if (!recepieId) return;
+
 		const craftRecepie = recepies[recepieId];
 		if (!craftRecepie) return;
 
-		this.canCraft = true;
+		this._events.craft_start(craftRecepie);
 
 		const increment = () => {
-			if (this.progressBarValue >= 1) {
+			const recepieId = getCraftable(this.getIngredients());
+
+			if (!recepieId) {
+				this._events.craft_done();
+			} else if (this.progressBarValue >= 1) {
 				clearInterval(this.__interval);
 
-				this.craftStateDone();
+				if (!this.recepie) return;
+				// emit success event
+				this._events.craft_success();
 			}
-
 			this.progressBarValue += 0.01;
 		};
 		this.__interval = setInterval(increment, (craftRecepie.duration * 100) / 10);

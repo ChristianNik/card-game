@@ -6,6 +6,7 @@ interface CardOptions {
 	primaryColor?: string;
 	accentColor?: string;
 	textColor?: string;
+	type?: TEnities;
 }
 
 class Card {
@@ -22,6 +23,7 @@ class Card {
 	primaryColor = "#61605B";
 	accentColor = "#43423D";
 	textColor = "#fff";
+	type: TEnities = "default";
 
 	constructor(x: number, y: number, options?: CardOptions) {
 		this.x = x;
@@ -31,6 +33,7 @@ class Card {
 		options?.accentColor && (this.accentColor = options.accentColor);
 		options?.primaryColor && (this.primaryColor = options.primaryColor);
 		options?.textColor && (this.textColor = options.textColor);
+		options?.type && (this.type = options.type);
 	}
 
 	static fromType(type: TEnities, x: number = 0, y: number = 0) {
@@ -40,7 +43,8 @@ class Card {
 			title: entity.args.title,
 			accentColor: entity.category.args.bg1,
 			primaryColor: entity.category.args.bg2,
-			textColor: entity.category.args.color
+			textColor: entity.category.args.color,
+			type: type
 		});
 	}
 

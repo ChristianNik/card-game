@@ -11,6 +11,14 @@ class CardStackManager {
 	constructor({ initCards, initCardStack }: ManagerInits) {
 		initCards && (this.cards = initCards);
 		initCardStack && (this.cardStack = initCardStack);
+
+		this.cardStack.forEach(stack => {
+			stack.events.craft_success = id => {
+				// todo: create card
+				// todo: remove used cards
+				console.log("create", id);
+			};
+		});
 	}
 
 	getCardById(id: string): Card {

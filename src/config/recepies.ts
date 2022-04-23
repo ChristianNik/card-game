@@ -1,5 +1,6 @@
+import { TEnities } from "./entities";
 class EntityRecepie {
-	id: string;
+	id: TEnities;
 	duration: number;
 	ingredients: EntityIngredient[];
 	constructor({
@@ -7,7 +8,7 @@ class EntityRecepie {
 		duration,
 		ingredients
 	}: {
-		id: string;
+		id: TEnities;
 		duration: number;
 		ingredients: EntityIngredient[];
 	}) {

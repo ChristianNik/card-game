@@ -34,10 +34,19 @@ let mouse = {
 	down: false
 };
 
+let shiftX = 0;
+let shiftY = 0;
+
 window.addEventListener("mousedown", event => {
 	mouse.x = event.x;
 	mouse.y = event.y;
 	mouse.down = true;
+
+	const card = stackManager.getCardById(hover.currentId());
+	if (!card) return;
+
+	shiftX = event.clientX - card.x;
+	shiftY = event.clientY - card.y;
 });
 
 window.addEventListener("mouseup", event => {
@@ -76,8 +85,8 @@ window.addEventListener("mousemove", event => {
 		const card = stackManager.getCardById(hover.currentId());
 
 		if (stackManager.isStackRoot(card.id)) {
-			card.x = event.x - card.width / 2;
-			card.y = event.y - card.headerHeight / 2;
+			card.x = event.x - shiftX;
+			card.y = event.y - shiftY;
 		} else {
 			stackManager.moveToStack(card.id);
 		}

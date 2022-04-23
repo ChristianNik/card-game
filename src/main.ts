@@ -54,15 +54,20 @@ window.addEventListener("mouseup", event => {
 
 window.addEventListener("mousemove", event => {
 	stackManager.cards.forEach(card => {
-		const matchX = event.offsetX >= card.x && event.offsetX <= card.x + card.width;
-		const matchY = event.offsetY >= card.y && event.offsetY <= card.y + card.height;
 		// add all id we are curently hovering on
-		if (matchX && matchY) {
-			addHoverId(card.id);
-		} else {
+		if (
+			event.offsetX > card.x + card.width ||
+			event.offsetX < card.x ||
+			event.offsetY > card.y + card.height ||
+			event.offsetY < card.y
+		) {
+			// no collision
 			if (!(card.id === hover.currentId() && mouse.down)) {
 				removeHoverId(card.id);
 			}
+		} else {
+			// collision with mouse
+			addHoverId(card.id);
 		}
 	});
 

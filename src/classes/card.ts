@@ -15,7 +15,7 @@ class Card {
 	y: number;
 	width = 182;
 	height = 227;
-	borderWidth = 6;
+	borderWidth = 4;
 	borderRadius = 5;
 	headerHeight = 40;
 
@@ -49,28 +49,16 @@ class Card {
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		const _drawGroundBorder = () => {
-			ctx.strokeStyle = "#000";
-			ctx.lineWidth = this.borderWidth;
-			ctx.rect(this.x, this.y, this.width, this.height);
-			ctx.stroke();
-		};
 		const _drawGround = () => {
 			ctx.fillStyle = this.accentColor;
-			ctx.rect(this.x, this.y, this.width, this.height);
-			ctx.fill();
+			ctx.lineWidth = this.borderWidth;
+			ctx.fillRect(this.x, this.y, this.width, this.height);
+			ctx.strokeRect(this.x, this.y, this.width, this.height);
 		};
 		const _drawHeader = () => {
 			ctx.fillStyle = this.primaryColor;
-			ctx.rect(this.x, this.y, this.width, this.headerHeight);
-			ctx.fill();
-		};
-		const _drawHeaderBorder = () => {
-			ctx.lineWidth = this.borderWidth / 2;
-			ctx.beginPath();
-			ctx.moveTo(this.x, this.y + this.headerHeight);
-			ctx.lineTo(this.x + this.width, this.y + this.headerHeight);
-			ctx.stroke();
+			ctx.fillRect(this.x, this.y, this.width, this.headerHeight);
+			ctx.strokeRect(this.x, this.y, this.width, this.headerHeight);
 		};
 		const _drawTitle = () => {
 			ctx.fillStyle = this.textColor;
@@ -85,19 +73,19 @@ class Card {
 			ctx.fill();
 		};
 		const _drawId = () => {
-			const padding = 6;
-
 			ctx.textAlign = "right";
 			ctx.textBaseline = "top";
 			ctx.font = `bold 0.7rem ui-sans-serif, system-ui, Arial`;
-			ctx.fillText(this.id, this.x + this.width - padding, this.y);
+			ctx.fillText(
+				this.id,
+				this.x + this.width - this.borderRadius,
+				this.y + this.borderRadius
+			);
 		};
 
-		_drawGroundBorder();
 		_drawGround();
 		_drawBody();
 		_drawHeader();
-		_drawHeaderBorder();
 		_drawTitle();
 		_drawId();
 	}

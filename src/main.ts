@@ -202,36 +202,7 @@ function animate() {
 			return indexA < indexB ? -1 : 1;
 		})
 		.forEach(stack => {
-			if (stack.canCraft && stack.rootCard) {
-				// draw progressbar
-				const progressBarOffset = 10;
-				const progressBarMaxWidth = stack.rootCard.width - progressBarOffset * 2;
-
-				ctx.fillStyle = "#000";
-				ctx.fillRect(stack.rootCard.x, stack.rootCard.y - 45, stack.rootCard.width, 40);
-				ctx.fillStyle = "#fff";
-				ctx.fillRect(
-					stack.rootCard.x + progressBarOffset,
-					stack.rootCard.y - 45 + progressBarOffset,
-					progressBarMaxWidth * stack.progressBarValue,
-					stack.rootCard.headerHeight - progressBarOffset * 2
-				);
-			}
-
-			stack.cards.forEach((card, i) => {
-				if (!card) throw new Error(`Card with id '${card.id}' not found.`);
-
-				const isRoot = i === 0;
-
-				if (!isRoot) {
-					card.x = stack.rootCard.x;
-					card.y = stack.rootCard.y + 40 * i;
-				}
-
-				ctx.save();
-				card.update(ctx);
-				ctx.restore();
-			});
+			stack.draw(ctx);
 		});
 }
 

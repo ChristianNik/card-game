@@ -94,6 +94,42 @@ class CardStack {
 
 		return cardsIdsToRemove;
 	}
+
+	draw(ctx: CanvasRenderingContext2D) {
+		ctx.save();
+
+		if (this.canCraft && this.rootCard) {
+			// draw progressbar
+			const progressBarOffset = 10;
+			const progressBarMaxWidth = this.rootCard.width - progressBarOffset * 2;
+
+			ctx.fillStyle = "#000";
+			ctx.fillRect(this.rootCard.x, this.rootCard.y - 45, this.rootCard.width, 40);
+			ctx.fillStyle = "#fff";
+			ctx.fillRect(
+				this.rootCard.x + progressBarOffset,
+				this.rootCard.y - 45 + progressBarOffset,
+				progressBarMaxWidth * this.progressBarValue,
+				this.rootCard.headerHeight - progressBarOffset * 2
+			);
+		}
+
+		this.cards.forEach((card, i) => {
+			if (!card) throw new Error(`Card with id '${card.id}' not found.`);
+
+			const isRoot = i === 0;
+
+			if (!isRoot) {
+				card.x = this.rootCard.x;
+				card.y = this.rootCard.y + 40 * i;
+			}
+
+			ctx.save();
+			card.update(ctx);
+			ctx.restore();
+		});
+		ctx.restore();
+	}
 }
 
 export default CardStack;

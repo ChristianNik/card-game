@@ -70,6 +70,8 @@ window.addEventListener("mouseup", event => {
 });
 
 window.addEventListener("mousemove", event => {
+	mouse.x = event.x;
+	mouse.y = event.y;
 	stackManager.cards.forEach(card => {
 		// add all id we are curently hovering on
 		if (
@@ -177,6 +179,49 @@ const stackManager = new CardStackManager({
 	initCards: [cardA, cardB, cardC, cardD, cardE]
 });
 
+class CameraManager {
+	width: number;
+	height: number;
+	x: number;
+	y: number;
+	down: boolean = false;
+	shiftX: number = 0;
+	shiftY: number = 0;
+	constructor() {
+		addEventListener("mousedown", event => {
+			this.x = event.x;
+			this.y = event.y;
+			this.down = true;
+
+			this.shiftX = event.clientX;
+			this.shiftY = event.clientY;
+		});
+
+		addEventListener("mouseup", event => {
+			this.x = event.x;
+			this.y = event.y;
+			this.down = false;
+		});
+
+		addEventListener("mousemove", event => {
+			if (!this.down) return;
+
+			if (hover.stack.size > 0) return;
+
+			stackManager.cards.forEach(card => {
+				card.x = card.x + event.x - this.shiftX;
+				card.y = card.y + event.y - this.shiftY;
+			});
+			// TODO: Alternative?: ctx.translate((event.x - this.shiftX) / scale, (event.y - this.shiftY) / scale);
+
+			this.shiftX = event.clientX;
+			this.shiftY = event.clientY;
+		});
+	}
+}
+
+const cameraManager = new CameraManager();
+
 // setTimeout(() => {
 // 	stackManager.moveToStack(cardB.id);
 // }, 100);
@@ -203,7 +248,12 @@ function drawUI(ctx: CanvasRenderingContext2D) {
 function animate() {
 	requestAnimationFrame(animate);
 
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.save();
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
+	// Will always clear the right space
+	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	ctx.restore();
+
 	drawUI(uictx);
 
 	stackManager.cardStack

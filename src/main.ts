@@ -223,6 +223,31 @@ function drawUI(ctx: CanvasRenderingContext2D) {
 	ctx.save();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	drawDebugText(ctx, { stackManager });
+
+	const height = 300;
+	const width = 400;
+	const x = canvas.height - height;
+	ctx.fillStyle = "rgba(0,0,0,0.7)";
+	ctx.fillRect(0, x, width, height);
+
+	const card = stackManager.getCardById(hover.currentId());
+	if (!card) return;
+	const { stack } = stackManager.findMatchedStack(card.id);
+
+	ctx.font = `1.125rem Arial`;
+	ctx.fillStyle = "#fff";
+	ctx.fillText(`${card.title}`, 11, x + 22);
+	ctx.fillText(`id: ${card.id}`, 11, x + 44);
+	ctx.fillText(`recepie: ${stack.recepie?.id}`, 11, x + 66);
+	ctx.fillText(
+		`progress: ${(
+			(stack.progressBarValue * stack.recepie?.duration) /
+			stack.recepie?.duration
+		).toFixed(2)}%`,
+		11,
+		x + 88
+	);
+
 	ctx.restore();
 }
 

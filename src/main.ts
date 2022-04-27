@@ -1,6 +1,5 @@
 import "./style.css";
 import Card from "./classes/card";
-import CardStack from "./classes/card-stack";
 import CardStackManager from "./classes/card-stack-manager";
 import { drawDebugText } from "./utils";
 
@@ -164,20 +163,14 @@ function removeHoverId(id) {
 // MAIN
 //
 
-const cardA = new Card(100, 100, { title: "CardA" });
-const cardB = new Card(250, 10, { title: "CardB" });
-const cardC = new Card(350, 10, { title: "CardC" });
-const cardD = Card.fromType("villager", 500, 100);
-const cardE = Card.fromType("wood", 800, 100);
-
-const stackA = new CardStack([cardA, cardB, cardC]);
-const stackB = new CardStack([cardD]);
-const stackC = new CardStack([cardE]);
-
 const stackManager = new CardStackManager({
-	initCardStack: [stackA, stackB, stackC],
-	initCards: [cardA, cardB, cardC, cardD, cardE]
+	initCardStack: [],
+	initCards: []
 });
+
+stackManager.addCard(Card.fromType("villager", 50, 500));
+stackManager.addCard(Card.fromType("villager", 500, 100));
+stackManager.addCard(Card.fromType("wood", 800, 100));
 
 class CameraManager {
 	width: number;
@@ -221,18 +214,6 @@ class CameraManager {
 }
 
 const cameraManager = new CameraManager();
-
-// setTimeout(() => {
-// 	stackManager.moveToStack(cardB.id);
-// }, 100);
-
-// setTimeout(() => {
-// 	stackManager.moveToStack(cardC.id, stackB.id);
-// }, 200);
-
-// setTimeout(() => {
-// 	stackManager.moveToStack(cardC.id);
-// }, 300);
 
 //
 //

@@ -1,3 +1,4 @@
+import { isColliding } from "../utils/collision";
 import Card from "./card";
 import CardStack from "./card-stack";
 
@@ -14,6 +15,11 @@ class CardStackManager {
 	}
 
 	addCard(card: Card, stackId?: string) {
+		const pos = this.getValidPosition(card.x, card.y);
+		if (pos) {
+			card.x = pos.point[0];
+			card.y = pos.point[1];
+		}
 		this.cards.push(card);
 		if (stackId) {
 			this.getStackById(stackId).push(card);
@@ -33,6 +39,52 @@ class CardStackManager {
 
 	getCardIndexById(id: string): number {
 		return this.cards.findIndex(c => c.id === id);
+	}
+
+	getValidPosition(x?: number, y?: number) {
+		const margin = 16;
+
+		const cardWidth = 182;
+		// const cardHeight = this.cards[0].height + this.cards[0].headerHeight;
+
+		const collision = (x: number, y: number) =>
+			this.cards.every(card => {
+				return !isColliding(
+					x,
+					y,
+					card.width,
+					card.height,
+					card.x,
+					card.y,
+					card.width,
+					card.height
+				);
+			});
+
+		const positions = [
+			{
+				type: "top",
+				point: [x, y - 227]
+			},
+			{
+				type: "right",
+				point: [x + cardWidth + margin, y]
+			},
+			{
+				type: "bottom",
+				point: [x + cardWidth + margin, y]
+			},
+			{
+				type: "left",
+				point: [x - cardWidth - margin, y]
+			}
+		];
+
+		const pos = positions.find(position => {
+			return collision(position.point[0], position.point[1]);
+		});
+
+		return pos;
 	}
 
 	getStackById(stackId: string) {

@@ -1,7 +1,9 @@
 import "./style.css";
 import Card from "./classes/card";
 import CardStackManager from "./classes/card-stack-manager";
-import { drawDebugText } from "./utils";
+import { drawDebugTextFactory } from "./utils";
+import { CraftingSuccessEvent } from "./types/events";
+import { isColliding } from "./utils/collision";
 
 const bgcanvas: any = document.querySelector("#bg-layer");
 const bgctx: CanvasRenderingContext2D = bgcanvas.getContext("2d");
@@ -114,8 +116,9 @@ window.addEventListener("mousemove", event => {
 	}
 });
 
-window.addEventListener("g_craftingdone", (event: any) => {
-	stackManager.addCard(Card.fromType(event.detail.type));
+window.addEventListener("g_craftingdone", (event: CraftingSuccessEvent) => {
+	const pos = stackManager.getValidPosition(...event.detail.position);
+	stackManager.addCard(Card.fromType(event.detail.type, ...pos?.point));
 
 	const stack = stackManager.getStackById(event.detail.stackId);
 	const cardsIdsToRemove = stack.getCardsToRemove();
@@ -170,7 +173,9 @@ const stackManager = new CardStackManager({
 
 stackManager.addCard(Card.fromType("villager", 50, 500));
 stackManager.addCard(Card.fromType("villager", 500, 100));
-stackManager.addCard(Card.fromType("wood", 800, 100));
+stackManager.addCard(Card.fromType("tree", 800, 100));
+stackManager.addCard(Card.fromType("tree", 800, 100));
+stackManager.addCard(Card.fromType("tree", 800, 100));
 
 class CameraManager {
 	width: number;

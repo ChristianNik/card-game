@@ -176,6 +176,7 @@ stackManager.addCard(Card.fromType("villager", 500, 100));
 stackManager.addCard(Card.fromType("tree", 800, 100));
 stackManager.addCard(Card.fromType("tree", 800, 100));
 stackManager.addCard(Card.fromType("tree", 800, 100));
+stackManager.addCard(Card.fromType("rock", 600, 110));
 
 class CameraManager {
 	width: number;

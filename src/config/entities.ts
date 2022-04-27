@@ -27,6 +27,27 @@ const entities = {
 			title: "Villager"
 		}
 	}),
+	baby: new Entity({
+		id: "baby",
+		category: "person",
+		args: {
+			title: "Baby"
+		}
+	}),
+	tree: new Entity({
+		id: "tree",
+		category: "recource",
+		args: {
+			title: "Tree"
+		}
+	}),
+	rock: new Entity({
+		id: "rock",
+		category: "recource",
+		args: {
+			title: "Rock"
+		}
+	}),
 	stone: new Entity({
 		id: "stone",
 		category: "ingredient",
@@ -46,27 +67,6 @@ const entities = {
 		category: "ingredient",
 		args: {
 			title: "Stick"
-		}
-	}),
-	default: new Entity({
-		id: "default",
-		category: "default",
-		args: {
-			title: "Default"
-		}
-	}),
-	tree: new Entity({
-		id: "tree",
-		category: "ingredient",
-		args: {
-			title: "Tree"
-		}
-	}),
-	baby: new Entity({
-		id: "baby",
-		category: "person",
-		args: {
-			title: "Baby"
 		}
 	})
 };

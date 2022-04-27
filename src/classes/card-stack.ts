@@ -22,7 +22,12 @@ class CardStack {
 			}
 		},
 		craft_success: () => {
-			globalevents.emit.craftingDone(this.recepie.id, this.id);
+			globalevents.emit.craftingDone(
+				this.recepie.id,
+				this.id,
+				this.rootCard.x,
+				this.rootCard.y
+			);
 			this._events.craft_done();
 		}
 	};

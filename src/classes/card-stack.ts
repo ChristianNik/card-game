@@ -15,6 +15,11 @@ class CardStack {
 			this.canCraft = false;
 			this.progressBarValue = 0;
 			this.recepie = null;
+
+			if (this.__interval) {
+				clearInterval(this.__interval);
+				this.__interval = null;
+			}
 		},
 		craft_success: () => {
 			globalevents.emit.craftingDone(this.recepie.id, this.id);
@@ -61,7 +66,7 @@ class CardStack {
 
 	tryCraft() {
 		const recepieId = getCraftable(this.getIngredients());
-		if (!recepieId) return;
+		if (!recepieId) return this._events.craft_done();
 
 		const craftRecepie = recepies[recepieId];
 		if (!craftRecepie) return;
@@ -74,14 +79,14 @@ class CardStack {
 			if (!recepieId) {
 				this._events.craft_done();
 			} else if (this.progressBarValue >= 1) {
-				clearInterval(this.__interval);
-
-				if (!this.recepie) return;
+				if (!this.recepie) return this._events.craft_done();
 				// emit success event
 				this._events.craft_success();
 			}
 			this.progressBarValue += 0.01;
 		};
+
+		if (this.__interval) return;
 		this.__interval = setInterval(increment, (craftRecepie.duration * 100) / 10);
 	}
 

@@ -219,16 +219,21 @@ const cameraManager = new CameraManager();
 //
 //
 
+const Text = drawDebugTextFactory(ctx, canvas);
+
 function drawUI(ctx: CanvasRenderingContext2D) {
 	ctx.save();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	drawDebugText(ctx, { stackManager });
-
-	const height = 300;
-	const width = 400;
-	const x = canvas.height - height;
-	ctx.fillStyle = "rgba(0,0,0,0.7)";
-	ctx.fillRect(0, x, width, height);
+	Text("top-left", [
+		`Style:`,
+		`- fillStyle: ${ctx.fillStyle}`,
+		`- strokeStyle: ${ctx.strokeStyle}`,
+		`- lineWidth: ${ctx.lineWidth}`,
+		``,
+		`Cards:`,
+		`- Count: ${stackManager.cards.length}`,
+		`- Stack count: ${stackManager.cardStack.length}`
+	]);
 
 	const card = stackManager.getCardById(hover.currentId());
 	if (!card) return;
@@ -236,17 +241,16 @@ function drawUI(ctx: CanvasRenderingContext2D) {
 
 	ctx.font = `1.125rem Arial`;
 	ctx.fillStyle = "#fff";
-	ctx.fillText(`${card.title}`, 11, x + 22);
-	ctx.fillText(`id: ${card.id}`, 11, x + 44);
-	ctx.fillText(`recepie: ${stack.recepie?.id}`, 11, x + 66);
-	ctx.fillText(
-		`progress: ${(
+
+	Text("bottom-left", [
+		`${card.title}`,
+		`- id: ${card.id}`,
+		`- x, y: ${card.x}, ${card.y}`,
+		`- progress: ${(
 			(stack.progressBarValue * stack.recepie?.duration) /
 			stack.recepie?.duration
-		).toFixed(2)}%`,
-		11,
-		x + 88
-	);
+		).toFixed(2)}%`
+	]);
 
 	ctx.restore();
 }

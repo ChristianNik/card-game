@@ -1,24 +1,22 @@
-import CardStackManager from "../classes/card-stack-manager";
-
 const generateId = () => Math.random().toString(16).substr(2, 8);
 
-const drawDebugText = (
-	ctx: CanvasRenderingContext2D,
-	{ stackManager }: { stackManager?: CardStackManager } = {}
-) => {
-	const x = 0;
-	const y = 0;
-	const textList = [
-		`Style:`,
-		`- fillStyle: ${ctx.fillStyle}`,
-		`- strokeStyle: ${ctx.strokeStyle}`,
-		`- lineWidth: ${ctx.lineWidth}`,
-		``,
-		`Cards:`,
-		`- Count: ${stackManager.cards.length}`,
-		`- Stack count: ${stackManager.cardStack.length}`
-	];
+const drawDebugTextFactory = (ctx: CanvasRenderingContext2D, canvas: any) => {
+	return (position: "top-left" | "bottom-left", textList: string[]) => {
+		let x = 0;
+		let y = 0;
+		if (position === "top-left") {
+			x = 0;
+			y = 0;
+		} else if (position === "bottom-left") {
+			x = 0;
+			y = canvas.height - textList.length * 22;
+		}
 
+		return drawDebugText(ctx, x, y, textList);
+	};
+};
+
+const drawDebugText = (ctx: CanvasRenderingContext2D, x: number, y: number, textList: string[]) => {
 	const longest = textList.reduce((acc, t) => (acc < t.length ? t.length : acc), 0);
 
 	ctx.fillStyle = "rgba(0,0,0,0.7)";
@@ -32,4 +30,4 @@ const drawDebugText = (
 	});
 };
 
-export { drawDebugText, generateId };
+export { drawDebugTextFactory, drawDebugText, generateId };

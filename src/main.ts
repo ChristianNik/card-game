@@ -118,7 +118,7 @@ window.addEventListener("mousemove", event => {
 
 window.addEventListener("g_craftingdone", (event: CraftingSuccessEvent) => {
 	const pos = stackManager.getValidPosition(...event.detail.position);
-	stackManager.addCard(Card.fromType(event.detail.type, ...pos?.point));
+	stackManager.addCard(Card.fromType(event.detail.type, ...(pos ? pos?.point : [0, 0])));
 
 	const stack = stackManager.getStackById(event.detail.stackId);
 	const cardsIdsToRemove = stack.getCardsToRemove();

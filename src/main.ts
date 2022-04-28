@@ -1,8 +1,8 @@
 import "./style.css";
 import Card from "./classes/card";
 import CardStackManager from "./classes/card-stack-manager";
-import { drawDebugTextFactory } from "./utils";
 import { CraftingSuccessEvent } from "./types/events";
+import UIManager from "./classes/ui-manager";
 
 const bgcanvas: any = document.querySelector("#bg-layer");
 const bgctx: CanvasRenderingContext2D = bgcanvas.getContext("2d");
@@ -18,12 +18,6 @@ const ctx: CanvasRenderingContext2D = canvas.getContext("2d");
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
-
-const uicanvas: any = document.querySelector("#ui-layer");
-const uictx: CanvasRenderingContext2D = uicanvas.getContext("2d");
-
-uicanvas.width = innerWidth;
-uicanvas.height = innerHeight;
 
 //
 // HOVER
@@ -222,45 +216,12 @@ class CameraManager {
 
 const cameraManager = new CameraManager();
 
+const uimanager = new UIManager("#ui-layer");
+uimanager.init({ stackManager, hover });
+
 //
 //
 //
-
-const Text = drawDebugTextFactory(ctx, canvas);
-
-function drawUI(ctx: CanvasRenderingContext2D) {
-	ctx.save();
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	Text("top-left", [
-		`Style:`,
-		`- fillStyle: ${ctx.fillStyle}`,
-		`- strokeStyle: ${ctx.strokeStyle}`,
-		`- lineWidth: ${ctx.lineWidth}`,
-		``,
-		`Cards:`,
-		`- Count: ${stackManager.cards.length}`,
-		`- Stack count: ${stackManager.cardStack.length}`
-	]);
-
-	const card = stackManager.getCardById(hover.currentId());
-	if (!card) return;
-	const { stack } = stackManager.findMatchedStack(card.id);
-
-	ctx.font = `1.125rem Arial`;
-	ctx.fillStyle = "#fff";
-
-	Text("bottom-left", [
-		`${card.title}`,
-		`- id: ${card.id}`,
-		`- x, y: ${card.x}, ${card.y}`,
-		`- progress: ${(
-			(stack.progressBarValue * stack.recepie?.duration) /
-			stack.recepie?.duration
-		).toFixed(2)}%`
-	]);
-
-	ctx.restore();
-}
 
 function animate() {
 	requestAnimationFrame(animate);
@@ -271,7 +232,7 @@ function animate() {
 	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	ctx.restore();
 
-	drawUI(uictx);
+	uimanager.draw();
 
 	stackManager.cardStack
 		.sort((stackA, stackB) => {

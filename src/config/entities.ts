@@ -84,10 +84,21 @@ const ingredients = {
 	})
 };
 
+const buildings = {
+	house: new Entity({
+		id: "house",
+		category: "building",
+		args: {
+			title: "House"
+		}
+	})
+};
+
 const entities = {
 	...persons,
 	...recources,
 	...ingredients,
+	...buildings,
 	fallback: new Entity({
 		id: "fallback",
 		category: "fallback",

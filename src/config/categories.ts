@@ -36,6 +36,12 @@ const categories = {
 		primaryColor: "hsl(50, 3%, 37%)",
 		accentColor: "hsl(50, 5%, 25%)"
 	}),
+	building: new EntityCategory({
+		category: "building",
+		textColor: "#fff",
+		primaryColor: "hsl(0, 50%, 61%)",
+		accentColor: "hsl(0, 55%, 40%)"
+	}),
 	fallback: new EntityCategory({
 		category: "fallback",
 		textColor: "#fff",

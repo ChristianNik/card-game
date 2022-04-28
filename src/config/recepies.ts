@@ -50,6 +50,30 @@ class EntityIngredient {
 }
 
 const recepies = {
+	stone: new EntityRecepie({
+		id: "stone",
+		duration: 1,
+		ingredients: [
+			new EntityIngredient("rock", {
+				quantity: 5
+			}),
+			new EntityIngredient("villager", {
+				isConsumable: false
+			})
+		]
+	}),
+	brick: new EntityRecepie({
+		id: "brick",
+		duration: 1,
+		ingredients: [
+			new EntityIngredient("stone", {
+				count: 3
+			}),
+			new EntityIngredient("villager", {
+				isConsumable: false
+			})
+		]
+	}),
 	stick: new EntityRecepie({
 		id: "stick",
 		duration: 1,
@@ -74,6 +98,10 @@ const recepies = {
 		id: "baby",
 		duration: 30,
 		ingredients: [
+			new EntityIngredient("house", {
+				count: 1,
+				isConsumable: false
+			}),
 			new EntityIngredient("villager", {
 				count: 2,
 				isConsumable: false
@@ -84,7 +112,22 @@ const recepies = {
 		id: "villager",
 		duration: 60,
 		ingredients: [
+			new EntityIngredient("house", {
+				count: 1
+			}),
 			new EntityIngredient("baby", {
+				count: 1
+			})
+		]
+	}),
+	house: new EntityRecepie({
+		id: "house",
+		duration: 1,
+		ingredients: [
+			new EntityIngredient("tree", {
+				count: 1
+			}),
+			new EntityIngredient("rock", {
 				count: 1
 			})
 		]

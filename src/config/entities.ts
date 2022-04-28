@@ -19,7 +19,7 @@ class Entity {
 	}
 }
 
-const entities = {
+const persons = {
 	villager: new Entity({
 		id: "villager",
 		category: "person",
@@ -33,7 +33,10 @@ const entities = {
 		args: {
 			title: "Baby"
 		}
-	}),
+	})
+};
+
+const recources = {
 	tree: new Entity({
 		id: "tree",
 		category: "recource",
@@ -47,7 +50,10 @@ const entities = {
 		args: {
 			title: "Rock"
 		}
-	}),
+	})
+};
+
+const ingredients = {
 	stone: new Entity({
 		id: "stone",
 		category: "ingredient",
@@ -69,6 +75,19 @@ const entities = {
 			title: "Stick"
 		}
 	}),
+	brick: new Entity({
+		id: "brick",
+		category: "ingredient",
+		args: {
+			title: "Brick"
+		}
+	})
+};
+
+const entities = {
+	...persons,
+	...recources,
+	...ingredients,
 	fallback: new Entity({
 		id: "fallback",
 		category: "fallback",

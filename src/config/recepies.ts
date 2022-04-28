@@ -75,12 +75,47 @@ const ingredients = {
 	})
 };
 
+const consumables = {
+	electricity: new EntityRecepie({
+		id: "electricity",
+		duration: 60,
+		ingredients: [
+			new EntityIngredient("powerStation", {
+				count: 1,
+				isConsumable: false
+			})
+		]
+	}),
+	water: new EntityRecepie({
+		id: "water",
+		duration: 60,
+		ingredients: [
+			new EntityIngredient("pump", {
+				count: 1,
+				isConsumable: false
+			})
+		]
+	})
+};
+
 const buildings = {
 	house: new EntityRecepie({
 		id: "house",
 		duration: 1,
 		ingredients: [
 			new EntityIngredient("tree", {
+				count: 1
+			}),
+			new EntityIngredient("rock", {
+				count: 1
+			})
+		]
+	}),
+	pump: new EntityRecepie({
+		id: "pump",
+		duration: 1,
+		ingredients: [
+			new EntityIngredient("wood", {
 				count: 1
 			}),
 			new EntityIngredient("rock", {
@@ -94,6 +129,7 @@ const recepies = {
 	...persons,
 	...ingredients,
 	...buildings,
+	...consumables,
 	fallback: new EntityRecepie({
 		id: "fallback",
 		duration: 5,

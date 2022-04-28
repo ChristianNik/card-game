@@ -62,6 +62,20 @@ const ingredients = {
 		args: {
 			title: "Brick"
 		}
+	}),
+	electricity: new Entity({
+		id: "electricity",
+		category: "ingredient",
+		args: {
+			title: "Electricity"
+		}
+	}),
+	water: new Entity({
+		id: "water",
+		category: "ingredient",
+		args: {
+			title: "Water"
+		}
 	})
 };
 
@@ -71,6 +85,34 @@ const buildings = {
 		category: "building",
 		args: {
 			title: "House"
+		}
+	}),
+	factory: new Entity({
+		id: "factory",
+		category: "building",
+		args: {
+			title: "Factory"
+		}
+	}),
+	powerStation: new Entity({
+		id: "powerStation",
+		category: "building",
+		args: {
+			title: "Power Station"
+		}
+	}),
+	pump: new Entity({
+		id: "pump",
+		category: "building",
+		args: {
+			title: "Pump"
+		}
+	}),
+	mine: new Entity({
+		id: "mine",
+		category: "building",
+		args: {
+			title: "Mine"
 		}
 	})
 };

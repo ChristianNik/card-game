@@ -30,6 +30,7 @@ class CardStack {
 				this.rootCard.y
 			);
 			this._events.craft_done();
+			this.tryCraft();
 		}
 	};
 	id = generateId();

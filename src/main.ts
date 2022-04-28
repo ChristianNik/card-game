@@ -164,12 +164,15 @@ const stackManager = new CardStackManager({
 	initCards: []
 });
 
-stackManager.addCard(Card.fromType("villager", 50, 500));
-stackManager.addCard(Card.fromType("villager", 500, 100));
-stackManager.addCard(Card.fromType("tree", 800, 100));
-stackManager.addCard(Card.fromType("tree", 800, 100));
-stackManager.addCard(Card.fromType("tree", 800, 100));
-stackManager.addCard(Card.fromType("rock", 600, 110));
+const margin = 250;
+
+stackManager.addCard(Card.fromType("rock", margin * 1, 100));
+stackManager.addCard(Card.fromType("tree", margin * 2, 100));
+stackManager.addCard(Card.fromType("tree", margin * 3, 100));
+stackManager.addCard(Card.fromType("wood", margin * 2, 350));
+stackManager.addCard(Card.fromType("villager", margin * 1, 600));
+stackManager.addCard(Card.fromType("villager", margin * 2, 600));
+stackManager.addCard(Card.fromType("mine", margin * 3, 600));
 
 class CameraManager {
 	width: number;

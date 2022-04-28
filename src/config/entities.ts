@@ -13,7 +13,7 @@ class Entity {
 	recepie: EntityRecepie | null;
 	constructor({ id, category, args }: { id: string; category: TCategory; args?: any }) {
 		this.id = id;
-		this.category = categories[category] || categories.default;
+		this.category = categories[category] || categories.fallback;
 		this.args = args;
 		this.recepie = recepies[id] || null;
 	}
@@ -67,6 +67,13 @@ const entities = {
 		category: "ingredient",
 		args: {
 			title: "Stick"
+		}
+	}),
+	fallback: new Entity({
+		id: "fallback",
+		category: "fallback",
+		args: {
+			title: "Fallback"
 		}
 	})
 };

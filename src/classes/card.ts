@@ -1,3 +1,4 @@
+import { categories } from "../config/categories";
 import { entities, TEnities } from "../config/entities";
 import { generateId } from "../utils";
 
@@ -20,10 +21,10 @@ class Card {
 	headerHeight = 40;
 
 	title = "Placeholder";
-	primaryColor = "#61605B";
-	accentColor = "#43423D";
-	textColor = "#fff";
-	type: TEnities = "default";
+	primaryColor = categories.fallback.args.bg2;
+	accentColor = categories.fallback.args.bg1;
+	textColor = categories.fallback.args.color;
+	type: TEnities = "fallback";
 
 	constructor(x: number, y: number, options?: CardOptions) {
 		this.x = x;

@@ -72,8 +72,8 @@ const recepies = {
 			})
 		]
 	}),
-	default: new EntityRecepie({
-		id: "default",
+	fallback: new EntityRecepie({
+		id: "fallback",
 		duration: 5,
 		ingredients: [
 			new EntityIngredient("stick", {

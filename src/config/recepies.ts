@@ -1,55 +1,36 @@
-import { TEnities } from "./entities";
-class EntityRecepie {
-	id: TEnities;
-	duration: number;
-	ingredients: EntityIngredient[];
-	constructor({
-		id,
-		duration,
-		ingredients
-	}: {
-		id: TEnities;
-		duration: number;
-		ingredients: EntityIngredient[];
-	}) {
-		this.id = id;
-		this.duration = duration;
-		this.ingredients = ingredients;
-	}
-}
+import EntityIngredient from "../classes/entity-ingredient";
+import EntityRecepie from "../classes/entity-recepie";
 
-class EntityIngredient {
-	count: number;
-	type: TEnities;
-	isConsumable: boolean;
-	quantity: number;
-	constructor(
-		type: TEnities,
-		{
-			count = 1,
-			isConsumable = true,
-			quantity = 1
-		}: { count?: number; isConsumable?: boolean; quantity?: number } = {}
-	) {
-		this.count = count;
-		this.type = type;
-		this.isConsumable = isConsumable;
-		this.quantity = quantity;
-	}
+const persons = {
+	baby: new EntityRecepie({
+		id: "baby",
+		duration: 30,
+		ingredients: [
+			new EntityIngredient("house", {
+				count: 1,
+				isConsumable: false
+			}),
+			new EntityIngredient("villager", {
+				count: 2,
+				isConsumable: false
+			})
+		]
+	}),
+	villager: new EntityRecepie({
+		id: "villager",
+		duration: 60,
+		ingredients: [
+			new EntityIngredient("house", {
+				count: 1
+			}),
+			new EntityIngredient("baby", {
+				count: 1
+			})
+		]
+	})
+};
 
-	use() {
-		if (this.quantity > 0) {
-			this.quantity--;
-		}
-	}
-
-	get willConsume() {
-		if (!this.isConsumable) return false;
-		return this.quantity <= 0;
-	}
-}
-
-const recepies = {
+const ingredients = {
 	stone: new EntityRecepie({
 		id: "stone",
 		duration: 1,
@@ -93,33 +74,10 @@ const recepies = {
 				isConsumable: false
 			})
 		]
-	}),
-	baby: new EntityRecepie({
-		id: "baby",
-		duration: 30,
-		ingredients: [
-			new EntityIngredient("house", {
-				count: 1,
-				isConsumable: false
-			}),
-			new EntityIngredient("villager", {
-				count: 2,
-				isConsumable: false
-			})
-		]
-	}),
-	villager: new EntityRecepie({
-		id: "villager",
-		duration: 60,
-		ingredients: [
-			new EntityIngredient("house", {
-				count: 1
-			}),
-			new EntityIngredient("baby", {
-				count: 1
-			})
-		]
-	}),
+	})
+};
+
+const buildings = {
 	house: new EntityRecepie({
 		id: "house",
 		duration: 1,
@@ -131,7 +89,13 @@ const recepies = {
 				count: 1
 			})
 		]
-	}),
+	})
+};
+
+const recepies = {
+	...persons,
+	...ingredients,
+	...buildings,
 	fallback: new EntityRecepie({
 		id: "fallback",
 		duration: 5,
@@ -155,5 +119,5 @@ function getRecepieEntity(id: string): EntityIngredient | null {
 
 type TRecepies = typeof recepies;
 
-export { EntityRecepie, EntityIngredient, getRecepieEntity, recepies };
+export { getRecepieEntity, recepies };
 export type { TRecepies };

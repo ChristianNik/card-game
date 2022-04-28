@@ -1,23 +1,4 @@
-import { categories, EntityCategory, TCategory } from "./categories";
-import { EntityRecepie, recepies } from "./recepies";
-
-interface EntityArgs {
-	title?: string;
-	[key: string]: any;
-}
-
-class Entity {
-	id: string;
-	category: EntityCategory;
-	args: EntityArgs;
-	recepie: EntityRecepie | null;
-	constructor({ id, category, args }: { id: string; category: TCategory; args?: any }) {
-		this.id = id;
-		this.category = categories[category] || categories.fallback;
-		this.args = args;
-		this.recepie = recepies[id] || null;
-	}
-}
+import Entity from "../classes/entity";
 
 const persons = {
 	villager: new Entity({
@@ -110,5 +91,5 @@ const entities = {
 
 type TEnities = keyof typeof entities;
 
-export { Entity, entities };
+export { entities };
 export type { TEnities };

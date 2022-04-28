@@ -1,21 +1,4 @@
-interface EntityCategoryArgs {
-	color: string;
-	bg1: string;
-	bg2: string;
-}
-
-class EntityCategory {
-	name: TCategory;
-	args: EntityCategoryArgs;
-	constructor({ category, textColor, primaryColor, accentColor }) {
-		this.name = category;
-		this.args = {
-			color: textColor,
-			bg1: accentColor,
-			bg2: primaryColor
-		};
-	}
-}
+import EntityCategory from "../classes/entity-category";
 
 const categories = {
 	ingredient: new EntityCategory({
@@ -52,5 +35,5 @@ const categories = {
 
 type TCategory = keyof typeof categories;
 
-export { EntityCategory, categories };
-export type { TCategory, EntityCategoryArgs };
+export { categories };
+export type { TCategory };

@@ -3,7 +3,6 @@ import Card from "./classes/card";
 import CardStackManager from "./classes/card-stack-manager";
 import { drawDebugTextFactory } from "./utils";
 import { CraftingSuccessEvent } from "./types/events";
-import { isColliding } from "./utils/collision";
 
 const bgcanvas: any = document.querySelector("#bg-layer");
 const bgctx: CanvasRenderingContext2D = bgcanvas.getContext("2d");
@@ -128,8 +127,10 @@ window.addEventListener("g_craftingdone", (event: CraftingSuccessEvent) => {
 	stackManager.cards = stackManager.cards.filter(card => !cardsIdsToRemove.includes(card.id));
 	stack.cards = stack.cards.filter(card => !cardsIdsToRemove.includes(card.id));
 
-	//  move cards to new stack
-	stackManager.splitStack(stack.id);
+	if (event.detail.splitStack) {
+		//  move cards to new stack
+		stackManager.splitStack(stack.id);
+	}
 
 	// remove stacks with no cards
 	stackManager.clearStacks();

@@ -22,13 +22,19 @@ class CardStack {
 			}
 		},
 		craft_success: () => {
+			this.recepie.ingredients.forEach(ingred => {
+				ingred.use();
+			});
+			const splitStack = this.getCardsToRemove().length > 0;
 			globalevents.emit.craftingDone(
 				this.recepie.id,
 				this.id,
 				this.rootCard.x,
-				this.rootCard.y
+				this.rootCard.y,
+				splitStack
 			);
 			this._events.craft_done();
+			this.tryCraft();
 		}
 	};
 	id = generateId();
@@ -96,7 +102,7 @@ class CardStack {
 	}
 
 	getCardsToRemove() {
-		const cardsIdsToRemove = this.cards
+		const cardsIdsToRemove = [...this.cards]
 			.filter(card => {
 				const ingred = this.recepie.ingredients.find(i => i.type === card.type);
 				return ingred.willConsume;

@@ -21,14 +21,31 @@ class EntityRecepie {
 class EntityIngredient {
 	count: number;
 	type: TEnities;
-	willConsume: boolean;
+	isConsumable: boolean;
+	quantity: number;
 	constructor(
 		type: TEnities,
-		{ count = 1, willConsume = true }: { count?: number; willConsume?: boolean } = {}
+		{
+			count = 1,
+			isConsumable = true,
+			quantity = 1
+		}: { count?: number; isConsumable?: boolean; quantity?: number } = {}
 	) {
 		this.count = count;
 		this.type = type;
-		this.willConsume = willConsume;
+		this.isConsumable = isConsumable;
+		this.quantity = quantity;
+	}
+
+	use() {
+		if (this.quantity > 0) {
+			this.quantity--;
+		}
+	}
+
+	get willConsume() {
+		if (!this.isConsumable) return false;
+		return this.quantity <= 0;
 	}
 }
 
@@ -39,7 +56,7 @@ const recepies = {
 		ingredients: [
 			new EntityIngredient("wood"),
 			new EntityIngredient("villager", {
-				willConsume: false
+				isConsumable: false
 			})
 		]
 	}),
@@ -47,9 +64,9 @@ const recepies = {
 		id: "wood",
 		duration: 3,
 		ingredients: [
-			new EntityIngredient("tree"),
+			new EntityIngredient("tree", { quantity: 2 }),
 			new EntityIngredient("villager", {
-				willConsume: false
+				isConsumable: false
 			})
 		]
 	}),
@@ -59,7 +76,7 @@ const recepies = {
 		ingredients: [
 			new EntityIngredient("villager", {
 				count: 2,
-				willConsume: false
+				isConsumable: false
 			})
 		]
 	}),
@@ -83,7 +100,7 @@ const recepies = {
 				count: 3
 			}),
 			new EntityIngredient("villager", {
-				willConsume: false
+				isConsumable: false
 			})
 		]
 	})

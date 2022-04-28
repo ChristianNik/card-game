@@ -121,10 +121,8 @@ window.addEventListener("g_craftingdone", (event: CraftingSuccessEvent) => {
 	stackManager.cards = stackManager.cards.filter(card => !cardsIdsToRemove.includes(card.id));
 	stack.cards = stack.cards.filter(card => !cardsIdsToRemove.includes(card.id));
 
-	if (event.detail.splitStack) {
-		//  move cards to new stack
-		stackManager.splitStack(stack.id);
-	}
+	//  move cards to new stack
+	stackManager.splitStack(stack.id);
 
 	// remove stacks with no cards
 	stackManager.clearStacks();

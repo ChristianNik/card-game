@@ -5,7 +5,6 @@ interface CraftingSuccessEvent extends CustomEvent {
 		type: TEnities;
 		stackId: string;
 		position: number[];
-		splitStack: boolean;
 	};
 }
 

@@ -1,8 +1,9 @@
-import { EntityRecepie, recepies } from "../config/recepies";
+import { recepies } from "../config/recepies";
 import { getCraftable } from "../logic/crafting";
 import { generateId } from "../utils";
 import { globalevents } from "../utils/global-events";
 import Card from "./card";
+import EntityRecepie from "./entity-recepie";
 
 class CardStack {
 	private __interval;
@@ -22,19 +23,13 @@ class CardStack {
 			}
 		},
 		craft_success: () => {
-			this.recepie.ingredients.forEach(ingred => {
-				ingred.use();
-			});
-			const splitStack = this.getCardsToRemove().length > 0;
 			globalevents.emit.craftingDone(
 				this.recepie.id,
 				this.id,
 				this.rootCard.x,
-				this.rootCard.y,
-				splitStack
+				this.rootCard.y
 			);
 			this._events.craft_done();
-			this.tryCraft();
 		}
 	};
 	id = generateId();
@@ -102,7 +97,7 @@ class CardStack {
 	}
 
 	getCardsToRemove() {
-		const cardsIdsToRemove = [...this.cards]
+		const cardsIdsToRemove = this.cards
 			.filter(card => {
 				const ingred = this.recepie.ingredients.find(i => i.type === card.type);
 				return ingred.willConsume;

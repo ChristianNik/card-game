@@ -35,9 +35,7 @@ const ingredients = {
 		id: "stone",
 		duration: 1,
 		ingredients: [
-			new EntityIngredient("rock", {
-				quantity: 5
-			}),
+			new EntityIngredient("rock"),
 			new EntityIngredient("villager", {
 				isConsumable: false
 			})
@@ -69,7 +67,7 @@ const ingredients = {
 		id: "wood",
 		duration: 3,
 		ingredients: [
-			new EntityIngredient("tree", { quantity: 2 }),
+			new EntityIngredient("tree"),
 			new EntityIngredient("villager", {
 				isConsumable: false
 			})

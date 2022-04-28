@@ -21,26 +21,26 @@ const categories = {
 	ingredient: new EntityCategory({
 		category: "ingredient",
 		textColor: "#fff",
-		primaryColor: "#9CA2AE",
-		accentColor: "#677284"
+		primaryColor: "hsl(220, 10%, 65%)",
+		accentColor: "hsl(217, 12%, 46%)"
 	}),
 	person: new EntityCategory({
 		category: "person",
 		textColor: "#000",
-		primaryColor: "#FEF08A",
-		accentColor: "#FEF9C3"
+		primaryColor: "hsl(53, 98%, 77%)",
+		accentColor: "hsl(55, 97%, 88%)"
 	}),
 	recource: new EntityCategory({
 		category: "recource",
 		textColor: "#fff",
-		primaryColor: "#61605B",
-		accentColor: "#42413C"
+		primaryColor: "hsl(50, 3%, 37%)",
+		accentColor: "hsl(50, 5%, 25%)"
 	}),
 	fallback: new EntityCategory({
 		category: "fallback",
 		textColor: "#fff",
-		primaryColor: "#61605B",
-		accentColor: "#43423D"
+		primaryColor: "hsl(50, 3%, 37%)",
+		accentColor: "hsl(50, 5%, 25%)"
 	})
 };
 

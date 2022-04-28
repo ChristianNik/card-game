@@ -63,6 +63,10 @@ class CardStackManager {
 
 		const positions = [
 			{
+				type: "same",
+				point: [x, y]
+			},
+			{
 				type: "top",
 				point: [x, y - 227]
 			},

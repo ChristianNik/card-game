@@ -33,6 +33,12 @@ class CardStackManager {
 		this.cardStack.push(new CardStack(cards));
 	}
 
+	deleteCard(cardId: string) {
+		const { stack } = this.findMatchedStack(cardId);
+		stack.cards = stack.cards.filter(card => card.id !== cardId);
+		this.cards = this.cards.filter(card => card.id !== cardId);
+	}
+
 	getCardById(id: string): Card {
 		return this.cards.find(c => c.id === id);
 	}
@@ -136,13 +142,12 @@ class CardStackManager {
 	 */
 	moveToStack(cardId: string, stackId?: string) {
 		// find card stack
-
 		const match = this.findMatchedStack(cardId);
 
 		// exit when no match
 		if (!match) return;
 
-		const cards = match.stack.cards.slice(match.index);
+		const cards = match.stack.splice(match.index);
 
 		if (stackId) {
 			// move to stack if it exists
@@ -153,9 +158,6 @@ class CardStackManager {
 			const stack = new CardStack(cards);
 			this.cardStack.push(stack);
 		}
-
-		// remove card and children from old stack
-		match.stack.cards.splice(match.index);
 	}
 }
 

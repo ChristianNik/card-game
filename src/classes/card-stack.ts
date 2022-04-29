@@ -61,6 +61,10 @@ class CardStack {
 		return this;
 	}
 
+	splice(index: number) {
+		return this.cards.splice(index);
+	}
+
 	getIngredients() {
 		return this.cards.reduce((acc, card) => {
 			if (!acc[card.type]) {

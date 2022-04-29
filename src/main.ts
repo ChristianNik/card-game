@@ -117,9 +117,10 @@ window.addEventListener("g_craftingdone", (event: CraftingSuccessEvent) => {
 	const cardsIdsToRemove = stack.getCardsToRemove();
 
 	// remove from hover stack
-	cardsIdsToRemove.forEach(cId => hover.stack.delete(cId));
-	stackManager.cards = stackManager.cards.filter(card => !cardsIdsToRemove.includes(card.id));
-	stack.cards = stack.cards.filter(card => !cardsIdsToRemove.includes(card.id));
+	cardsIdsToRemove.forEach(cId => {
+		hover.stack.delete(cId);
+		stackManager.deleteCard(cId);
+	});
 
 	//  move cards to new stack
 	stackManager.splitStack(stack.id);

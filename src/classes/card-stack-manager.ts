@@ -28,9 +28,11 @@ class CardStackManager {
 			ids.forEach(id => this.deleteCard(id));
 		});
 
-		// TODO: add produced card
-		// const pos = this.getValidPosition(...event.detail.position);
-		// this.addCard(Card.fromType(event.recipe.type, ...(pos ? pos?.point : [0, 0])));
+		// add produced card
+		const pos = this.getValidPosition(...event.position);
+		event.recipe.produces?.forEach(produce => {
+			this.addCard(Card.fromType(produce.id, ...pos.point));
+		});
 	}
 
 	private createCraftManagerInstance() {

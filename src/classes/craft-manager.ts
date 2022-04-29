@@ -64,10 +64,13 @@ class CraftManager {
 	private finishCrafting() {
 		const ingredTypes = this.getConsumedIngredient();
 
+		const rootCard = this.stack?.rootCard;
+
 		this.events.onCraftFinish?.({
 			stackId: this.stack.id,
 			consumed: ingredTypes,
-			recipe: this.recipe
+			recipe: this.recipe,
+			position: [rootCard.x, rootCard.y]
 		});
 	}
 

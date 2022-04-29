@@ -1,14 +1,20 @@
+import { TEnities } from "../config/entities";
 import { generateId } from "../utils";
 import Card from "./card";
+import CraftManager from "./craft-manager";
 
 class CardStack {
 	id = generateId();
 	cards: Card[] = [];
-	// TODO: getter / setter with max = 1
-	progressBarValue: number = 0;
+	craftManager: CraftManager;
 
-	constructor(cards: Card[]) {
+	constructor(cards: Card[], optional: { craftManager?: CraftManager } = {}) {
 		this.cards = cards || [];
+		this.craftManager = optional.craftManager;
+
+		if (this.craftManager) {
+			this.craftManager.setStackRef(this);
+		}
 	}
 
 	get rootCard(): Card | null {
@@ -17,6 +23,8 @@ class CardStack {
 
 	push(card: Card) {
 		this.cards.push(card);
+
+		this.craftManager?.tryCraft();
 		return this;
 	}
 
@@ -26,10 +34,12 @@ class CardStack {
 	}
 
 	splice(index: number) {
-		return this.cards.splice(index);
+		const cards = this.cards.splice(index);
+		this.craftManager?.tryCraft();
+		return cards;
 	}
 
-	getIngredients() {
+	getIngredients(): { [key: string]: number } {
 		return this.cards.reduce((acc, card) => {
 			if (!acc[card.type]) {
 				acc[card.type] = 0;
@@ -39,7 +49,18 @@ class CardStack {
 		}, {});
 	}
 
-	private _drawProgressBar(ctx: CanvasRenderingContext2D) {
+	removeIngredient(type: TEnities) {
+		this.cards = this.cards.filter(c => c.type !== type);
+
+		return this;
+	}
+
+	getIdsByType(type: TEnities) {
+		const ids = this.cards.filter(c => c.type === type).map(c => c.id);
+		return ids;
+	}
+
+	private _drawProgressBar(ctx: CanvasRenderingContext2D, progressBarValue: number) {
 		const height = 24;
 		const offset = 16;
 		const x = this.rootCard.x;
@@ -62,7 +83,7 @@ class CardStack {
 		ctx.fillRect(
 			x + padding,
 			y + padding,
-			progressBarMaxWidth * this.progressBarValue,
+			progressBarMaxWidth * progressBarValue,
 			progressBarHeight
 		);
 	}
@@ -70,8 +91,8 @@ class CardStack {
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.save();
 
-		if (this.rootCard) {
-			this._drawProgressBar(ctx);
+		if (this.rootCard && this.craftManager?.isCrafting) {
+			this._drawProgressBar(ctx, this.craftManager?.progressValue);
 		}
 
 		this.cards.forEach((card, i) => {

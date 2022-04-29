@@ -1,6 +1,8 @@
+import { TEnities } from "../config/entities";
 import { isColliding } from "../utils/collision";
 import Card from "./card";
 import CardStack from "./card-stack";
+import CraftManager from "./craft-manager";
 
 interface ManagerInits {
 	initCards?: Card[];
@@ -14,6 +16,29 @@ class CardStackManager {
 		initCardStack && (this.cardStack = initCardStack);
 	}
 
+	private onCraftFinish(event) {
+		console.log("event :", event);
+
+		const stack = this.getStackById(event.stackId);
+		if (!stack) return;
+
+		// remove used Ingredients
+		event.consumed?.forEach((type: TEnities) => {
+			const ids = stack.getIdsByType(type);
+			ids.forEach(id => this.deleteCard(id));
+		});
+
+		// TODO: add produced card
+		// const pos = this.getValidPosition(...event.detail.position);
+		// this.addCard(Card.fromType(event.recipe.type, ...(pos ? pos?.point : [0, 0])));
+	}
+
+	private createCraftManagerInstance() {
+		return new CraftManager({
+			onCraftFinish: event => this.onCraftFinish(event)
+		});
+	}
+
 	addCard(card: Card, stackId?: string) {
 		const pos = this.getValidPosition(card.x, card.y);
 		if (pos) {
@@ -25,12 +50,21 @@ class CardStackManager {
 			this.getStackById(stackId).push(card);
 			return;
 		}
-		this.cardStack.push(new CardStack([card]));
+
+		this.cardStack.push(
+			new CardStack([card], {
+				craftManager: this.createCraftManagerInstance()
+			})
+		);
 	}
 
 	addCards(cards: Card[]) {
 		this.cards.push(...cards);
-		this.cardStack.push(new CardStack(cards));
+		this.cardStack.push(
+			new CardStack(cards, {
+				craftManager: this.createCraftManagerInstance()
+			})
+		);
 	}
 
 	deleteCard(cardId: string) {
@@ -127,7 +161,13 @@ class CardStackManager {
 
 	splitStack(stackId: string) {
 		const stack = this.getStackById(stackId);
-		stack.cards.splice(1).forEach(card => this.cardStack.push(new CardStack([card])));
+		stack.cards.splice(1).forEach(card =>
+			this.cardStack.push(
+				new CardStack([card], {
+					craftManager: this.createCraftManagerInstance()
+				})
+			)
+		);
 	}
 
 	clearStacks() {
@@ -155,7 +195,10 @@ class CardStackManager {
 			stack.pushMany(cards);
 		} else {
 			// move card and children to new stack
-			const stack = new CardStack(cards);
+
+			const stack = new CardStack(cards, {
+				craftManager: this.createCraftManagerInstance()
+			});
 			this.cardStack.push(stack);
 		}
 	}

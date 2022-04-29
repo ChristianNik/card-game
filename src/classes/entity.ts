@@ -10,10 +10,31 @@ class Entity {
 	id: string;
 	category: EntityCategory;
 	args: EntityArgs;
-	constructor({ id, category, args }: { id: string; category: TCategory; args?: any }) {
+	recipes: any;
+	produces: any;
+	constructor({
+		id,
+		category,
+		args,
+		recipes,
+		produces
+	}: {
+		id: string;
+		category: TCategory;
+		args?: any;
+		recipes?: any;
+		produces?: any;
+	}) {
 		this.id = id;
 		this.category = categories[category] || categories.fallback;
 		this.args = args;
+
+		this.recipes = recipes;
+		this.produces = produces;
+	}
+
+	getRecepie(ingredients: any[]) {
+		return;
 	}
 }
 

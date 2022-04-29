@@ -58,6 +58,7 @@ window.addEventListener("mouseup", event => {
 
 	const targetCardId = [...hover.stack][1];
 	const match = stackManager.findMatchedStack(targetCardId);
+	if (!match) return;
 	stackManager.moveToStack(hover.currentId(), match.stack.id);
 	stackManager.clearStacks();
 });
@@ -86,6 +87,8 @@ window.addEventListener("mousemove", event => {
 	// drag card under cuurent mouse pos
 	if (mouse.down && hover.currentId()) {
 		const card = stackManager.getCardById(hover.currentId());
+
+		if (!card) return;
 
 		if (stackManager.isStackRoot(card.id)) {
 			card.x = event.x - shiftX;
@@ -133,6 +136,14 @@ function addHoverId(id) {
 function removeHoverId(id) {
 	if (!hover.stack.has(id)) return;
 	hover.stack.delete(id);
+	cleanHoverStack();
+}
+
+function cleanHoverStack() {
+	hover.stack.forEach(id => {
+		if (stackManager.getCardById(id)) return;
+		hover.stack.delete(id);
+	});
 }
 
 //
@@ -146,13 +157,13 @@ const stackManager = new CardStackManager({
 
 const margin = 250;
 
-stackManager.addCard(Card.fromType("rock", margin * 1, 100));
-stackManager.addCard(Card.fromType("tree", margin * 2, 100));
+stackManager.addCards([Card.fromType("villager", margin * 1, 100)]);
+stackManager.addCard(Card.fromType("stone", margin * 2, 100));
 stackManager.addCard(Card.fromType("tree", margin * 3, 100));
-stackManager.addCard(Card.fromType("wood", margin * 2, 350));
-stackManager.addCard(Card.fromType("villager", margin * 1, 600));
-stackManager.addCard(Card.fromType("villager", margin * 2, 600));
-stackManager.addCard(Card.fromType("mine", margin * 3, 600));
+// stackManager.addCard(Card.fromType("wood", margin * 2, 350));
+// stackManager.addCard(Card.fromType("villager", margin * 1, 600));
+// stackManager.addCard(Card.fromType("villager", margin * 2, 600));
+// stackManager.addCard(Card.fromType("mine", margin * 3, 600));
 
 class CameraManager {
 	width: number;

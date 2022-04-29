@@ -1,7 +1,6 @@
 import "./style.css";
 import Card from "./classes/card";
 import CardStackManager from "./classes/card-stack-manager";
-import { CraftingSuccessEvent } from "./types/events";
 import UIManager from "./classes/ui-manager";
 
 const bgcanvas: any = document.querySelector("#bg-layer");
@@ -107,26 +106,6 @@ window.addEventListener("mousemove", event => {
 			return 0;
 		});
 	}
-});
-
-window.addEventListener("g_craftingdone", (event: CraftingSuccessEvent) => {
-	const pos = stackManager.getValidPosition(...event.detail.position);
-	stackManager.addCard(Card.fromType(event.detail.type, ...(pos ? pos?.point : [0, 0])));
-
-	const stack = stackManager.getStackById(event.detail.stackId);
-	const cardsIdsToRemove = stack.getCardsToRemove();
-
-	// remove from hover stack
-	cardsIdsToRemove.forEach(cId => {
-		hover.stack.delete(cId);
-		stackManager.deleteCard(cId);
-	});
-
-	//  move cards to new stack
-	stackManager.splitStack(stack.id);
-
-	// remove stacks with no cards
-	stackManager.clearStacks();
 });
 
 function addHoverId(id) {

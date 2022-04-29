@@ -42,20 +42,9 @@ class UIManager {
 
 		const card = stackManager.getCardById(hover.currentId());
 		if (!card) return;
-		const { stack } = stackManager.findMatchedStack(card.id);
 
 		this.ctx.font = `1.125rem Arial`;
 		this.ctx.fillStyle = "#fff";
-
-		this.Text("bottom-left", [
-			`${card.title}`,
-			`- id: ${card.id}`,
-			`- x, y: ${card.x}, ${card.y}`,
-			`- progress: ${(
-				(stack.progressBarValue * stack.recepie?.duration) /
-				stack.recepie?.duration
-			).toFixed(2)}%`
-		]);
 
 		this.ctx.restore();
 	}

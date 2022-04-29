@@ -63,6 +63,53 @@
 - outcome
 - quantity
 
+## 2.0
+
+```text
+testBaby: {
+        id: "testBaby",
+        category: categories["person"],
+        args: {
+            title: "Test Baby"
+        },
+        recipes: [
+            {
+                duration: 5,
+                quantity: 1,
+                ingredients: [
+                    {
+                        id: "villager",
+                        count: 2,
+                        isConsumed: false
+                    },
+                    {
+                        id: "house",
+                        count: 1,
+                        isConsumed: false
+                    }
+                ]
+            },
+            {
+                duration: 10,
+                quantity: 2,
+                ingredients: [
+                    {
+                        id: "villager",
+                        count: 3,
+                        isConsumed: false
+                    },
+                    {
+                        id: "house",
+                        count: 1,
+                        isConsumed: false
+                    }
+                ]
+            }
+        ]
+    },
+```
+
+
 ## Crafting Tree
 
 ```mermaid

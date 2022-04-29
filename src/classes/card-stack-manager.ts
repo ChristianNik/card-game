@@ -31,7 +31,7 @@ class CardStackManager {
 		// add produced card
 		const pos = this.getValidPosition(...event.position);
 		event.recipe.produces?.forEach(produce => {
-			this.addCard(Card.fromType(produce.id, ...pos.point));
+			this.addCard(Card.fromType(produce.id, ...pos?.point));
 		});
 	}
 
@@ -130,7 +130,12 @@ class CardStackManager {
 			return collision(position.point[0], position.point[1]);
 		});
 
-		return pos;
+		return (
+			pos || {
+				type: "fallback",
+				point: [0, 0]
+			}
+		);
 	}
 
 	getStackById(stackId: string) {

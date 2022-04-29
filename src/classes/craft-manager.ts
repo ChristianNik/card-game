@@ -75,6 +75,8 @@ class CraftManager {
 	}
 
 	private getConsumedIngredient() {
+		const canProduce = this.quantity < this.recipe.quantity;
+		if (canProduce) return [];
 		const consumed = Object.keys(this.ingredients).filter(type => {
 			const ingredient = this.recipe.ingredients.find(i => i.id === type);
 			return ingredient?.isConsumed || false;
@@ -103,6 +105,7 @@ class CraftManager {
 			if (canProduce) {
 				this.resetCrafting();
 				console.log("craft");
+				this.finishCrafting();
 
 				return;
 			}

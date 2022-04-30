@@ -2,7 +2,7 @@ import Card from "../classes/card";
 
 class DragCardManager {
 	isDown?: boolean;
-	dragTarget?: any;
+	dragTarget?: Card;
 	startX?: number;
 	startY?: number;
 

@@ -215,16 +215,14 @@ uimanager.init({ stackManager, hover });
 //
 //
 
+// setInterval(() => {
+// 	uimanager.draw();
+// }, 1000);
+
 function animate() {
 	requestAnimationFrame(animate);
 
-	ctx.save();
-	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	// Will always clear the right space
 	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-	ctx.restore();
-
-	uimanager.draw();
 
 	stackManager.cardStack
 		.sort((stackA, stackB) => {

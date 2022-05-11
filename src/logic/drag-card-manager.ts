@@ -5,7 +5,10 @@ import { ListNode } from "../utils/linked-list";
 
 class DragCardManager {
 	isDown?: boolean;
-	dragTarget?: ListNode<Card>;
+	dragInfo?: {
+		target?: ListNode<Card>;
+		targetStack?: CardStack;
+	} = {};
 	startX?: number;
 	startY?: number;
 
@@ -27,15 +30,18 @@ class DragCardManager {
 		document.addEventListener("mouseup", () => this.handleMouseUp());
 	}
 
-	hitCard(x: number, y: number): ListNode<Card> | null {
-		let target = null;
+	hitCard(x: number, y: number): { targetStack: CardStack; target: ListNode<Card> } | null {
+		let target = { targetStack: null, target: null };
 
 		this.cardStacks.forEach(stack => {
 			stack.forEach(node => {
 				const cardA = node.data;
 
 				if (isColliding(x, y, 0, 0, cardA.x, cardA.y, cardA.width, cardA.height)) {
-					target = node;
+					target = {
+						targetStack: stack,
+						target: node
+					};
 				}
 			});
 		});
@@ -56,14 +62,20 @@ class DragCardManager {
 			});
 		});
 
-		console.log(this.hoverStack);
+		// console.log(this.hoverStack);
 	}
 
 	handleMouseDown(e: MouseEvent): void {
 		this.startX = e.offsetX - parseInt(this.canvas.clientLeft);
 		this.startY = e.offsetY - parseInt(this.canvas.clientTop);
-		this.dragTarget = this.hitCard(this.startX, this.startY);
-		this.isDown = !!this.dragTarget;
+
+		const collision = this.hitCard(this.startX, this.startY);
+
+		this.dragInfo = {
+			target: collision.target,
+			targetStack: collision.targetStack
+		};
+		this.isDown = !!this.dragInfo.target;
 	}
 
 	handleMouseMove(e: MouseEvent): void {
@@ -77,7 +89,7 @@ class DragCardManager {
 		this.startX = mouseX;
 		this.startY = mouseY;
 
-		let node = this.dragTarget;
+		let node = this.dragInfo.target;
 		while (node) {
 			node.data.x += dx;
 			node.data.y += dy;
@@ -89,8 +101,40 @@ class DragCardManager {
 	}
 
 	handleMouseUp(): void {
-		this.dragTarget = null;
+		const values = [...this.hoverStack.values()];
+
+		if (this.dragInfo.target) {
+			const dragId = this.dragInfo.target.data.id;
+			const targetStack = this.dragInfo.targetStack;
+
+			if (targetStack.head.data.id === dragId) {
+				console.log("do nothing");
+			} else if (this.hoverStack.size === 1) {
+				console.log("remove card from old stack");
+
+				const index = targetStack.indexOf(dragId);
+				const deletedNode = targetStack.deleteAt(index);
+
+				console.log("move to new Stack", deletedNode);
+
+				const stack = new CardStack();
+				stack.insertAtBeginning(deletedNode.data);
+
+				deletedNode.forEach(node => {
+					stack.insertAtEnd(node.data);
+				});
+
+				this.cardStacks.push(stack);
+			} else {
+				console.log(`move <${values[0]}> to >${values[1]}<`);
+			}
+		}
+
+		//
+		this.dragInfo = null;
 		this.isDown = false;
+		//
+		this.drawFn();
 	}
 }
 

@@ -5,6 +5,16 @@ class ListNode<T> {
 		this.data = data;
 		this.next = next;
 	}
+
+	forEach(callback: (node: ListNode<T>, index: number) => any) {
+		let index = -1;
+		let node = this.next;
+		while (node) {
+			index++;
+			callback(node, index);
+			node = node.next;
+		}
+	}
 }
 
 class LinkedList<T> {
@@ -98,36 +108,39 @@ class LinkedList<T> {
 		return this.head;
 	}
 
-	// deleteAt(index: number) {
-	// 	// when list is empty i.e. head = null
-	// 	if (!this.head) {
-	// 		this.head = new ListNode(data);
-	// 		return;
-	// 	}
-	// 	// node needs to be deleted from the front of the list i.e. before the head.
-	// 	if (index === 0) {
-	// 		this.head = this.head.next;
-	// 		return;
-	// 	}
-	// 	// else, use getAt() to find the previous node.
-	// 	const previous = this.getAt(index - 1);
+	deleteAt(index: number): ListNode<T> | null {
+		const tmp = this.getAt(index);
+		// when list is empty i.e. head = null
+		// if (!this.head) {
+		// 	this.head = new ListNode(data);
+		// 	return;
+		// }
+		// node needs to be deleted from the front of the list i.e. before the head.
+		if (index === 0) {
+			this.head = this.head.next;
+			return this.head;
+		}
+		// else, use getAt() to find the previous node.
+		const previous = this.getAt(index - 1);
 
-	// 	if (!previous || !previous.next) {
-	// 		return;
-	// 	}
+		if (!previous || !previous.next) {
+			return null;
+		}
 
-	// 	previous.next = previous.next.next;
-	// 	return this.head;
-	// }
+		previous.next = null;
+		return tmp;
+	}
 
 	deleteList() {
 		this.head = null;
 	}
 
-	forEach(callback: (node: ListNode<T>) => any) {
+	forEach(callback: (node: ListNode<T>, index: number) => any) {
+		let index = -1;
 		let node = this.head;
 		while (node) {
-			callback(node);
+			index++;
+			callback(node, index);
 			node = node.next;
 		}
 	}

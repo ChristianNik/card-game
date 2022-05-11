@@ -3,6 +3,8 @@ import { entities, TEnities } from "../config/entities";
 import { generateId } from "../utils";
 
 interface CardOptions {
+	x?: number;
+	y?: number;
 	title?: string;
 	primaryColor?: string;
 	accentColor?: string;
@@ -26,9 +28,9 @@ class Card {
 	textColor = categories.fallback.args.color;
 	type: TEnities = "fallback";
 
-	constructor(x: number, y: number, options?: CardOptions) {
-		this.x = x;
-		this.y = y;
+	constructor(options?: CardOptions) {
+		this.x = options.x || 0;
+		this.y = options.y || 0;
 
 		options?.title && (this.title = options.title);
 		options?.accentColor && (this.accentColor = options.accentColor);
@@ -40,7 +42,9 @@ class Card {
 	static fromType(type: TEnities, x: number = 0, y: number = 0) {
 		const entity = entities[type];
 
-		return new Card(x, y, {
+		return new Card({
+			x,
+			y,
 			title: entity.args.title,
 			accentColor: entity.category.args.bg1,
 			primaryColor: entity.category.args.bg2,

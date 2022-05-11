@@ -10,6 +10,8 @@ class DragCardManager {
 	cards: Card[];
 	drawFn: any;
 
+	hoverStack = new Set();
+
 	constructor(canvas: any, cards: Card[], drawFn: any) {
 		this.canvas = canvas;
 		this.cards = cards;
@@ -22,30 +24,49 @@ class DragCardManager {
 		document.addEventListener("mouseup", () => this.handleMouseUp());
 	}
 
-	hitCard(x: number, y: number) {
-		let isTarget = null;
-		for (let i = 0; i < this.cards.length; i++) {
+	hitCard(x: number, y: number): Card | null {
+		let target = null;
+
+		for (let i = this.cards.length - 1; i >= 0; i--) {
 			const box = this.cards[i];
 			if (x >= box.x && x <= box.x + box.width && y >= box.y && y <= box.y + box.height) {
-				this.dragTarget = box;
-				isTarget = true;
+				target = box;
 				break;
 			}
 		}
-		return isTarget;
+		return target;
 	}
 
-	handleMouseDown(e: MouseEvent) {
+	handleHoverOver(x: number, y: number): void {
+		for (let i = 0; i < this.cards.length; i++) {
+			const box = this.cards[i];
+			if (
+				x >= box.x &&
+				x <= box.x + box.width &&
+				y >= box.y &&
+				y <= box.y + box.height &&
+				box.id !== this.dragTarget?.id
+			) {
+				this.hoverStack.add(box.id);
+			} else if (this.hoverStack.has(box.id)) {
+				this.hoverStack.delete(box.id);
+			}
+		}
+	}
+
+	handleMouseDown(e: MouseEvent): void {
 		this.startX = e.offsetX - parseInt(this.canvas.clientLeft);
 		this.startY = e.offsetY - parseInt(this.canvas.clientTop);
-		this.isDown = this.hitCard(this.startX, this.startY);
+		this.dragTarget = this.hitCard(this.startX, this.startY);
+		this.isDown = !!this.dragTarget;
 	}
 
-	handleMouseMove(e: MouseEvent) {
-		if (!this.isDown) return;
-
+	handleMouseMove(e: MouseEvent): void {
 		const mouseX = e.offsetX - parseInt(this.canvas.clientLeft);
 		const mouseY = e.offsetY - parseInt(this.canvas.clientTop);
+		this.handleHoverOver(mouseX, mouseY);
+
+		if (!this.isDown) return;
 		const dx = mouseX - this.startX;
 		const dy = mouseY - this.startY;
 		this.startX = mouseX;
@@ -55,7 +76,7 @@ class DragCardManager {
 		this.drawFn();
 	}
 
-	handleMouseUp() {
+	handleMouseUp(): void {
 		this.dragTarget = null;
 		this.isDown = false;
 	}

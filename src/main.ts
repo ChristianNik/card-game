@@ -32,36 +32,18 @@ stack.getAt(0);
 
 const cardStacks = [stack];
 
-const cards = [];
-
-let node = stack.head;
-while (node) {
-	cards.push(node.data);
-	node = node.next;
-}
-
-const dragManager = new DragCardManager(canvas, cards, draw);
+const dragManager = new DragCardManager(canvas, cardStacks, draw);
 
 function draw() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
 	cardStacks.forEach(stack => {
-		let node = stack.head;
-		while (node) {
+		stack.forEach(node => {
 			ctx.save();
 			node.data.draw(ctx);
 			ctx.restore();
-			node = node.next;
-		}
+		});
 	});
-
-	// cards
-	// 	.sort(a => (a.id === dragManager.dragTarget?.id ? 1 : 0))
-	// 	.forEach(card => {
-	// 		ctx.save();
-	// 		card.draw(ctx);
-	// 		ctx.restore();
-	// 	});
 }
 
 draw();

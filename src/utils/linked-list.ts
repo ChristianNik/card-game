@@ -124,14 +124,17 @@ class LinkedList<T> {
 		this.head = null;
 	}
 
-	get length(): number {
-		let count = 0;
+	forEach(callback: (node: ListNode<T>) => any) {
 		let node = this.head;
 		while (node) {
-			count++;
+			callback(node);
 			node = node.next;
 		}
+	}
 
+	get length(): number {
+		let count = 0;
+		this.forEach(() => count++);
 		return count;
 	}
 }

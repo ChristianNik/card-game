@@ -16,7 +16,7 @@ class DragCardManager {
 	cardStacks: CardStack[];
 	drawFn: any;
 
-	hoverStack = new Set();
+	hoverStack = new Set<string>();
 
 	constructor(canvas: any, cardStacks: CardStack[], drawFn: any) {
 		this.canvas = canvas;
@@ -76,6 +76,10 @@ class DragCardManager {
 			targetStack: collision.targetStack
 		};
 		this.isDown = !!this.dragInfo.target;
+
+		this.cardStacks = this.cardStacks.sort(a =>
+			a.id === this.dragInfo?.targetStack?.id ? 1 : 0
+		);
 	}
 
 	handleMouseMove(e: MouseEvent): void {
@@ -100,33 +104,57 @@ class DragCardManager {
 		this.drawFn();
 	}
 
+	getStackById(id: string): CardStack | null {
+		return this.cardStacks.find(s => s.id === id);
+	}
+
+	getStackByCardId(id: string): CardStack | null {
+		return this.cardStacks.find(s => s.has(id));
+	}
+
+	moveToStack(cardId: string, dropId?: string) {
+		const currentStack = this.getStackByCardId(cardId);
+		const targetStack = this.getStackById(this.getStackByCardId(dropId)?.id);
+
+		const index = currentStack.indexOf(cardId);
+		const deletedNode = currentStack.deleteAt(index);
+
+		if (!dropId) {
+			const stack = new CardStack();
+			stack.insertAtBeginning(deletedNode.data);
+
+			deletedNode.forEach(node => {
+				stack.insertAtEnd(node.data);
+			});
+
+			this.cardStacks.push(stack);
+		} else {
+			let node = deletedNode;
+			while (node) {
+				targetStack.insertAtEnd(node.data);
+				//
+				node = node.next;
+			}
+		}
+	}
+
 	handleMouseUp(): void {
-		const values = [...this.hoverStack.values()];
+		const copyOfIds = new Set<string>([...this.hoverStack.values()]);
 
 		if (this.dragInfo.target) {
 			const dragId = this.dragInfo.target.data.id;
 			const targetStack = this.dragInfo.targetStack;
 
-			if (targetStack.head.data.id === dragId) {
-				console.log("do nothing");
-			} else if (this.hoverStack.size === 1) {
-				console.log("remove card from old stack");
+			copyOfIds.delete(dragId);
 
-				const index = targetStack.indexOf(dragId);
-				const deletedNode = targetStack.deleteAt(index);
+			const values = [...copyOfIds.values()];
+			const dropId = values[values.length - 1];
 
-				console.log("move to new Stack", deletedNode);
-
-				const stack = new CardStack();
-				stack.insertAtBeginning(deletedNode.data);
-
-				deletedNode.forEach(node => {
-					stack.insertAtEnd(node.data);
-				});
-
-				this.cardStacks.push(stack);
-			} else {
-				console.log(`move <${values[0]}> to >${values[1]}<`);
+			const index = targetStack.indexOf(dragId);
+			if (this.hoverStack.size === 1 && index !== 0) {
+				this.moveToStack(dragId);
+			} else if (this.hoverStack.size > 1) {
+				this.moveToStack(dragId, dropId);
 			}
 		}
 

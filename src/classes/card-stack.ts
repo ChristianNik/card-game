@@ -1,7 +1,9 @@
+import { generateId } from "../utils";
 import { LinkedList, ListNode } from "../utils/linked-list";
 import Card from "./card";
 
 class CardStack extends LinkedList<Card> {
+	id = generateId();
 	constructor() {
 		super();
 	}
@@ -24,6 +26,10 @@ class CardStack extends LinkedList<Card> {
 		});
 
 		return index;
+	}
+
+	has(id): boolean {
+		return this.indexOf(id) !== -1;
 	}
 }
 

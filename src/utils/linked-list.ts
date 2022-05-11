@@ -117,8 +117,9 @@ class LinkedList<T> {
 		// }
 		// node needs to be deleted from the front of the list i.e. before the head.
 		if (index === 0) {
-			this.head = this.head.next;
-			return this.head;
+			const tmp = this.head;
+			this.head = null;
+			return tmp;
 		}
 		// else, use getAt() to find the previous node.
 		const previous = this.getAt(index - 1);

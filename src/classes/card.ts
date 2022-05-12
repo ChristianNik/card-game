@@ -53,6 +53,11 @@ class Card {
 		});
 	}
 
+	setPosition(x: number, y: number) {
+		this.x = x;
+		this.y = y;
+	}
+
 	draw(ctx: CanvasRenderingContext2D) {
 		const _drawGround = () => {
 			ctx.fillStyle = this.accentColor;

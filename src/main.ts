@@ -24,12 +24,11 @@ canvas.height = innerHeight;
 
 let stack = new CardStack();
 
-stack.insertAtBeginning(new Card({ x: 100, y: 100, title: "A" }));
+stack.insertAtBeginning(new Card({ title: "A" }));
 stack.insertAtEnd(new Card({ title: "B" }));
 stack.insertAtEnd(new Card({ title: "C" }));
 
-stack.getAt(0);
-
+stack.setPosition(100, 100);
 const cardStacks = [stack];
 
 const dragManager = new DragCardManager(canvas, cardStacks, draw);

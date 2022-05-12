@@ -28,8 +28,19 @@ class CardStack extends LinkedList<Card> {
 		return index;
 	}
 
-	has(id): boolean {
+	has(id: string): boolean {
 		return this.indexOf(id) !== -1;
+	}
+
+	setPosition(x: number, y: number) {
+		this.head.data.x = x;
+		this.head.data.y = y;
+
+		this.forEach((node, i) => {
+			const x = this.head.data.x;
+			const y = this.head.data.y + this.head.data.headerHeight * i;
+			node.data.setPosition(x, y);
+		});
 	}
 }
 

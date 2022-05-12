@@ -1,7 +1,5 @@
 import { categories, TCategory } from "../config/categories";
-import { recepies } from "../config/recepies";
 import EntityCategory from "./entity-category";
-import EntityRecepie from "./entity-recepie";
 
 interface EntityArgs {
 	title?: string;
@@ -12,12 +10,31 @@ class Entity {
 	id: string;
 	category: EntityCategory;
 	args: EntityArgs;
-	recepie: EntityRecepie | null;
-	constructor({ id, category, args }: { id: string; category: TCategory; args?: any }) {
+	recipes: any;
+	produces: any;
+	constructor({
+		id,
+		category,
+		args,
+		recipes,
+		produces
+	}: {
+		id: string;
+		category: TCategory;
+		args?: any;
+		recipes?: any;
+		produces?: any;
+	}) {
 		this.id = id;
 		this.category = categories[category] || categories.fallback;
 		this.args = args;
-		this.recepie = recepies[id] || null;
+
+		this.recipes = recipes;
+		this.produces = produces;
+	}
+
+	getRecepie(ingredients: any[]) {
+		return;
 	}
 }
 

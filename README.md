@@ -63,25 +63,83 @@ https://www.cluemediator.com/draggable-rectangle-on-canvas-using-react
 - outcome
 - quantity
 
+## 2.0
+
+```text
+testBaby: {
+        id: "testBaby",
+        category: categories["person"],
+        args: {
+            title: "Test Baby"
+        },
+        recipes: [
+            {
+                duration: 5,
+                quantity: 1,
+                ingredients: [
+                    {
+                        id: "villager",
+                        count: 2,
+                        isConsumed: false
+                    },
+                    {
+                        id: "house",
+                        count: 1,
+                        isConsumed: false
+                    }
+                ]
+            },
+            {
+                duration: 10,
+                quantity: 2,
+                ingredients: [
+                    {
+                        id: "villager",
+                        count: 3,
+                        isConsumed: false
+                    },
+                    {
+                        id: "house",
+                        count: 1,
+                        isConsumed: false
+                    }
+                ]
+            }
+        ]
+    },
+```
+
+
 ## Crafting Tree
 
 ```mermaid
 graph TB;
 
-    Tree  --> |1x| Wood
+    a1[[Tree]]
+    a2[[Rock]]
+
+    a1  --> |1x| Wood
     Villager -.-> |1x| Wood
     
     House   --> |1x| Baby
     Villager    -.-> |2x| Baby
 
 
-    Rock    --> |1x| Stone
+    a2    --> |1x| Stone
     Wood & Stone    --> |1x| House
 
 
     Baby    --> |1x| Villager
     House   -.-> |1x| Villager
-    Wood    --> |1x| Stick    
+    Wood    --> |1x| Stick
+
+    Soil -.-> |1x| bb(Berry Bush)
+    Berry --> |1x| bb
+    bb --> |1x| Berry
+
+    Villager -.-> |1x| Berry
+
+    
 ```
 
 ## Example

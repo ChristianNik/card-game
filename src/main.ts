@@ -34,7 +34,7 @@ let stackC = new CraftableCardStack();
 stackC.insertAtBeginning(Card.fromType("tree"));
 stackC.setPosition(500, 100);
 
-const cardStacks = [stackA, stackB, stackC];
+const cardStacks: CraftableCardStack[] = [stackA, stackB, stackC];
 
 const dragManager = new DragCardManager(canvas, cardStacks, drawGame);
 

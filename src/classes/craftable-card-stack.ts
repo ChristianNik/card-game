@@ -7,11 +7,11 @@ import Ingredient from "./ingredient";
 import Recipe from "./recipe";
 
 class CraftableCardStack extends CardStack {
-	isCrafting: boolean;
+	isCrafting: boolean = false;
 	private progress: number = 0;
-	private quantity: number;
-	private handlerId?: number;
-	private _recipe: Recipe;
+	private quantity: number = 0;
+	private handlerId?: number = null;
+	private _recipe?: Recipe = null;
 	constructor() {
 		super();
 	}
@@ -19,6 +19,12 @@ class CraftableCardStack extends CardStack {
 	//
 	// Overrides
 	//
+
+	insertAt(data: Card, index: number): ListNode<Card> {
+		const added = super.insertAt(data, index);
+		this._handleStackChange();
+		return added;
+	}
 
 	insertAtEnd(data: Card): ListNode<Card> {
 		const added = super.insertAtEnd(data);

@@ -1,5 +1,5 @@
 import Card from "../classes/card";
-import CardStack from "../classes/card-stack";
+import CraftableCardStack from "../classes/craftable-card-stack";
 import { isColliding } from "../utils/collision";
 import { ListNode } from "../utils/linked-list";
 
@@ -7,18 +7,18 @@ class DragCardManager {
 	isDown?: boolean;
 	dragInfo?: {
 		target?: ListNode<Card>;
-		targetStack?: CardStack;
+		targetStack?: CraftableCardStack;
 	} = {};
 	startX?: number;
 	startY?: number;
 
 	canvas: any;
-	cardStacks: CardStack[];
+	cardStacks: CraftableCardStack[];
 	drawFn: any;
 
 	hoverStack = new Set<string>();
 
-	constructor(canvas: any, cardStacks: CardStack[], drawFn: any) {
+	constructor(canvas: any, cardStacks: CraftableCardStack[], drawFn: any) {
 		this.canvas = canvas;
 		this.cardStacks = cardStacks;
 		this.drawFn = drawFn;
@@ -30,7 +30,10 @@ class DragCardManager {
 		document.addEventListener("mouseup", () => this.handleMouseUp());
 	}
 
-	hitCard(x: number, y: number): { targetStack: CardStack; target: ListNode<Card> } | null {
+	hitCard(
+		x: number,
+		y: number
+	): { targetStack: CraftableCardStack; target: ListNode<Card> } | null {
 		let target = { targetStack: null, target: null };
 
 		this.cardStacks.forEach(stack => {
@@ -104,11 +107,11 @@ class DragCardManager {
 		this.drawFn();
 	}
 
-	getStackById(id: string): CardStack | null {
+	getStackById(id: string): CraftableCardStack | null {
 		return this.cardStacks.find(s => s.id === id);
 	}
 
-	getStackByCardId(id: string): CardStack | null {
+	getStackByCardId(id: string): CraftableCardStack | null {
 		return this.cardStacks.find(s => s.has(id));
 	}
 
@@ -120,7 +123,7 @@ class DragCardManager {
 		const deletedNode = currentStack.deleteAt(index);
 
 		if (!dropId) {
-			const stack = new CardStack();
+			const stack = new CraftableCardStack();
 			stack.insertAtBeginning(deletedNode.data);
 
 			deletedNode.forEach(node => {

@@ -30,7 +30,19 @@ const recources = {
 		category: "recource",
 		args: {
 			title: "Rock"
-		}
+		},
+		produces: [
+			{
+				// Ingredient
+				id: "stone",
+				probability: 1
+			},
+			{
+				// Ingredient
+				id: "sticks",
+				probability: 0.5
+			}
+		]
 	})
 };
 

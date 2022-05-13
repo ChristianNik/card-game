@@ -1,6 +1,7 @@
 import "./style.css";
 import Card from "./classes/card";
 import DragCardManager from "./logic/drag-card-manager";
+import CraftableCardStack from "./classes/craftable-card-stack";
 
 const bgcanvas: any = document.querySelector("#bg-layer");
 const bgctx: CanvasRenderingContext2D = bgcanvas.getContext("2d");
@@ -21,20 +22,28 @@ canvas.height = innerHeight;
 //
 //
 
-const cards = [Card.fromType("villager", 100, 100), Card.fromType("house", 300, 100)];
+let stackA = new CraftableCardStack();
+stackA.insertAtBeginning(Card.fromType("villager"));
+stackA.setPosition(100, 100);
 
-const dragManager = new DragCardManager(canvas, cards, draw);
+let stackB = new CraftableCardStack();
+stackB.insertAtBeginning(Card.fromType("tree"));
+stackB.setPosition(300, 100);
 
-function draw() {
+let stackC = new CraftableCardStack();
+stackC.insertAtBeginning(Card.fromType("tree"));
+stackC.setPosition(500, 100);
+
+const cardStacks: CraftableCardStack[] = [stackA, stackB, stackC];
+
+const dragManager = new DragCardManager(canvas, cardStacks, drawGame);
+
+export function drawGame() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-	cards
-		.sort(a => (a.id === dragManager.dragTarget?.id ? 1 : 0))
-		.forEach(card => {
-			ctx.save();
-			card.draw(ctx);
-			ctx.restore();
-		});
+	cardStacks.forEach(stack => {
+		stack.draw(ctx);
+	});
 }
 
-draw();
+drawGame();

@@ -1,7 +1,8 @@
 import { categories, TCategory } from "../config/categories";
-import { recepies } from "../config/recepies";
+import { recipes } from "../config/recipes";
 import EntityCategory from "./entity-category";
-import EntityRecepie from "./entity-recepie";
+import Ingredient from "./ingredient";
+import Recipe from "./recipe";
 
 interface EntityArgs {
 	title?: string;
@@ -12,12 +13,34 @@ class Entity {
 	id: string;
 	category: EntityCategory;
 	args: EntityArgs;
-	recepie: EntityRecepie | null;
-	constructor({ id, category, args }: { id: string; category: TCategory; args?: any }) {
+	recipes: Recipe[];
+	produces: any;
+	constructor({
+		id,
+		category,
+		args,
+		produces
+	}: {
+		id: string;
+		category: TCategory;
+		args?: any;
+		produces?: any;
+	}) {
 		this.id = id;
 		this.category = categories[category] || categories.fallback;
 		this.args = args;
-		this.recepie = recepies[id] || null;
+
+		this.recipes = recipes.filter(r => r.produces.id === id);
+		this.produces = produces;
+	}
+
+	getCraftableRecepie(ingredients: Ingredient[]) {
+		return this.recipes.find(r => {
+			return r.ingredients.every(ingred => {
+				const match = ingredients.find(ing => ing.id === ingred.id);
+				return match?.count === ingred.count;
+			});
+		});
 	}
 }
 

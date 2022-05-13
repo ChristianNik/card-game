@@ -1,3 +1,4 @@
+import { TEnities } from "../config/entities";
 import { generateId } from "../utils";
 import { LinkedList, ListNode } from "../utils/linked-list";
 import Card from "./card";
@@ -40,6 +41,36 @@ class CardStack extends LinkedList<Card> {
 			const x = this.head.data.x;
 			const y = this.head.data.y + this.head.data.headerHeight * i;
 			node.data.setPosition(x, y);
+		});
+	}
+
+	get ingredientIds(): TEnities[] {
+		let ingredients: TEnities[] = [];
+		this.forEach(node => {
+			ingredients.push(node.data.type);
+		});
+
+		return ingredients;
+	}
+
+	get stackIngredients(): { [key: string]: number } {
+		const ingredientsWithCount = this.ingredientIds.reduce((acc, id) => {
+			if (!acc[id]) {
+				acc[id] = 0;
+			}
+			acc[id]++;
+
+			return acc;
+		}, {});
+
+		return ingredientsWithCount;
+	}
+
+	draw(ctx: CanvasRenderingContext2D): void {
+		this.forEach(node => {
+			ctx.save();
+			node.data.draw(ctx);
+			ctx.restore();
 		});
 	}
 }

@@ -5,31 +5,31 @@ const SINGLE_VILLAGER: Ingredient = new Ingredient("villager", 1, false);
 
 const recipes = [
 	new Recipe({
-		produces: ["stone"],
+		produces: "stone",
 		ingredients: [SINGLE_VILLAGER, "rock"],
 		duration: 5,
 		quantity: 2
 	}),
 	new Recipe({
-		produces: ["wood"],
+		produces: "wood",
 		ingredients: [SINGLE_VILLAGER, "tree"],
 		duration: 5,
 		quantity: 3
 	}),
 	new Recipe({
-		produces: ["stick"],
+		produces: "stick",
 		ingredients: [SINGLE_VILLAGER, "wood"],
 		duration: 5,
 		quantity: 1
 	}),
 	new Recipe({
-		produces: ["house"],
+		produces: "house",
 		ingredients: [SINGLE_VILLAGER, { count: 2, id: "stone" }, { count: 2, id: "wood" }],
 		duration: 5,
 		quantity: 1
 	}),
 	new Recipe({
-		produces: ["baby"],
+		produces: "baby",
 		ingredients: [
 			{ count: 2, isConsumed: false, id: "villager" },
 			{ count: 1, isConsumed: false, id: "house" }
@@ -38,7 +38,7 @@ const recipes = [
 		quantity: 1
 	}),
 	new Recipe({
-		produces: ["villager"],
+		produces: "villager",
 		ingredients: [
 			{ count: 1, isConsumed: true, id: "baby" },
 			{ count: 1, isConsumed: false, id: "house" }

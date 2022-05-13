@@ -3,14 +3,14 @@ import CraftResult from "./craft-result";
 import Ingredient from "./ingredient";
 
 class Recipe {
-	_ingredients: Array<Ingredient | TEnities>;
+	private _ingredients: Array<Ingredient | TEnities>;
+	private _produces: CraftResult | TEnities;
 	duration: number;
-	_produces: Array<CraftResult | TEnities>;
 	quantity: number;
 	constructor(args: {
 		ingredients: Array<Ingredient | TEnities>;
 		duration: number;
-		produces: Array<CraftResult | TEnities>;
+		produces: CraftResult | TEnities;
 		quantity: number;
 	}) {
 		this._produces = args.produces;
@@ -29,12 +29,9 @@ class Recipe {
 		});
 	}
 
-	get produces(): CraftResult[] {
-		return this._produces.map(prod => {
-			if (prod instanceof CraftResult) return prod;
-
-			return new CraftResult(prod, 1);
-		});
+	get produces(): CraftResult {
+		if (this._produces instanceof CraftResult) return this._produces;
+		return new CraftResult(this._produces, 1);
 	}
 }
 

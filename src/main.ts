@@ -2,6 +2,7 @@ import "./style.css";
 import Card from "./classes/card";
 import DragCardManager from "./logic/drag-card-manager";
 import CraftableCardStack from "./classes/craftable-card-stack";
+import Recipe from "./classes/recipe";
 
 const bgcanvas: any = document.querySelector("#bg-layer");
 const bgctx: CanvasRenderingContext2D = bgcanvas.getContext("2d");
@@ -44,6 +45,14 @@ export function drawGame() {
 	cardStacks.forEach(stack => {
 		stack.draw(ctx);
 	});
+}
+
+export function addCardStack(recipe: Recipe) {
+	let stack = new CraftableCardStack();
+	stack.insertAtBeginning(Card.fromType(recipe.produces.id));
+	stack.setPosition(500, 100);
+
+	cardStacks.push(stack);
 }
 
 drawGame();

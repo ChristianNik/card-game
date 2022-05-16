@@ -1,5 +1,5 @@
 import { recipes } from "../config/recipes";
-import { drawGame } from "../main";
+import { addCardStack, drawGame } from "../main";
 import { ListNode } from "../utils/linked-list";
 import Card from "./card";
 import CardStack from "./card-stack";
@@ -98,6 +98,8 @@ class CraftableCardStack extends CardStack {
 
 	private _onCraftEnd(finished: boolean) {
 		console.log("Craft end");
+
+		addCardStack(this._recipe);
 
 		clearInterval(this.handlerId);
 		this.progress = 0;

@@ -48,6 +48,7 @@ export function drawGame() {
 }
 
 export function addCardStack(recipe: Recipe) {
+	if (!recipe) return;
 	let stack = new CraftableCardStack();
 	stack.insertAtBeginning(Card.fromType(recipe.produces.id));
 	stack.setPosition(500, 100);

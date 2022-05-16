@@ -73,6 +73,7 @@ class CraftableCardStack extends CardStack {
 
 	private _startCrafting() {
 		if (this.isCrafting) return;
+		if (!this._recipe) return;
 		console.log("Crafting start");
 
 		this.isCrafting = true;
@@ -84,7 +85,6 @@ class CraftableCardStack extends CardStack {
 
 	private _handleCraft(recipe: Recipe) {
 		if (this.progress < 100) {
-			console.log(`Crafting ${this._recipe.produces.id}...`, this.progress);
 			this.progress += 1;
 		} else {
 			this.quantity++;
@@ -106,6 +106,8 @@ class CraftableCardStack extends CardStack {
 		this.isCrafting = false;
 
 		if (finished) {
+			this._deleteUsedCards();
+
 			this._recipe = null;
 			this.quantity = 0;
 		} else {
@@ -121,6 +123,13 @@ class CraftableCardStack extends CardStack {
 		this.quantity = 0;
 	}
 
+	private _deleteUsedCards() {
+		this.ingredientIds.forEach((id, i) => {
+			const ingred = this._recipe?.ingredients.find(ingred => ingred.id === id);
+			if (!ingred?.isConsumed) return;
+			this.deleteAt(i);
+		});
+	}
 	//
 	// UI
 	//

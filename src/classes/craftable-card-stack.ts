@@ -83,44 +83,32 @@ class CraftableCardStack extends CardStack {
 	}
 
 	private _handleCraft(recipe: Recipe) {
-		console.log("Crafting...", this.progress);
-		if (this.progress >= 100) {
+		if (this.progress < 100) {
+			console.log(`Crafting ${this._recipe.produces.id}...`, this.progress);
+			this.progress += 1;
+		} else {
 			this.quantity++;
 
-			const finished = this.quantity < recipe.quantity;
-			console.log("finished :", finished);
-
-			if (finished) {
-				this._onCraftEnd();
-			} else {
-				this._onCraftDone();
-				this._startCrafting();
-			}
-
-			drawGame();
-			return;
+			const finished = this.quantity >= recipe.quantity;
+			this._onCraftEnd(finished);
 		}
 
-		this.progress += 1;
 		drawGame();
 	}
 
-	private _onCraftDone() {
-		console.log("Craft done");
-
-		clearInterval(this.handlerId);
-		this.progress = 0;
-		this.isCrafting = false;
-	}
-
-	private _onCraftEnd() {
+	private _onCraftEnd(finished: boolean) {
 		console.log("Craft end");
 
 		clearInterval(this.handlerId);
 		this.progress = 0;
 		this.isCrafting = false;
-		this._recipe = null;
-		this.quantity = 0;
+
+		if (finished) {
+			this._recipe = null;
+			this.quantity = 0;
+		} else {
+			this._startCrafting();
+		}
 	}
 
 	private _resetCraftingState() {

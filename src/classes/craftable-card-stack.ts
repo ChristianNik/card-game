@@ -162,9 +162,35 @@ class CraftableCardStack extends CardStack {
 		);
 	}
 
+	private _drawDebugInfo(ctx: CanvasRenderingContext2D) {
+		const TEXT_COUNT = 2;
+		const height = 12 * TEXT_COUNT;
+		const width = this.id.length * 7;
+		const x = this.head.data.x - width;
+		const y = this.head.data.y;
+
+		const padding = 2;
+
+		// ground
+		ctx.fillStyle = "#000";
+		ctx.fillRect(x, y, width, height);
+
+		// border
+		ctx.lineWidth = 4;
+		ctx.strokeRect(x, y, width, height);
+		// id
+		// ctx.textAlign = "right";
+		ctx.textBaseline = "top";
+		ctx.font = `bold 0.7rem ui-sans-serif, system-ui, Arial`;
+		ctx.fillStyle = "#fff";
+		ctx.fillText(this.id, x + padding, y + padding + 0 * 12);
+		ctx.fillText(`${Math.round(this.progress)}%`, x + padding, y + padding + 1 * 12);
+	}
+
 	draw(ctx: CanvasRenderingContext2D): void {
 		this._recipe && this._drawProgressBar(ctx);
 		super.draw(ctx);
+		this.head && this._drawDebugInfo(ctx);
 	}
 }
 

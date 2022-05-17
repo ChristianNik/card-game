@@ -146,7 +146,14 @@ class LinkedList<T> {
 		}
 	}
 
+	/**
+	 * @deprecated
+	 */
 	get length(): number {
+		return this.size;
+	}
+
+	get size(): number {
 		let count = 0;
 		this.forEach(() => count++);
 		return count;

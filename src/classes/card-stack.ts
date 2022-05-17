@@ -66,6 +66,28 @@ class CardStack extends LinkedList<Card> {
 		return ingredientsWithCount;
 	}
 
+	get x() {
+		return this.head?.data?.x;
+	}
+
+	get y() {
+		return this.head?.data?.y;
+	}
+
+	get width() {
+		return this.head?.data?.width;
+	}
+
+	get height() {
+		let height = this.head?.data?.height;
+
+		if (this.size > 1) {
+			height += this.size * this.head?.data?.headerHeight;
+		}
+
+		return height;
+	}
+
 	draw(ctx: CanvasRenderingContext2D): void {
 		this.forEach(node => {
 			ctx.save();

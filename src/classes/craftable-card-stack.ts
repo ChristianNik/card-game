@@ -163,34 +163,50 @@ class CraftableCardStack extends CardStack {
 	}
 
 	private _drawDebugInfo(ctx: CanvasRenderingContext2D) {
-		const TEXT_COUNT = 2;
-		const height = 12 * TEXT_COUNT;
-		const width = this.id.length * 7;
-		const x = this.head.data.x - width;
-		const y = this.head.data.y;
+		const debugText = [
+			`id: ${this.id}`,
+			`x: ${this.x}`,
+			`y: ${this.y}`,
+			`width: ${this.width}`,
+			`height: ${this.height}`,
+			`children: ${this.size}`
+		];
+
+		const longestText = debugText.reduce((acc, text) => {
+			return text.length > acc.length ? text : acc;
+		}, "");
 
 		const padding = 2;
+		const height = 0.7 * 16 * debugText.length + padding * 2;
+		const width = this.id.length * longestText.length - 25;
+		const x = this.head?.data?.x - padding;
+		const y = this.head?.data?.y;
 
 		// ground
 		ctx.fillStyle = "#000";
-		ctx.fillRect(x, y, width, height);
+		ctx.fillRect(x, y, -width, height);
 
 		// border
 		ctx.lineWidth = 4;
-		ctx.strokeRect(x, y, width, height);
+		ctx.strokeRect(x, y, -width, height);
 		// id
-		// ctx.textAlign = "right";
+		ctx.textAlign = "right";
+
 		ctx.textBaseline = "top";
 		ctx.font = `bold 0.7rem ui-sans-serif, system-ui, Arial`;
 		ctx.fillStyle = "#fff";
-		ctx.fillText(this.id, x + padding, y + padding + 0 * 12);
-		ctx.fillText(`${Math.round(this.progress)}%`, x + padding, y + padding + 1 * 12);
+
+		debugText.forEach((text, i) => {
+			ctx.fillText(text, x + padding, y + padding + i * 12);
+		});
+
+		ctx.textAlign = "left";
 	}
 
-	draw(ctx: CanvasRenderingContext2D): void {
+	draw(ctx: CanvasRenderingContext2D, options: { drawDebug?: boolean } = {}): void {
 		this._recipe && this._drawProgressBar(ctx);
 		super.draw(ctx);
-		this.head && this._drawDebugInfo(ctx);
+		options.drawDebug && this._drawDebugInfo(ctx);
 	}
 }
 

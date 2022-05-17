@@ -32,8 +32,8 @@ class CraftableCardStack extends CardStack {
 		return added;
 	}
 
-	deleteAt(index: number): ListNode<Card> {
-		const deleted = super.deleteAt(index);
+	deleteAt(index: number, length?: number): ListNode<Card> {
+		const deleted = super.deleteAt(index, length);
 		this._handleStackChange();
 		return deleted;
 	}
@@ -57,7 +57,7 @@ class CraftableCardStack extends CardStack {
 	//
 
 	private _handleStackChange() {
-		console.log("handleStackChange", this.stackIngredients);
+		// console.log("handleStackChange", this.stackIngredients);
 
 		// reset state
 		this._resetCraftingState();
@@ -74,7 +74,7 @@ class CraftableCardStack extends CardStack {
 	private _startCrafting() {
 		if (this.isCrafting) return;
 		if (!this._recipe) return;
-		console.log("Crafting start");
+		// console.log("Crafting start");
 
 		this.isCrafting = true;
 		this.handlerId = setInterval(
@@ -97,7 +97,7 @@ class CraftableCardStack extends CardStack {
 	}
 
 	private _onCraftEnd(finished: boolean) {
-		console.log("Craft end");
+		// console.log("Craft end");
 
 		addCardStack(this._recipe);
 
@@ -127,7 +127,7 @@ class CraftableCardStack extends CardStack {
 		this.ingredientIds.forEach((id, i) => {
 			const ingred = this._recipe?.ingredients.find(ingred => ingred.id === id);
 			if (!ingred?.isConsumed) return;
-			this.deleteAt(i);
+			this.deleteAt(i, 1);
 		});
 	}
 	//
@@ -137,21 +137,21 @@ class CraftableCardStack extends CardStack {
 	private _drawProgressBar(ctx: CanvasRenderingContext2D) {
 		const height = 24;
 		const offset = 16;
-		const x = this.head.data.x;
-		const y = this.head.data.y - height - offset;
+		const x = this.head?.data.x;
+		const y = this.head?.data.y - height - offset;
 
 		const padding = 2;
 
 		const progressBarHeight = height - padding * 2;
-		const progressBarMaxWidth = this.head.data.width - padding * 2;
+		const progressBarMaxWidth = this.head?.data.width - padding * 2;
 
 		// ground
 		ctx.fillStyle = "#000";
-		ctx.fillRect(x, y, this.head.data.width, height);
+		ctx.fillRect(x, y, this.head?.data.width, height);
 
 		// border
 		ctx.lineWidth = 4;
-		ctx.strokeRect(x, y, this.head.data.width, height);
+		ctx.strokeRect(x, y, this.head?.data.width, height);
 		// bar
 		ctx.fillStyle = "#fff";
 		ctx.fillRect(

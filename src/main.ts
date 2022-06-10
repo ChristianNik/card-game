@@ -37,7 +37,7 @@ stackC.setPosition(500, 100);
 
 const cardStacks: CraftableCardStack[] = [stackA, stackB, stackC];
 
-const dragManager = new DragCardManager(canvas, cardStacks, drawGame);
+new DragCardManager(canvas, cardStacks, drawGame);
 
 export function drawGame() {
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
